@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://shaders/test_shader1.tres" type="Shader" id=1]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/origin = Vector2( 0, 0 )
+shader_param/light_noise_enable = false
+shader_param/light_noise_scale = 1.35
+shader_param/light_noise_speed = 0.1
+shader_param/light_pulse_enable = true
+shader_param/light_pulse_scale = 0.5
+shader_param/light_pulse_speed = 5.0
+shader_param/light_wander_enable = false
+shader_param/light_wander_speed = Vector2( 3, 4.2 )
+shader_param/light_wander_scale = Vector2( 0.78, 0.55 )

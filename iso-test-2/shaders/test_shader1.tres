@@ -1,0 +1,91 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+resource_name = "Test Shader 1"
+code = "shader_type canvas_item;
+
+uniform vec2 origin = vec2(0, 0);
+
+uniform bool  light_noise_enable = false;
+uniform float light_noise_scale = 1.35;
+uniform float light_noise_speed = 0.1;
+
+uniform bool  light_pulse_enable = true;
+uniform float light_pulse_scale = 0.5;
+uniform float light_pulse_speed = 5;
+
+uniform bool  light_wander_enable = false;
+uniform vec2  light_wander_speed = vec2(3.0, 4.2);
+uniform vec2  light_wander_scale = vec2(0.78, 0.55);
+
+// hardcode 6 levels (godot 3.x shaders don't support array input or uniform)
+const int light_level_radius[6] = { 2, 8, 13, 18, 25, 32 };
+const float light_level[6] = { 0.0, 0.3, 0.6, 0.75, 0.9, 1.0 };
+
+varying vec2 world_pos;
+
+// https://stackoverflow.com/questions/5149544/can-i-generate-a-random-number-inside-a-pixel-shader
+float random( vec2 p )
+{
+	vec2 K1 = vec2(
+			23.14069263277926, // e^pi (Gelfond's constant)
+			2.665144142690225  // 2^sqrt(2) (Gelfondâ€“Schneider constant)
+	);
+	return fract( cos( dot(p,K1) ) * 12345.6789 );
+}
+
+int get_light_level(float distance) {
+	for (int i = light_level_radius.length() - 1; i >= 0; --i) {
+		float noise = light_noise_enable ? random(vec2(TIME * light_noise_speed, 0.0)) * light_noise_scale : 0.0;
+		float pulse = sin(TIME * light_pulse_speed) * light_pulse_scale;
+		float eff_radius = float(light_level_radius[i]) + pulse + noise;
+		
+		if (distance > eff_radius) {
+			return i;
+		}
+	}
+	
+	return 0;
+}
+
+void vertex() {
+	world_pos = (WORLD_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
+	world_pos += vec2(
+			(cos(TIME * light_wander_speed.x) * light_wander_scale.x) * float(light_wander_enable),
+			(sin(TIME * light_wander_speed.y) * light_wander_scale.y) * float(light_wander_enable)
+	);
+}
+
+void fragment() {
+	vec2 dist = world_pos - origin;
+	dist.y *= 2.0; // multiply dist.y by 2 to *shrink* it to match 2:1 iso projection
+	
+	// if this lies on a sideways facing normal, distort the circle
+	dist.y = dist.y * ((abs(NORMAL.y) > 0.1) ? 0.5 : 1.0);
+	dist.x = dist.x * ((abs(NORMAL.x) > 0.1) ? 1.35 : 1.0);
+	
+	int level = get_light_level(length(dist));
+	
+	vec4 overlay = vec4(
+			light_level[level],
+			light_level[level],
+			1.0,
+			1.0
+	);
+	
+	vec4 invOverlay = vec4(
+			1.0 - light_level[level],
+			1.0 - light_level[level],
+			0.12,
+			1.0
+	);
+	
+	COLOR = texture(TEXTURE, UV) * invOverlay;
+	//vec4 color = texture(TEXTURE, UV);
+	//color.rgb = mix(color.rgb, invOverlay.rgb, 0.5);
+	//COLOR = color;
+}
+
+void light() {
+	discard;
+}"
