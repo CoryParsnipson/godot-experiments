@@ -1,0 +1,710 @@
+[gd_scene load_steps=25 format=2]
+
+[ext_resource path="res://resources/tileset-base.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/character/iso-character-base-neonlare.png" type="Texture" id=2]
+[ext_resource path="res://scripts/movement.gd" type="Script" id=3]
+[ext_resource path="res://scripts/zlevel-change.gd" type="Script" id=4]
+[ext_resource path="res://resources/font-retro.tres" type="DynamicFont" id=5]
+[ext_resource path="res://scripts/zlevel-data.gd" type="Script" id=6]
+[ext_resource path="res://scripts/stairs.gd" type="Script" id=7]
+
+[sub_resource type="CapsuleShape2D" id=22]
+radius = 3.0
+height = 2.0
+
+[sub_resource type="Animation" id=39]
+resource_name = "run-e"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 25, 21, 26, 21 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=40]
+resource_name = "run-n"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 27, 22, 28, 22 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=41]
+resource_name = "run-ne"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 10, 11, 12, 11 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=42]
+resource_name = "run-nw"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 10, 11, 12, 11 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=43]
+resource_name = "run-s"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1.03526, 1, 1 ),
+"update": 1,
+"values": [ 23, 20, 24, 20 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=44]
+resource_name = "run-se"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 1 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=45]
+resource_name = "run-sw"
+length = 0.4
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 1 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=46]
+resource_name = "run-w"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 25, 21, 26, 21 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=47]
+resource_name = "stand-e"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 21 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=48]
+resource_name = "stand-n"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 22 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=49]
+resource_name = "stand-ne"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 11 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=50]
+resource_name = "stand-nw"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 11 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=51]
+resource_name = "stand-s"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 20 ]
+}
+
+[sub_resource type="Animation" id=52]
+resource_name = "stand-se"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=53]
+resource_name = "stand-sw"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=54]
+resource_name = "stand-w"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 21 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Map" type="Node2D" parent="."]
+
+[node name="z0" type="Node2D" parent="Map"]
+script = ExtResource( 6 )
+
+[node name="under" type="TileMap" parent="Map/z0"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -262141, 0, 65536, -196605, 0, 65536, -131070, 0, 65536, -65534, 0, 65536, 2, 0, 65536, 131070, 0, 131078, 131071, 0, 65540, 65536, 0, 65540, 65540, 0, 65536, 131076, 0, 65536, 196609, 0, 65536, 196610, 0, 65536, 196611, 0, 65536, 196612, 0, 65536 )
+
+[node name="floor" type="TileMap" parent="Map/z0"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+cell_tile_origin = 1
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( -393218, 0, 0, -196610, 0, 0, -196609, 0, 0, -262144, 0, 0, -262143, 0, 0, -131074, 0, 0, -131073, 0, 0, -196608, 0, 0, -196607, 0, 0, -65538, 0, 0, -65537, 0, 0, -131072, 0, 0, -131071, 0, 0, -2, 0, 0, -1, 0, 0, -65536, 0, 0, -65535, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 65536, 0, 0, 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 131072, 0, 0, 131073, 0, 0, 131074, 0, 0, 131075, 0, 0 )
+
+[node name="main" type="TileMap" parent="Map/z0"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( -589821, 0, 65536, -524285, 0, 65536, -458749, 0, 65536, -393213, 0, 65536, -262146, 0, 65536, -262145, 0, 196609, -327680, 0, 65536, -327679, 0, 65536, -327677, 0, 65536, -196611, 0, 65538, -262142, 0, 65536, -262141, 0, 65536, -131075, 0, 65538, -65539, 0, 65538, -3, 0, 65538, 65533, 0, 131078, 65534, 0, 65540, 65535, 0, 65540, 65538, 0, 131072 )
+
+[node name="Player" type="KinematicBody2D" parent="Map/z0/main" groups=["movable"]]
+position = Vector2( 34, -25 )
+collision_mask = 3
+script = ExtResource( 3 )
+map = NodePath("../../..")
+debug_direction = NodePath("../../../../Hud Canvas/Debug Panel/direction")
+speed = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/z0/main/Player"]
+position = Vector2( 0, 5 )
+rotation = 1.5708
+shape = SubResource( 22 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Map/z0/main/Player"]
+playback_speed = 0.75
+anims/run-e = SubResource( 39 )
+anims/run-n = SubResource( 40 )
+anims/run-ne = SubResource( 41 )
+anims/run-nw = SubResource( 42 )
+anims/run-s = SubResource( 43 )
+anims/run-se = SubResource( 44 )
+anims/run-sw = SubResource( 45 )
+anims/run-w = SubResource( 46 )
+anims/stand-e = SubResource( 47 )
+anims/stand-n = SubResource( 48 )
+anims/stand-ne = SubResource( 49 )
+anims/stand-nw = SubResource( 50 )
+anims/stand-s = SubResource( 51 )
+anims/stand-se = SubResource( 52 )
+anims/stand-sw = SubResource( 53 )
+anims/stand-w = SubResource( 54 )
+
+[node name="Sprite" type="Sprite" parent="Map/z0/main/Player"]
+texture = ExtResource( 2 )
+flip_h = true
+hframes = 10
+vframes = 3
+frame = 21
+
+[node name="collision" type="TileMap" parent="Map/z0"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( -393219, 0, 1, -393218, 0, 1, -393217, 0, 1, -327683, 0, 1, -327681, 0, 3, -262147, 0, 1, -262146, 0, 2, -262145, 0, 4, -327680, 0, 1, -327679, 0, 1, -327678, 0, 1, -196611, 0, 1, -262142, 0, 1, -131075, 0, 1, -196606, 0, 1, -65539, 0, 1, -131070, 0, 1, -3, 0, 1, -65534, 0, 1, -65533, 0, 1, -65532, 0, 1, 65533, 0, 1, 65534, 0, 1, 65535, 0, 1, 4, 0, 1, 131071, 0, 1, 65538, 0, 1, 65540, 0, 1, 196607, 0, 1, 131076, 0, 1, 262143, 0, 1, 196608, 0, 1, 196609, 0, 1, 196610, 0, 1, 196611, 0, 1, 196612, 0, 1 )
+
+[node name="triggers" type="Node2D" parent="Map/z0"]
+
+[node name="Area2D" type="Area2D" parent="Map/z0/triggers"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource( 4 )
+map = NodePath("../../..")
+debug_zlevel = NodePath("../../../../Hud Canvas/Debug Panel/zlevel")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Map/z0/triggers/Area2D"]
+position = Vector2( 42, -37 )
+polygon = PoolVector2Array( 7, -3, 6, -3, 19, 3, 21, 3 )
+
+[node name="z1" type="Node2D" parent="Map"]
+script = ExtResource( 6 )
+hideOnLeave = true
+
+[node name="main" type="TileMap" parent="Map/z1"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( -327680, 0, 65536 )
+
+[node name="collision" type="TileMap" parent="Map/z1"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( -393219, 0, 1, -393218, 0, 1, -393217, 0, 1, -327683, 0, 1, -262146, 0, 2, -262145, 0, 4, -327680, 0, 1, -196610, 0, 1, -262144, 0, 3, -131074, 0, 1, -131073, 0, 1, -196608, 0, 1 )
+
+[node name="triggers" type="Node2D" parent="Map/z1"]
+
+[node name="Z0" type="Area2D" parent="Map/z1/triggers"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 4 )
+map = NodePath("../../..")
+debug_zlevel = NodePath("../../../../Hud Canvas/Debug Panel/zlevel")
+destZ = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Map/z1/triggers/Z0"]
+position = Vector2( 64, -50 )
+polygon = PoolVector2Array( -5, 17, -5, 18, -17, 12, -14, 13 )
+
+[node name="Z2" type="Area2D" parent="Map/z1/triggers"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 4 )
+map = NodePath("../../..")
+debug_zlevel = NodePath("../../../../Hud Canvas/Debug Panel/zlevel")
+destZ = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Map/z1/triggers/Z2"]
+position = Vector2( 71, -60 )
+polygon = PoolVector2Array( -1, 10, -4, 12, -7, 16, -9, 16, -12, 17, -15, 17, -20, 14, -18, 15, -14, 16, -13, 16, -11, 16, -9, 15, -7, 15, -6, 13, -4, 11, -1, 9 )
+
+[node name="Stair Slider" type="Area2D" parent="Map/z1/triggers"]
+script = ExtResource( 7 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Map/z1/triggers/Stair Slider"]
+position = Vector2( -59, 18 )
+polygon = PoolVector2Array( 111, -61, 122, -55, 124, -56, 124, -66, 133, -71, 134, -73, 124, -78, 121, -76, 111, -63 )
+
+[node name="z2" type="Node2D" parent="Map"]
+script = ExtResource( 6 )
+
+[node name="under" type="TileMap" parent="Map/z2"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -524286, 0, 65536, -458750, 0, 65536, -327681, 0, 65536, -393214, 0, 65536, -262146, 0, 65536, -262145, 0, 196609, -327680, 0, 65536, -327679, 0, 65536, -327678, 0, 65536 )
+
+[node name="floor" type="TileMap" parent="Map/z2"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -524290, 0, 0, -524289, 0, 0, -589824, 0, 0, -589823, 0, 0, -458754, 0, 0, -458753, 0, 0, -524288, 0, 0, -524287, 0, 0, -393217, 0, 0, -458752, 0, 0, -458751, 0, 0, -327681, 0, 0, -393216, 0, 0, -393215, 0, 0 )
+
+[node name="main" type="TileMap" parent="Map/z2"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( -589827, 0, 65536, -589826, 0, 65536, -589825, 0, 65536, -655360, 0, 65536, -655359, 0, 65536, -655358, 0, 65536, -524291, 0, 65536, -524289, 0, 131072, -589822, 0, 65536, -458755, 0, 65536, -524286, 0, 65536, -393219, 0, 65536, -458750, 0, 65536, -327683, 0, 65536, -393214, 0, 65536, -327678, 0, 65536 )
+
+[node name="collision" type="TileMap" parent="Map/z2"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( -589827, 0, 1, -589826, 0, 1, -589825, 0, 1, -655360, 0, 1, -655359, 0, 1, -655358, 0, 1, -524291, 0, 1, -524289, 0, 1, -589822, 0, 1, -458755, 0, 1, -524286, 0, 1, -393219, 0, 1, -458750, 0, 1, -327683, 0, 1, -393214, 0, 1, -262147, 0, 3, -262146, 0, 2, -262145, 0, 9, -327680, 0, 1, -327678, 0, 1, -196610, 0, 1, -262144, 0, 1, -262143, 0, 1, -262142, 0, 1, -131074, 0, 1, -131073, 0, 1, -196608, 0, 1 )
+
+[node name="triggers" type="Node2D" parent="Map/z2"]
+
+[node name="Area2D3" type="Area2D" parent="Map/z2/triggers"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 4 )
+map = NodePath("../../..")
+debug_zlevel = NodePath("../../../../Hud Canvas/Debug Panel/zlevel")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Map/z2/triggers/Area2D3"]
+position = Vector2( 62, -56 )
+polygon = PoolVector2Array( 8, 8, 6, 9, 3, 13, 3, 14, 1, 14, -3, 15, -4, 14, -10, 14, -10, 12, -12, 10, -6, 13, -2, 14, 2, 13, 3, 12, 6, 8, 8, 7 )
+
+[node name="Hud Canvas" type="CanvasLayer" parent="."]
+
+[node name="Debug Panel" type="ColorRect" parent="Hud Canvas"]
+margin_left = 405.0
+margin_top = 6.0
+margin_right = 475.0
+margin_bottom = 32.0
+color = Color( 0.172549, 0.156863, 0.262745, 0.752941 )
+
+[node name="zlevel Label" type="Label" parent="Hud Canvas/Debug Panel"]
+margin_left = 4.0
+margin_top = 2.0
+margin_right = 48.0
+margin_bottom = 13.0
+custom_fonts/font = ExtResource( 5 )
+text = "z level:"
+
+[node name="zlevel" type="Label" parent="Hud Canvas/Debug Panel"]
+margin_left = 50.0
+margin_top = 2.0
+margin_right = 67.0
+margin_bottom = 13.0
+custom_fonts/font = ExtResource( 5 )
+text = "0"
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="direction Label" type="Label" parent="Hud Canvas/Debug Panel"]
+margin_left = 4.0
+margin_top = 13.0
+margin_right = 48.0
+margin_bottom = 24.0
+custom_fonts/font = ExtResource( 5 )
+text = "dir:"
+
+[node name="direction" type="Label" parent="Hud Canvas/Debug Panel"]
+margin_left = 32.0
+margin_top = 13.0
+margin_right = 67.0
+margin_bottom = 24.0
+custom_fonts/font = ExtResource( 5 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+drag_margin_left = 0.5
+drag_margin_top = 0.5
+drag_margin_right = 0.5
+drag_margin_bottom = 0.5
+
+[connection signal="body_entered" from="Map/z0/triggers/Area2D" to="Map/z0/triggers/Area2D" method="_on_body_entered"]
+[connection signal="body_exited" from="Map/z0/triggers/Area2D" to="Map/z0/triggers/Area2D" method="_on_body_exited"]
+[connection signal="body_entered" from="Map/z1/triggers/Z0" to="Map/z1/triggers/Z0" method="_on_body_entered"]
+[connection signal="body_exited" from="Map/z1/triggers/Z0" to="Map/z1/triggers/Z0" method="_on_body_exited"]
+[connection signal="body_entered" from="Map/z1/triggers/Z2" to="Map/z1/triggers/Z2" method="_on_body_entered"]
+[connection signal="body_exited" from="Map/z1/triggers/Z2" to="Map/z1/triggers/Z2" method="_on_body_exited"]
+[connection signal="body_entered" from="Map/z1/triggers/Stair Slider" to="Map/z1/triggers/Stair Slider" method="_on_body_entered"]
+[connection signal="body_exited" from="Map/z1/triggers/Stair Slider" to="Map/z1/triggers/Stair Slider" method="_on_body_exited"]
+[connection signal="body_entered" from="Map/z2/triggers/Area2D3" to="Map/z2/triggers/Area2D3" method="_on_body_entered"]
+[connection signal="body_exited" from="Map/z2/triggers/Area2D3" to="Map/z2/triggers/Area2D3" method="_on_body_exited"]
