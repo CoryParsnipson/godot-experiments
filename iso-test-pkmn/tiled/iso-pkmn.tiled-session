@@ -17,16 +17,16 @@
             }
         },
         "players-house.tmx": {
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 433.5,
-                "y": 282
+                "x": 470.25,
+                "y": 237
             }
         },
         "sprites-people.tsx": {
-            "scaleInDock": 2,
-            "scaleInEditor": 1
+            "scaleInDock": 0.75,
+            "scaleInEditor": 2
         },
         "tilemap-house.tsx": {
             "scaleInDock": 0.75,
@@ -42,9 +42,9 @@
     "project": "iso-pkmn.tiled-project",
     "recentFiles": [
         "players-house.tmx",
-        "moms-house-first-floor.tmx",
+        "sprites-people.tsx",
         "tilemap-house.tsx",
-        "sprites-people.tsx"
+        "moms-house-first-floor.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }
