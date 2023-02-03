@@ -17,27 +17,38 @@ func cartesian_to_isometric(cartesian):
 	return Vector2(cartesian.x - cartesian.y, (cartesian.x + cartesian.y) / 2)
 
 
-func vector_to_direction(vector: Vector2):
+func direction_suffix_str(d):
+	return str(DirectionString.keys()[int(d)]).to_lower()
+
+
+func direction_to_string(d):
+	return Direction.keys()[d]
+
+
+func vector_to_direction(vector: Vector2, default_dir = null):
 	if vector.length() == 0:
-		return direction
+		return default_dir
 		
+	var dir
 	match (round(fposmod(rad2deg(vector.angle()), 360)) as int):
 		0:
-			direction = Direction.EAST
+			dir = Direction.EAST
 		27:
-			direction = Direction.SOUTH_EAST
+			dir = Direction.SOUTH_EAST
 		90:
-			direction = Direction.SOUTH
+			dir = Direction.SOUTH
 		153:
-			direction = Direction.SOUTH_WEST
+			dir = Direction.SOUTH_WEST
 		180:
-			direction = Direction.WEST
+			dir = Direction.WEST
 		207:
-			direction = Direction.NORTH_WEST
+			dir = Direction.NORTH_WEST
 		270:
-			direction = Direction.NORTH
+			dir = Direction.NORTH
 		333:
-			direction = Direction.NORTH_EAST
+			dir = Direction.NORTH_EAST
+	
+	return dir
 
 
 func get_nearest_tilemap():
@@ -87,7 +98,29 @@ func _physics_process(delta):
 		if velocity != Vector2():
 			anim = "walk"
 			state = PlayerState.WALK
-			destination = tilemap.world_to_map(global_position) + velocity
+			
+			var iso_dir = cartesian_to_isometric(velocity)
+			var new_dir = vector_to_direction(iso_dir, direction)
+			if new_dir != direction:
+				destination = tilemap.world_to_map(global_position)
+				velocity = Vector2(0, 0)
+				$AnimationPlayer.play("walk-" + direction_suffix_str(new_dir))
+				state = PlayerState.TURN
+				
+				yield(get_tree().create_timer(0.1), "timeout")
+				
+				direction = new_dir
+				
+				# TODO: get rid of this with proper state machine implementation
+				var key_pressed = Input.is_action_pressed("up") or Input.is_action_pressed("down") or Input.is_action_pressed("left") or Input.is_action_pressed("right")
+				if key_pressed:
+					$AnimationPlayer.play("walk-" + direction_suffix_str(new_dir))
+				else:
+					$AnimationPlayer.play("stand-" + direction_suffix_str(new_dir))
+				
+				return
+			else:
+				destination = tilemap.world_to_map(global_position) + velocity
 		else:
 			anim = "stand"
 			state = PlayerState.STAND
@@ -112,24 +145,8 @@ func _physics_process(delta):
 	
 	var _collision_info = move_and_collide(motion)
 	
-	vector_to_direction(velocity)
-	match (direction):
-		Direction.NORTH:
-			anim_suffix = "ne"
-		Direction.SOUTH:
-			anim_suffix = "sw"
-		Direction.EAST:
-			anim_suffix = "se"
-		Direction.WEST:
-			anim_suffix = "nw"
-		Direction.NORTH_EAST:
-			anim_suffix = "ne"
-		Direction.NORTH_WEST:
-			anim_suffix = "nw"
-		Direction.SOUTH_EAST:
-			anim_suffix = "se"
-		Direction.SOUTH_WEST:
-			anim_suffix = "sw"
+	direction = vector_to_direction(cartesian_to_isometric(velocity), direction)
+	anim_suffix = direction_suffix_str(direction)
 
 	# TODO: clean this up
 	var key_pressed = Input.is_action_pressed("up") or Input.is_action_pressed("down") or Input.is_action_pressed("left") or Input.is_action_pressed("right")
