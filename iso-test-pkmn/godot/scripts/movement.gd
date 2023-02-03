@@ -73,16 +73,15 @@ func _physics_process(delta):
 	
 	if state == PlayerState.STAND:
 		velocity = Vector2(0, 0)
+		
+		# use elif here to explicitly disallow diagonal movement
 		if Input.is_action_pressed("up"):
 			velocity += Vector2(0, -1)
-		
-		if Input.is_action_pressed("left"):
+		elif Input.is_action_pressed("left"):
 			velocity += Vector2(-1, 0)
-			
-		if Input.is_action_pressed("right"):
+		elif Input.is_action_pressed("right"):
 			velocity += Vector2(1, 0)
-			
-		if Input.is_action_pressed("down"):
+		elif Input.is_action_pressed("down"):
 			velocity += Vector2(0, 1)
 		
 		if velocity != Vector2():
@@ -99,12 +98,19 @@ func _physics_process(delta):
 	var dest_position = tilemap.map_to_world(destination) + $player_sprite.offset
 	var remaining_length = dest_position - global_position
 	
+	# if the destination tile is occupied, abort the move
+	var against_wall = false
+	if test_move(transform, remaining_length):
+		destination = tilemap.world_to_map(global_position)
+		remaining_length = Vector2(0, 0)
+		against_wall = true
+	
 	if remaining_length.length() <= motion.length():
 		motion = remaining_length
 		anim = "stand"
 		state = PlayerState.STAND
 	
-	move_and_collide(motion) # TODO: handle collision
+	var _collision_info = move_and_collide(motion)
 	
 	vector_to_direction(velocity)
 	match (direction):
@@ -125,6 +131,14 @@ func _physics_process(delta):
 		Direction.SOUTH_WEST:
 			anim_suffix = "sw"
 
+	# TODO: clean this up
+	var key_pressed = Input.is_action_pressed("up") or Input.is_action_pressed("down") or Input.is_action_pressed("left") or Input.is_action_pressed("right")
+
 	if prev_velocity != velocity:
 		$AnimationPlayer.play(anim + "-" + anim_suffix);
 		prev_velocity = velocity
+	elif key_pressed and against_wall:
+		# we are collided with something but the player is holding down the directional key for some reason
+		# TODO: this conditional can be more accurate than it is now
+		$AnimationPlayer.play("walk-" + anim_suffix, -1, 0.5)
+		
