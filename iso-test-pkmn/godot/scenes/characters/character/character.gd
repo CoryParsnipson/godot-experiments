@@ -5,6 +5,9 @@ enum CharacterState { STAND, WALK, TURN } # TODO: should this go somewhere else?
 # -----------------------------------------------------------------------------
 # customizable character settings
 # -----------------------------------------------------------------------------
+## enable/disable walking diagonally (false means only allow 4 cardinal dir)
+export (bool) var allow_diagonal = false
+
 ## determines how fast the character will walk
 export (int) var walk_speed = 50
 
