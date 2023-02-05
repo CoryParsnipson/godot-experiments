@@ -3,11 +3,13 @@ extends Node2D
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _kinematic_body = get_node(_kinematic_body)
 export (NodePath) onready var _animations = get_node(_animations)
+export (NodePath) onready var _turn_debounce_timer = get_node(_turn_debounce_timer)
 
 onready var _tilemap = lib_tilemap.get_nearest_tilemap(owner)
 
 var _movement_vector = Vector2(0, 0)
 var _destination = Vector2(0, 0)
+var _is_turning = false
 
 
 ## Begin a move for this character to a map tile specified by movement_vector.
@@ -113,7 +115,24 @@ func make_anim_string(character_state, direction):
 	return state_string + "-" + lib_movement.direction_suffix_str(direction)
 
 
+## Handle movement events when turn_debounce_timer ends
+##
+## When the timer expires, the movement script needs to poll input again to 
+## determine if the user, who has just pressed a key that causes the player to
+## change direction is still holding it down. If not, then this was just a turn
+## (no tile movement involved). Else, then we need to immediately transition
+## into walking state. Conveniently, if we just transition to STAND state, the
+## state machine polls for input and sets everything up for us. (Just to
+## clarify this behavior in case it is confusing later...)
+func _on_turn_debounce_timeout():
+	_is_turning = false
+	_state.movement_state = _state.CharacterState.STAND
+	
+
 func _ready():
+	# initialize some stuff
+	_turn_debounce_timer.wait_time = _state.turn_debounce_duration
+	
 	# on load, align this thing to the tilemap
 	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 	
@@ -129,6 +148,7 @@ func _physics_process(delta):
 	if _state.movement_state == _state.CharacterState.STAND:
 		# player is standing and not pressing keys, do nothing
 		if input_vector == Vector2(0, 0):
+			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
 			return
 			
 		# player is standing and key is pressed in new direction
@@ -175,9 +195,13 @@ func _physics_process(delta):
 				)
 			
 	elif _state.movement_state == _state.CharacterState.TURN:
-		# TODO: implement turning
+		if _is_turning:
+			return
+			
+		_is_turning = true
 		set_direction(new_direction)
-		_state.movement_state = _state.CharacterState.STAND
+		_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
+		_turn_debounce_timer.start() # transitions to STAND state in _on_turn_debounce_timeout()
 
 	else:
 		print("[WARNING] (character._physics_process) character is in an invalid state")
