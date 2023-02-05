@@ -11,12 +11,12 @@ config_version=4
 [application]
 
 config/name="iso-pkmn"
-run/main_scene="res://main.tscn"
+run/main_scene="res://scenes/main/main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Singleton="*res://scripts/singleton.gd"
+Singleton="*res://scenes/main/singleton.gd"
 lib_isometric="*res://global/scripts/lib-isometric.gd"
 lib_tilemap="*res://global/scripts/lib-tilemap.gd"
 lib_movement="*res://global/scripts/lib-movement.gd"

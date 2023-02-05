@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scenes/player-house-floor-2.tscn" type="PackedScene" id=1]
-[ext_resource path="res://shaders/smooth_camera.gdshader" type="Shader" id=2]
-[ext_resource path="res://scripts/game.gd" type="Script" id=3]
+[ext_resource path="res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/main/smooth_camera.gdshader" type="Shader" id=2]
+[ext_resource path="res://scenes/main/game.gd" type="Script" id=3]
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 2 )
