@@ -1,0 +1,117 @@
+extends Node
+
+## Explicit definition for directions. Used for character movement.
+enum Direction {
+	NORTH,
+	NORTH_WEST,
+	WEST,
+	SOUTH_WEST,
+	SOUTH,
+	SOUTH_EAST,
+	EAST,
+	NORTH_EAST
+}
+
+
+## suffix/abbreviation for direction value. Useful to convert to string.
+## It is important that the order of these values matches that of those in
+## the Direction enum.
+enum DirectionSuffix {
+	N,
+	NW,
+	W,
+	SW,
+	S,
+	SE,
+	E,
+	NE
+}
+
+
+## specify how to interpret keystrokes
+##
+## UP_IS_NORTHWEST -> pressing "up" will move to the upper left tile
+## UP_IS_NORTHEAST -> pressing "up" will move to the upper right tile
+## UP_IS_NORTH -> to move northeast requires you to press both "up" and "right"
+##   keys at the same time and similarly for the other 4 cardinal directions.
+##   Pressing one direction will make you move diagonally (or do nothing if
+##   diagonal movement is disabled)
+enum MovementStrategy {
+	UP_IS_NORTHWEST,
+	UP_IS_NORTHEAST,
+	UP_IS_NORTH
+}
+
+
+## convert DirectionSuffix enum value to string
+func direction_suffix_str(d):
+	return str(DirectionSuffix.keys()[int(d)]).to_lower()
+
+
+## Convert Direction enum value to string
+func direction_to_string(d):
+	return Direction.keys()[d]
+
+
+## Given a vector, find the angle and convert to Direction enum value. The
+## default_dir value will be returned if the vector is invalid. An invalid
+## vector is one that is zero length or has an angle that is not perfectly
+## aligned to an 8 directional isometric axis.
+## 
+## vector -> vector to convert to Direction
+## default_dir -> default value to use if provided vector is zero length
+func vector_to_direction(vector: Vector2, default_dir = Direction.SOUTH_WEST):
+	if vector.length() == 0:
+		return default_dir
+		
+	var dir = default_dir
+	match (round(fposmod(rad2deg(vector.angle()), 360)) as int):
+		0:
+			dir = Direction.EAST
+		27:
+			dir = Direction.SOUTH_EAST
+		90:
+			dir = Direction.SOUTH
+		153:
+			dir = Direction.SOUTH_WEST
+		180:
+			dir = Direction.WEST
+		207:
+			dir = Direction.NORTH_WEST
+		270:
+			dir = Direction.NORTH
+		333:
+			dir = Direction.NORTH_EAST
+		_:
+			print("[WARNING] (lib_movement.vector_to_direction) Vector is not predefined direction.")
+	
+	return dir
+
+
+## Poll input and return a vector depending on which keys are pressed
+func get_input(movement_strategy, allow_diagonal: bool = false):
+	var up_pressed = Input.is_action_pressed("up")
+	var left_pressed = Input.is_action_pressed("left")
+	var right_pressed = Input.is_action_pressed("right")
+	var down_pressed = Input.is_action_pressed("down")
+	
+	var movement_vector = Vector2(0, 0)
+	
+	match (movement_strategy):
+		MovementStrategy.UP_IS_NORTHWEST:
+			if up_pressed:
+				movement_vector += Vector2(-1, 0)
+			elif down_pressed:
+				movement_vector += Vector2(1, 0)
+				
+			if movement_vector == Vector2(0, 0) or allow_diagonal:
+				if left_pressed:
+					movement_vector += Vector2(0, 1)
+				elif right_pressed:
+					movement_vector += Vector2(0, -1)
+		MovementStrategy.UP_IS_NORTHEAST:
+			pass
+		MovementStrategy.UP_IS_NORTH:
+			pass
+		
+	return movement_vector

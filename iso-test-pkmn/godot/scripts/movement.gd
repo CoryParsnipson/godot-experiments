@@ -63,7 +63,7 @@ func get_nearest_tilemap():
 
 func snap_to_tilemap(map, position = global_position):
 	if not map:
-		print("WARNING: align_to_tilemap provided invalid map")
+		print("[WARNING] (snap_to_tilemap: align_to_tilemap provided invalid map")
 		return
 
 	var tile_pos = map.world_to_map(position)

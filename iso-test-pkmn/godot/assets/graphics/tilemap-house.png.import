@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sprites-people.png-f4e796442a0da787f9b33dc3413fd8dd.stex"
+path="res://.import/tilemap-house.png-57530da9cac4dd31f44b9c663130d46f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites-people.png"
-dest_files=[ "res://.import/sprites-people.png-f4e796442a0da787f9b33dc3413fd8dd.stex" ]
+source_file="res://assets/graphics/tilemap-house.png"
+dest_files=[ "res://.import/tilemap-house.png-57530da9cac4dd31f44b9c663130d46f.stex" ]
 
 [params]
 

@@ -25,3 +25,5 @@ handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="map" parent="ViewportContainer/Viewport" instance=ExtResource( 1 )]
+
+[node name="debug" type="Node2D" parent="."]
