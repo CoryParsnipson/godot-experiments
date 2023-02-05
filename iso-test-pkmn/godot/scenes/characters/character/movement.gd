@@ -104,34 +104,50 @@ func _ready():
 
 
 func _physics_process(delta):
+	# poll user input and decide if we need to react to anything
+	var input_vector = lib_movement.get_input(_state.movement_strategy)
+	var new_direction = get_new_direction(input_vector)
+	
 	if _state.movement_state == _state.CharacterState.STAND:
-		var movement_vector = lib_movement.get_input(_state.movement_strategy)
-		if movement_vector != Vector2(0, 0):
-			set_destination(_tilemap, movement_vector)
-			set_direction(get_new_direction(movement_vector))
-			_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
-			_state.movement_state = _state.CharacterState.WALK
+		# player is standing and not pressing keys, do nothing
+		if input_vector == Vector2(0, 0):
+			return
 			
+		# player is standing and key is pressed in new direction
+		if new_direction != get_direction():
+			_state.movement_state = _state.CharacterState.TURN
+			return
+		
+		# key is pressed in same direction we are currently facing
+		set_destination(_tilemap, input_vector)
+		_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
+		_state.movement_state = _state.CharacterState.WALK
+
 	elif _state.movement_state == _state.CharacterState.WALK:
+		# execute movement, ignore user input unless the movement finishes
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
-		if move_finished:
-			# do not go back to standing if keys are pressed
-			var movement_vector = lib_movement.get_input(_state.movement_strategy)
-			if movement_vector != Vector2(0, 0):
-				var new_direction = get_new_direction(movement_vector)
-				if new_direction != get_direction():
-					# TODO: this needs to transition to turn state if direction changes
-					set_direction(new_direction)
-					_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
-				
-				set_destination(_tilemap, movement_vector)
-				set_direction(get_new_direction(movement_vector))
-			else:
-				set_destination(_tilemap, Vector2(0, 0))
-				_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
-				_state.movement_state = _state.CharacterState.STAND
+		if not move_finished:
+			return
+			
+		# move is done and no keys pressed, so go back to standing	
+		if input_vector == Vector2(0, 0):
+			set_destination(_tilemap, Vector2(0, 0))
+			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
+			_state.movement_state = _state.CharacterState.STAND
+			return
+			
+		# keys are pressed and there is a direction change, go to turn state
+		if new_direction != get_direction():
+			_state.movement_state = _state.CharacterState.TURN
+			return
+			
+		# keys are pressed, but no direction change. Continue walking
+		set_destination(_tilemap, input_vector)
 			
 	elif _state.movement_state == _state.CharacterState.TURN:
-		pass
+		# TODO: implement turning
+		set_direction(new_direction)
+		_state.movement_state = _state.CharacterState.STAND
+
 	else:
 		print("[WARNING] (character._physics_process) character is in an invalid state")
