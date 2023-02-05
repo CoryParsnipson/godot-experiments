@@ -113,6 +113,7 @@ offset = Vector2( -6, 4 )
 
 [node name="player" parent="main/YSort" instance=ExtResource( 2 )]
 position = Vector2( 179, 56 )
+allow_diagonal = false
 
 [node name="Camera2D" type="Camera2D" parent="main/YSort/player"]
 current = true

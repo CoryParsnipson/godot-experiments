@@ -121,6 +121,27 @@ func get_input(movement_strategy, allow_diagonal: bool = false):
 				elif right_pressed:
 					movement_vector += Vector2(1, 0)
 		MovementStrategy.UP_IS_NORTH:
-			pass
+			var button_mask = 0
+			button_mask |= 0x1 if up_pressed else 0x0
+			button_mask |= 0x2 if left_pressed else 0x0
+			button_mask |= 0x4 if right_pressed else 0x0
+			button_mask |= 0x8 if down_pressed else 0x0
+			
+			if button_mask == 0x5: # up and right pressed (go northeast)
+				movement_vector = Vector2(0, -1)
+			elif button_mask == 0x3: # up and left pressed (go northwest)
+				movement_vector = Vector2(-1, 0)
+			elif button_mask == 0xC: # down and right pressed (go southeast)
+				movement_vector = Vector2(1, 0)
+			elif button_mask == 0xA: # down and left pressed (go southwest)
+				movement_vector = Vector2(0, 1)
+			elif allow_diagonal and button_mask == 0x1: # up is pressed
+				movement_vector = Vector2(-1, -1)
+			elif allow_diagonal and button_mask == 0x2: # left is pressed
+				movement_vector = Vector2(-1, 1)
+			elif allow_diagonal and button_mask == 0x4: # right is pressed
+				movement_vector = Vector2(1, -1)
+			elif allow_diagonal and button_mask == 0x8:  # down is pressed
+				movement_vector = Vector2(1, 1)
 		
 	return movement_vector
