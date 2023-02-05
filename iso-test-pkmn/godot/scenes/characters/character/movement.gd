@@ -84,6 +84,24 @@ func move_to_tile(map, movement_vector, dest, delta):
 	return move_finished
 
 
+## Check if character is next to a wall tile on the "movement_vector" side
+## 
+## Given a destination, do a test move to see if the move would result in
+## a collision. If it will, then we are "against a wall". This is meant to be
+## used in conjunction with get_input() to determine if the player is holding
+## down a button to have the character walk into a wall.
+##
+## map -> tilemap with which to base movement calculations
+## dest -> intended movement area to test for collisions against
+func is_against_wall(map, dest):
+	if not map:
+		print("[WARNING] (movement.is_against_wall) invalid tilemap node provided")
+		return false
+		
+	var remaining_length = map.map_to_world(dest) - _kinematic_body.global_position
+	return _kinematic_body.test_move(_kinematic_body.transform, remaining_length)
+
+
 ## Generate the name of an animation based on character state and direction
 ## state values.
 ##
@@ -143,6 +161,18 @@ func _physics_process(delta):
 			
 		# keys are pressed, but no direction change. Continue walking
 		set_destination(_tilemap, input_vector)
+		
+		# NOTE: if the character is following another character one tile behind
+		# but both are moving at the same speed, this function will return true,
+		# incorrectly. Not sure how to fix...
+		if is_against_wall(_tilemap, _destination):
+			# play walk animation at half speed
+			_animations.play(
+				make_anim_string(_state.CharacterState.WALK,
+				get_direction()),
+				-1,
+				_state.hitting_wall_animation_speed
+				)
 			
 	elif _state.movement_state == _state.CharacterState.TURN:
 		# TODO: implement turning
