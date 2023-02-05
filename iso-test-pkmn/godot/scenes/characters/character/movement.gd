@@ -141,13 +141,12 @@ func _ready():
 
 
 func _physics_process(delta):
-	# poll user input and decide if we need to react to anything
-	var input_vector = lib_movement.get_input(_state.movement_strategy)
-	var new_direction = get_new_direction(input_vector)
+	# check movement vector and decide if we need to react to anything
+	var new_direction = get_new_direction(_state.movement_vector)
 	
 	if _state.movement_state == _state.CharacterState.STAND:
 		# player is standing and not pressing keys, do nothing
-		if input_vector == Vector2(0, 0):
+		if _state.movement_vector == Vector2(0, 0):
 			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
 			return
 			
@@ -157,7 +156,7 @@ func _physics_process(delta):
 			return
 		
 		# key is pressed in same direction we are currently facing
-		set_destination(_tilemap, input_vector)
+		set_destination(_tilemap, _state.movement_vector)
 		_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
 		_state.movement_state = _state.CharacterState.WALK
 
@@ -168,7 +167,7 @@ func _physics_process(delta):
 			return
 			
 		# move is done and no keys pressed, so go back to standing	
-		if input_vector == Vector2(0, 0):
+		if _state.movement_vector == Vector2(0, 0):
 			set_destination(_tilemap, Vector2(0, 0))
 			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
 			_state.movement_state = _state.CharacterState.STAND
@@ -180,7 +179,7 @@ func _physics_process(delta):
 			return
 			
 		# keys are pressed, but no direction change. Continue walking
-		set_destination(_tilemap, input_vector)
+		set_destination(_tilemap, _state.movement_vector)
 		
 		# NOTE: if the character is following another character one tile behind
 		# but both are moving at the same speed, this function will return true,
