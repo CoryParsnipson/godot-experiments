@@ -110,7 +110,16 @@ func get_input(movement_strategy, allow_diagonal: bool = false):
 				elif right_pressed:
 					movement_vector += Vector2(0, -1)
 		MovementStrategy.UP_IS_NORTHEAST:
-			pass
+			if up_pressed:
+				movement_vector += Vector2(0, -1)
+			elif down_pressed:
+				movement_vector += Vector2(0, 1)
+			
+			if movement_vector == Vector2(0, 0) or allow_diagonal:
+				if left_pressed:
+					movement_vector += Vector2(-1, 0)
+				elif right_pressed:
+					movement_vector += Vector2(1, 0)
 		MovementStrategy.UP_IS_NORTH:
 			pass
 		

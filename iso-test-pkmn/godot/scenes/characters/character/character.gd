@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-enum CharacterState { STAND, WALK, TURN }
+enum CharacterState { STAND, WALK, TURN } # TODO: should this go somewhere else?
 
 ## determines how fast the character will walk
 export (int) var walk_speed = 50
