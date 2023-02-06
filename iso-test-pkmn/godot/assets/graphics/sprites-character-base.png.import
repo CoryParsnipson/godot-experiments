@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sprites-people.png-101a1cd23ec490957585efdada3bac1c.stex"
+path="res://.import/sprites-character-base.png-12331ae0e3b40096348005ef86dbd28a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/graphics/sprites-people.png"
-dest_files=[ "res://.import/sprites-people.png-101a1cd23ec490957585efdada3bac1c.stex" ]
+source_file="res://assets/graphics/sprites-character-base.png"
+dest_files=[ "res://.import/sprites-character-base.png-12331ae0e3b40096348005ef86dbd28a.stex" ]
 
 [params]
 
