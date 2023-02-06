@@ -17,11 +17,11 @@
             }
         },
         "players-house.tmx": {
-            "scale": 2,
+            "scale": 1,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 470.25,
-                "y": 237
+                "x": 438.5,
+                "y": 226
             }
         },
         "sprites-people.tsx": {

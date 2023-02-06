@@ -1,121 +1,121 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://assets/graphics/sprites-indoors.png" type="Texture" id=1]
-[ext_resource path="res://scenes/characters/character/player/red/red.tscn" type="PackedScene" id=2]
-[ext_resource path="res://resources/tileset-house.tres" type="TileSet" id=3]
-[ext_resource path="res://scenes/main/smooth_camera.gd" type="Script" id=5]
-[ext_resource path="res://assets/graphics/tilemap-house.png" type="Texture" id=6]
+[ext_resource path="res://scenes/characters/character/player/red/red.tscn" type="PackedScene" id=1]
+[ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=2]
+[ext_resource path="res://scenes/main/smooth_camera.gd" type="Script" id=3]
+[ext_resource path="res://assets/graphics/sprites-house-interior.png" type="Texture" id=4]
 
 [sub_resource type="AtlasTexture" id=1]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 64, 64 )
+atlas = ExtResource( 4 )
+region = Rect2( 0, 256, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 64, 64, 64 )
+atlas = ExtResource( 4 )
+region = Rect2( 0, 160, 32, 32 )
 
 [sub_resource type="AtlasTexture" id=3]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 192, 32, 32 )
+atlas = ExtResource( 4 )
+region = Rect2( 224, 320, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 1 )
-region = Rect2( 64, 0, 64, 64 )
+atlas = ExtResource( 4 )
+region = Rect2( 288, 160, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=17]
-atlas = ExtResource( 6 )
-region = Rect2( 96, 192, 32, 32 )
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 320, 64, 64 )
 
-[sub_resource type="AtlasTexture" id=18]
-atlas = ExtResource( 6 )
-region = Rect2( 96, 128, 32, 32 )
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 512, 96, 64 )
 
-[sub_resource type="AtlasTexture" id=16]
-atlas = ExtResource( 6 )
-region = Rect2( 64, 128, 32, 32 )
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 4 )
+region = Rect2( 64, 160, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=19]
-atlas = ExtResource( 1 )
-region = Rect2( 64, 64, 64, 64 )
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 4 )
+region = Rect2( 32, 160, 32, 32 )
 
-[node name="map" type="Node2D"]
+[node name="player-house-floor-2" type="Node2D"]
 
-[node name="subfloor" type="TileMap" parent="."]
+[node name="map" type="Node2D" parent="."]
+
+[node name="ground" type="TileMap" parent="map"]
 mode = 1
-tile_set = ExtResource( 3 )
+tile_set = ExtResource( 2 )
 cell_size = Vector2( 32, 16 )
 format = 1
-tile_data = PoolIntArray( -262126, 0, 131074, -196590, 0, 65541, -131054, 0, 65541, -65518, 0, 65541, 18, 0, 65541, 65554, 0, 65541, 131090, 0, 65541, 196615, 0, 131074, 196616, 0, 65541, 196617, 0, 65541, 196618, 0, 65541, 196619, 0, 65541, 196620, 0, 65541, 196621, 0, 65541, 196622, 0, 65541, 196623, 0, 65541, 196624, 0, 65541, 196625, 0, 65541, 196626, 0, 65541 )
+tile_data = PoolIntArray( -196602, 0, 9, -131066, 0, 6, -65530, 0, 6, 6, 0, 6, 65542, 0, 6, 131078, 0, 6, 262139, 0, 1, 262143, 0, 1, 196608, 0, 1, 196609, 0, 1, 196610, 0, 1, 196611, 0, 1, 196612, 0, 1, 196613, 0, 1, 196614, 0, 6, 327675, 0, 9, 327676, 0, 6, 327677, 0, 6, 327678, 0, 6, 327679, 0, 6, 262144, 0, 6, 262145, 0, 6, 262146, 0, 6, 262147, 0, 6, 262148, 0, 6, 262149, 0, 6, 262150, 0, 6 )
 
-[node name="floor" type="TileMap" parent="."]
+[node name="floor" type="TileMap" parent="map"]
 mode = 1
-tile_set = ExtResource( 3 )
+tile_set = ExtResource( 2 )
 cell_size = Vector2( 32, 16 )
 format = 1
-tile_data = PoolIntArray( -262137, 0, 65539, -262136, 0, 65537, -262135, 0, 65537, -262134, 0, 65537, -262133, 0, 65537, -262132, 0, 65537, -262131, 0, 65537, -262130, 0, 65537, -262129, 0, 65537, -262128, 0, 65537, -262127, 0, 65537, -196601, 0, 65538, -196600, 0, 65536, -196599, 0, 65536, -196598, 0, 65536, -196597, 0, 65536, -196596, 0, 65536, -196595, 0, 65536, -196594, 0, 65536, -196593, 0, 65536, -196592, 0, 65536, -196591, 0, 65536, -131065, 0, 65538, -131064, 0, 65536, -131063, 0, 65536, -131062, 0, 65536, -131061, 0, 65536, -131060, 0, 65536, -131059, 0, 65536, -131058, 0, 65536, -131057, 0, 65536, -131056, 0, 65536, -131055, 0, 65536, -65529, 0, 65538, -65528, 0, 65536, -65527, 0, 65536, -65526, 0, 65536, -65525, 0, 65536, -65524, 0, 65536, -65523, 0, 65536, -65522, 0, 65536, -65521, 0, 65536, -65520, 0, 65536, -65519, 0, 65536, 7, 0, 65538, 8, 0, 65536, 9, 0, 65536, 10, 0, 65536, 11, 0, 65536, 12, 0, 65536, 13, 0, 65536, 14, 0, 65536, 15, 0, 65536, 16, 0, 65536, 17, 0, 65536, 65543, 0, 65538, 65544, 0, 65536, 65545, 0, 65536, 65546, 0, 65536, 65547, 0, 65536, 65548, 0, 65536, 65549, 0, 65536, 65550, 0, 65536, 65551, 0, 65536, 65552, 0, 65536, 65553, 0, 65536, 131079, 0, 65538, 131080, 0, 65536, 131081, 0, 65536, 131082, 0, 65536, 131083, 0, 65536, 131084, 0, 65536, 131085, 0, 65536, 131086, 0, 65536, 131087, 0, 65536, 131088, 0, 65536, 131089, 0, 65536 )
+tile_data = PoolIntArray( -131077, 0, 4, -131076, 0, 2, -131075, 0, 2, -131074, 0, 2, -131073, 0, 2, -196608, 0, 2, -196607, 0, 2, -196606, 0, 2, -196605, 0, 2, -196604, 0, 2, -196603, 0, 2, -65541, 0, 3, -65540, 0, 1, -65539, 0, 1, -65538, 0, 1, -65537, 0, 1, -131072, 0, 1, -131071, 0, 1, -131070, 0, 1, -131069, 0, 1, -131068, 0, 1, -131067, 0, 1, -5, 0, 3, -4, 0, 1, -3, 0, 1, -2, 0, 1, -1, 0, 1, -65536, 0, 1, -65535, 0, 1, -65534, 0, 1, -65533, 0, 1, -65532, 0, 1, -65531, 0, 1, 65531, 0, 3, 65532, 0, 1, 65533, 0, 1, 65534, 0, 1, 65535, 0, 1, 0, 0, 1, 1, 0, 1, 2, 0, 1, 3, 0, 1, 4, 0, 1, 5, 0, 1, 131067, 0, 3, 131068, 0, 1, 131069, 0, 1, 131070, 0, 1, 131071, 0, 1, 65536, 0, 1, 65537, 0, 1, 65538, 0, 1, 65539, 0, 1, 65540, 0, 1, 65541, 0, 1, 196603, 0, 3, 196604, 0, 1, 196605, 0, 1, 196606, 0, 1, 196607, 0, 1, 131072, 0, 1, 131073, 0, 1, 131074, 0, 1, 131075, 0, 1, 131076, 0, 1, 131077, 0, 1, 262139, 0, 3, 262140, 0, 1, 262141, 0, 1, 262142, 0, 1, 262143, 0, 1, 196608, 0, 1, 196609, 0, 1, 196610, 0, 1, 196611, 0, 1, 196612, 0, 1, 196613, 0, 1 )
 
-[node name="main" type="TileMap" parent="."]
+[node name="main" type="TileMap" parent="map"]
 mode = 1
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 32, 16 )
-cell_tile_origin = 1
-format = 1
-tile_data = PoolIntArray( -327674, 0, 131072, -327673, 0, 131072, -327672, 0, 131072, -327671, 0, 131072, -327670, 0, 131072, -327669, 0, 131072, -327668, 0, 131072, -327667, 0, 131072, -327666, 0, 131072, -327665, 0, 131072, -327664, 0, 131072, -327663, 0, 131072, -262138, 0, 131072, -262128, 0, 262145, -196602, 0, 131072, -196592, 0, 262144, -131066, 0, 131072, -131062, 0, 196608, -131061, 0, 196609, -131060, 0, 196609, -131059, 0, 196609, -131058, 0, 196616, -65530, 0, 131072, -65526, 0, 196610, -65525, 0, 196611, -65524, 0, 196611, -65523, 0, 196611, -65522, 0, 196613, 6, 0, 131072, 10, 0, 196610, 11, 0, 196611, 12, 0, 196611, 13, 0, 196611, 14, 0, 196613, 65542, 0, 131072, 65546, 0, 196614, 65547, 0, 196612, 65548, 0, 196612, 65549, 0, 196612, 65550, 0, 196615, 131078, 0, 131072 )
-
-[node name="upper_wall" type="TileMap" parent="main"]
-mode = 1
-tile_set = ExtResource( 3 )
+tile_set = ExtResource( 2 )
 cell_size = Vector2( 32, 16 )
 format = 1
-tile_data = PoolIntArray( -393211, 0, 131073, -393210, 0, 131073, -393209, 0, 131073, -393208, 0, 131073, -393207, 0, 131073, -393206, 0, 131073, -393205, 0, 131073, -393204, 0, 131073, -393203, 0, 131073, -393202, 0, 131073, -393201, 0, 131073, -393200, 0, 131073, -327675, 0, 131073, -262139, 0, 131073, -196603, 0, 131073, -131067, 0, 131073, -65531, 0, 131073, 5, 0, 131073, 65541, 0, 131073 )
+tile_data = PoolIntArray( -196614, 0, 7, -196613, 0, 7, -196612, 0, 7, -196611, 0, 7, -196610, 0, 7, -196609, 0, 7, -262144, 0, 7, -262143, 0, 7, -262142, 0, 7, -262141, 0, 7, -262140, 0, 7, -262139, 0, 7, -131078, 0, 7, -196604, 0, 131073, -65542, 0, 7, -131068, 0, 131072, -6, 0, 7, -2, 0, 65536, -1, 0, 65537, -65536, 0, 65537, -65535, 0, 65537, -65534, 0, 65544, 65530, 0, 7, 65534, 0, 65538, 65535, 0, 65539, 0, 0, 65539, 1, 0, 65539, 2, 0, 65541, 131066, 0, 7, 131070, 0, 65538, 131071, 0, 65539, 65536, 0, 65539, 65537, 0, 65539, 65538, 0, 65541, 196602, 0, 7, 196606, 0, 65542, 196607, 0, 65540, 131072, 0, 65540, 131073, 0, 65540, 131074, 0, 65543, 262138, 0, 7 )
 
-[node name="YSort" type="YSort" parent="main"]
+[node name="upper wall" type="TileMap" parent="map/main"]
+mode = 1
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -262151, 0, 8, -262150, 0, 8, -262149, 0, 8, -262148, 0, 8, -262147, 0, 8, -262146, 0, 8, -262145, 0, 8, -327680, 0, 8, -327679, 0, 8, -327678, 0, 8, -327677, 0, 8, -327676, 0, 8, -196615, 0, 8, -131079, 0, 8, -65543, 0, 8, -7, 0, 8, 65529, 0, 8, 131065, 0, 8, 196601, 0, 8 )
 
-[node name="downstairs" type="Sprite" parent="main/YSort"]
-position = Vector2( 288, 88 )
-texture = SubResource( 1 )
+[node name="YSort" type="YSort" parent="map/main"]
 
-[node name="computer" type="Sprite" parent="main/YSort"]
-position = Vector2( 176, 32 )
-texture = SubResource( 2 )
+[node name="player" parent="map/main/YSort" instance=ExtResource( 1 )]
+position = Vector2( 32, 32 )
 
-[node name="cabinet" type="Sprite" parent="main/YSort"]
-position = Vector2( 208, 40 )
-texture = SubResource( 3 )
-
-[node name="bookshelf" type="Sprite" parent="main/YSort"]
-position = Vector2( 232, 48 )
-texture = SubResource( 4 )
-
-[node name="tv" type="Sprite" parent="main/YSort"]
-position = Vector2( 208, 88 )
-texture = SubResource( 17 )
-
-[node name="nes" type="Sprite" parent="main/YSort"]
-position = Vector2( 192, 96 )
-texture = SubResource( 18 )
-
-[node name="sign" type="Sprite" parent="main/YSort"]
-position = Vector2( 352, 96 )
-texture = SubResource( 16 )
-
-[node name="bed" type="Sprite" parent="main/YSort"]
-position = Vector2( 136, 60 )
-texture = SubResource( 19 )
-offset = Vector2( -6, 4 )
-
-[node name="player" parent="main/YSort" instance=ExtResource( 2 )]
-position = Vector2( 208, 56 )
-
-[node name="Camera2D" type="Camera2D" parent="main/YSort/player"]
+[node name="Camera2D" type="Camera2D" parent="map/main/YSort/player"]
 current = true
-script = ExtResource( 5 )
+script = ExtResource( 3 )
 player = NodePath("..")
 
-[node name="collision" type="TileMap" parent="."]
+[node name="downstairs" type="Sprite" parent="map/main/YSort"]
+position = Vector2( 80, -8 )
+texture = SubResource( 1 )
+
+[node name="sign" type="Sprite" parent="map/main/YSort"]
+position = Vector2( 144, 8 )
+texture = SubResource( 2 )
+
+[node name="bookshelf" type="Sprite" parent="map/main/YSort"]
+position = Vector2( 16, -40 )
+texture = SubResource( 3 )
+
+[node name="drawers" type="Sprite" parent="map/main/YSort"]
+position = Vector2( 0, -48 )
+texture = SubResource( 4 )
+
+[node name="desk" type="Sprite" parent="map/main/YSort"]
+position = Vector2( -32, -64 )
+texture = SubResource( 5 )
+
+[node name="bed" type="Sprite" parent="map/main/YSort"]
+position = Vector2( -72, -28 )
+texture = SubResource( 6 )
+offset = Vector2( 8, -12 )
+region_rect = Rect2( 0, 0, 96, 64 )
+
+[node name="tv" type="Sprite" parent="map/main/YSort"]
+texture = SubResource( 7 )
+
+[node name="snes" type="Sprite" parent="map/main/YSort"]
+position = Vector2( -16, 8 )
+texture = SubResource( 8 )
+
+[node name="collision" type="TileMap" parent="map"]
 visible = false
 mode = 1
-tile_set = ExtResource( 3 )
+tile_set = ExtResource( 2 )
 cell_size = Vector2( 32, 16 )
 format = 1
-tile_data = PoolIntArray( -327674, 0, 4, -327673, 0, 4, -327672, 0, 4, -327671, 0, 4, -327670, 0, 4, -327669, 0, 4, -327668, 0, 4, -327667, 0, 4, -327666, 0, 4, -327665, 0, 4, -327664, 0, 4, -327663, 0, 4, -327662, 0, 4, -262138, 0, 4, -262137, 0, 4, -262136, 0, 4, -262135, 0, 4, -262134, 0, 4, -262133, 0, 4, -262130, 0, 4, -262126, 0, 4, -196602, 0, 4, -196594, 0, 4, -196593, 0, 4, -196590, 0, 4, -131066, 0, 4, -131054, 0, 4, -65530, 0, 4, -65528, 0, 4, -65524, 0, 4, -65518, 0, 4, 6, 0, 4, 8, 0, 4, 12, 0, 4, 18, 0, 4, 65542, 0, 4, 65554, 0, 4, 131078, 0, 4, 131090, 0, 4, 196614, 0, 4, 196615, 0, 4, 196616, 0, 4, 196617, 0, 4, 196618, 0, 4, 196619, 0, 4, 196620, 0, 4, 196621, 0, 4, 196622, 0, 4, 196623, 0, 4, 196624, 0, 4, 196625, 0, 4, 196626, 0, 4 )
+tile_data = PoolIntArray( -196614, 0, 0, -196613, 0, 0, -196612, 0, 0, -196611, 0, 0, -196610, 0, 0, -196609, 0, 0, -262144, 0, 0, -262143, 0, 0, -262142, 0, 0, -262141, 0, 0, -262140, 0, 0, -262139, 0, 0, -131078, 0, 0, -131077, 0, 0, -131076, 0, 0, -131075, 0, 0, -131074, 0, 0, -131073, 0, 0, -196606, 0, 0, -65542, 0, 0, -131070, 0, 0, -131069, 0, 0, -6, 0, 0, 65530, 0, 0, 65532, 0, 0, 0, 0, 0, 131066, 0, 0, 131068, 0, 0, 65536, 0, 0, 196602, 0, 0, 262138, 0, 0 )
