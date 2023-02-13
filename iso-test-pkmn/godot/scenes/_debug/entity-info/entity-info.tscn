@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/_debug/entity-info/entity-info.gd" type="Script" id=1]
+[ext_resource path="res://scenes/_debug/debug.tscn" type="PackedScene" id=2]
+
+[node name="entity-info" instance=ExtResource( 2 )]
+
+[node name="script" type="Node2D" parent="." index="0"]
+script = ExtResource( 1 )
+content = NodePath("../ui-layer/ui-root/default-bg/VBoxContainer")
+
+[node name="default-text" parent="ui-layer/ui-root/default-bg" index="0"]
+visible = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ui-layer/ui-root/default-bg" index="1"]
+margin_left = 4.0
+margin_top = 2.0
+margin_right = 143.0
+margin_bottom = 22.0
