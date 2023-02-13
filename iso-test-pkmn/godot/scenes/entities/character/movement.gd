@@ -26,7 +26,7 @@ func set_destination(map, movement_vector):
 		print("[WARNING] (movement.set_destination) invalid tilemap node provided")
 		return
 			
-	_destination = map.world_to_map(_kinematic_body.global_position) + movement_vector
+	_destination = map.world_to_map(map.to_local(_kinematic_body.global_position)) + movement_vector
 	_movement_vector = movement_vector
 
 
@@ -70,10 +70,10 @@ func move_to_tile(map, movement_vector, dest, delta):
 	var motion = movement_vector.normalized() * _state.walk_speed * delta
 	motion = lib_isometric.cartesian_to_isometric(motion)
 	
-	var remaining_length = map.map_to_world(dest) - _kinematic_body.global_position
+	var remaining_length = map.to_global(map.map_to_world(dest)) - _kinematic_body.global_position
 	
 	# test for collision, abort move if the destination tile is occupied
-	if _kinematic_body.test_move(_kinematic_body.transform, remaining_length): 
+	if _kinematic_body.test_move(_kinematic_body.global_transform, remaining_length): 
 		return true
 	
 	# handle if we need to stop this frame
@@ -99,9 +99,9 @@ func is_against_wall(map, dest):
 	if not map:
 		print("[WARNING] (movement.is_against_wall) invalid tilemap node provided")
 		return false
-		
-	var remaining_length = map.map_to_world(dest) - _kinematic_body.global_position
-	return _kinematic_body.test_move(_kinematic_body.transform, remaining_length)
+	
+	var remaining_length = map.to_global(map.map_to_world(dest)) - _kinematic_body.global_position
+	return _kinematic_body.test_move(_kinematic_body.global_transform, remaining_length)
 
 
 ## Generate the name of an animation based on character state and direction

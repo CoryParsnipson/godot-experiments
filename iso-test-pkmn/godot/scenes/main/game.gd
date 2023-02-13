@@ -7,10 +7,8 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Singleton.viewport_container = $ViewportContainer
-	Singleton.viewport = $ViewportContainer/Viewport
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	Singleton.viewport_container = $"smooth-camera-viewport-container"
+	Singleton.viewport = $"smooth-camera-viewport-container/smooth-camera-viewport"
+	
+	# set game config vars
+	$"smooth-camera-viewport-container/smooth-camera-viewport/pixel-upscale".scale = Singleton.pixel_upscale
