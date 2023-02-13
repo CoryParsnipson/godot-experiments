@@ -1,13 +1,13 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://scenes/_debug/entity-info/entity-info.gd" type="Script" id=1]
 [ext_resource path="res://scenes/_debug/debug.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/_debug/entity-info/debug.gd" type="Script" id=3]
 
 [node name="entity-info" instance=ExtResource( 2 )]
-
-[node name="script" type="Node2D" parent="." index="0"]
-script = ExtResource( 1 )
-content = NodePath("../ui-layer/ui-root/default-bg/VBoxContainer")
+script = ExtResource( 3 )
+content = NodePath("ui-layer/ui-root/default-bg/VBoxContainer")
+key_color = Color( 0.690196, 0.878431, 0.901961, 1 )
+value_color = Color( 1, 1, 1, 1 )
 
 [node name="default-text" parent="ui-layer/ui-root/default-bg" index="0"]
 visible = false

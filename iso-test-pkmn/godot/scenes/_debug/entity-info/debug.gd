@@ -1,19 +1,10 @@
-extends Node2D
+extends "res://scenes/_debug/debug.gd"
 
 export (NodePath) onready var content = get_node(content)
 export (Color) var key_color = Color.powderblue
 export (Color) var value_color = Color.white
 
-var _entity = null
 var _properties = {}
-
-
-func _ready():
-	var _err = get_parent().connect("ready", self, "_on_parent_ready")
-
-
-func _on_parent_ready():
-	_entity = $"..".entity
 
 
 func _decode_hint_string(hint):
@@ -27,11 +18,11 @@ func _decode_hint_string(hint):
 
 
 func _update_entity_info():
-	var properties = _entity.get_property_list()
+	var properties = entity.get_property_list()
 	
 	for property in properties:
 		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
-			var property_value = _entity.get(property.name)
+			var property_value = entity.get(property.name)
 			if property.hint_string:
 				var enum_string = _decode_hint_string(property.hint_string)
 				property_value = enum_string[property_value]
@@ -69,8 +60,5 @@ func _draw_entity_info():
 
 
 func _process(_delta):
-	if !owner.is_enabled():
-		return
-	
 	_update_entity_info()
 	_draw_entity_info()
