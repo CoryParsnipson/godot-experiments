@@ -7,7 +7,7 @@ export var smoothing_factor = 5
 
 
 func is_enabled():
-	return local_enable && Singleton.debug_enable
+	return local_enable and Singleton.debug_enable
 
 
 func hide():
@@ -15,16 +15,32 @@ func hide():
 	$"ui-layer/ui-root".hide()
 	
 
+func show():
+	.show()
+	$"ui-layer/ui-root".show()
+	
+
+func set_position(pos):
+	$"ui-layer/ui-root".rect_position = pos
+
+
+func lerp_to_position(pos, delta):
+	$"ui-layer/ui-root".rect_position = lerp(
+		$"ui-layer/ui-root".rect_position,
+		pos,
+		delta * smoothing_factor
+	)
+
+
 func _ready():
-	$"ui-layer/ui-root".rect_position = entity.get_global_transform_with_canvas().origin
+	set_position(entity.get_global_transform_with_canvas().origin)
 
 
 func _physics_process(delta):
-	if !is_enabled():
+	if not is_enabled() and visible:
 		hide()
 		return
-	
-	var pos = $"ui-layer/ui-root".rect_position
-	var dest = entity.get_global_transform_with_canvas().origin + offset
-	
-	$"ui-layer/ui-root".rect_position = lerp(pos, dest, delta * smoothing_factor)
+	elif is_enabled() and not visible:
+		show()
+		
+	lerp_to_position(entity.get_global_transform_with_canvas().origin + offset, delta)
