@@ -13,6 +13,25 @@ func get_nearest_tilemap(node):
 		
 	return map
 
+
+## given a tilemap and world coordinates, return the tile id coordinates on that
+## tilemap.
+##
+## map -> tilemap to use as reference
+## pos -> world position to convert to tile coordinate
+func world_to_map(map, pos):
+	return map.world_to_map(map.to_local(pos))
+
+
+## given a tilemap and Vector2 pair coordinate of tile id, return the world
+## position of the center of that tile
+##
+## map -> tilemap to use as reference
+## coord -> Vector2 with tile index
+func map_to_world(map, coord):
+	return map.to_global(map.map_to_world(coord))
+
+
 ## given a node, move it to the center of the nearest tilemap cell specified by
 ## position. (If a position is null or not provided, snap to nearest cell)
 ##
@@ -28,7 +47,7 @@ func snap_to_tilemap(node, map, position = null, offset = Vector2(0, 0)):
 	if not position:
 		position = node.global_position
 
-	var tile_pos = map.world_to_map(position)
-	var world_pos = map.map_to_world(tile_pos)
+	var tile_pos = world_to_map(map, position)
+	var world_pos = map_to_world(map, tile_pos)
 	
 	node.global_position = world_pos + offset
