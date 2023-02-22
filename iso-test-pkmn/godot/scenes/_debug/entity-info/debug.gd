@@ -5,6 +5,9 @@ export (Color) var key_color = Color.powderblue
 export (Color) var value_color = Color.white
 export (bool) onready var start_minimized = true
 
+export (Array, String) var suppress_properties = []
+export (Dictionary) var rename_properties = {}
+
 var _properties = {}
 var _is_minimized = false setget _resize_menu
 
@@ -29,6 +32,12 @@ func _update_entity_info():
 				var enum_string = _decode_hint_string(property.hint_string)
 				property_value = enum_string[property_value]
 				
+			if property.name in suppress_properties:
+				continue
+			
+			if property.name in rename_properties and rename_properties[property.name] is String:
+				property.name = rename_properties[property.name]
+			
 			_properties[property.name] = property_value
 
 

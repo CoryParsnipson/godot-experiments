@@ -9,6 +9,10 @@ content = NodePath("ui-layer/ui-root/default-bg/content")
 key_color = Color( 0.690196, 0.878431, 0.901961, 1 )
 value_color = Color( 1, 1, 1, 1 )
 start_minimized = true
+suppress_properties = [ "allow_diagonal", "walk_speed", "turn_debounce_duration", "hitting_wall_animation_speed" ]
+rename_properties = {
+"movement_strategy": "move strat"
+}
 
 [node name="default-text" parent="ui-layer/ui-root/default-bg" index="0"]
 visible = false
