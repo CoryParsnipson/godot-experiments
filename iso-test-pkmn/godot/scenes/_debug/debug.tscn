@@ -15,12 +15,9 @@ margin_bottom = 40.0
 theme = ExtResource( 3 )
 
 [node name="default-bg" type="PanelContainer" parent="ui-layer/ui-root"]
-margin_right = 147.0
-margin_bottom = 24.0
 
 [node name="default-text" type="Label" parent="ui-layer/ui-root/default-bg"]
-margin_top = 2.0
-margin_right = 147.0
-margin_bottom = 22.0
+margin_right = 145.0
+margin_bottom = 20.0
 custom_fonts/font = ExtResource( 2 )
 text = "debug object"
