@@ -3,8 +3,10 @@ extends "res://scenes/_debug/debug.gd"
 export (NodePath) onready var content = get_node(content)
 export (Color) var key_color = Color.powderblue
 export (Color) var value_color = Color.white
+export (bool) onready var start_minimized = true
 
 var _properties = {}
+var _is_minimized = false setget _resize_menu
 
 
 func _decode_hint_string(hint):
@@ -59,6 +61,34 @@ func _draw_entity_info():
 			entry.text = str(_properties[property])
 
 
+func _clear_menu():
+	for child in content.get_children():
+		if not (child is HBoxContainer):
+			continue
+		
+		child.queue_free()
+
+
+func _resize_menu(is_minimized):
+	_is_minimized = is_minimized
+	if _is_minimized:
+		_clear_menu()
+	else:
+		_update_entity_info()
+		_draw_entity_info()
+
+
+func _on_minimize_toggled(button_pressed):
+	_resize_menu(!_is_minimized)
+
+
+func _ready():
+	var btn = content.get_node_or_null("button-minimize")
+	if btn:
+		btn.set_pressed(start_minimized)
+
+
 func _process(_delta):
-	_update_entity_info()
-	_draw_entity_info()
+	if not _is_minimized:
+		_update_entity_info()
+		_draw_entity_info()

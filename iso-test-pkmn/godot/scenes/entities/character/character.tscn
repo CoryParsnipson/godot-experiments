@@ -288,5 +288,6 @@ entity = NodePath("../..")
 [node name="entity-info" parent="debug" instance=ExtResource( 3 )]
 entity = NodePath("../..")
 offset = Vector2( 32, -32 )
+start_minimized = true
 
 [connection signal="timeout" from="turn_debounce_timer" to="scripts/movement" method="_on_turn_debounce_timeout"]
