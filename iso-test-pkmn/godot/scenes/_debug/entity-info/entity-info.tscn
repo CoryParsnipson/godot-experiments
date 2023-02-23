@@ -34,11 +34,11 @@ script = ExtResource( 1 )
 entity_info = NodePath("../../../..")
 
 [node name="button-minimize" type="Button" parent="ui-layer/ui-root/default-bg/content" index="0"]
-margin_right = 34.0
+margin_right = 30.0
 margin_bottom = 26.0
 size_flags_horizontal = 0
 toggle_mode = true
-text = "[x]"
+text = "[-]"
 align = 0
 
 [connection signal="toggled" from="ui-layer/ui-root/default-bg/content/button-minimize" to="." method="_on_minimize_toggled"]

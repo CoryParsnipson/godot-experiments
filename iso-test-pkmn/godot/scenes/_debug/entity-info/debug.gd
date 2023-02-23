@@ -10,6 +10,7 @@ export (Dictionary) var rename_properties = {}
 
 var _properties = {}
 var _is_minimized = false setget _resize_menu
+var _min_btn = null
 
 
 func _decode_hint_string(hint):
@@ -82,9 +83,11 @@ func _resize_menu(is_minimized):
 	_is_minimized = is_minimized
 	if _is_minimized:
 		_clear_menu()
+		_min_btn.text = "[v]"
 	else:
 		_update_entity_info()
 		_draw_entity_info()
+		_min_btn.text = "[-]"
 	update()
 
 
@@ -93,10 +96,9 @@ func _on_minimize_toggled(button_pressed):
 
 
 func _ready():
-	var btn = content.get_node_or_null("button-minimize")
-	if btn:
-		btn.emit_signal("toggled", !start_minimized)
-		btn.set_pressed(!start_minimized)
+	_min_btn = content.get_node_or_null("button-minimize")
+	if _min_btn:
+		_min_btn.set_pressed(start_minimized)
 	
 
 func _process(_delta):

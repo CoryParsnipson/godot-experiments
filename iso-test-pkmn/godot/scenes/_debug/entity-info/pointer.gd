@@ -1,7 +1,8 @@
 extends VBoxContainer
 
 export (NodePath) onready var entity_info = get_node(entity_info)
-export (int) var tip_length = 16
+export (int) var tip_length = 12
+export (int) var tip_width = 15
 
 var _is_minimized = false setget on_resize
 
@@ -40,10 +41,10 @@ func _draw():
 	var tip = (entity_pos - info_pos).normalized() * tip_length
 	
 	var upper_corner = info_pos
-	upper_corner.y += 10
+	upper_corner.y = tip.y + info_pos.y + tip_width / 2
 	
 	var lower_corner = info_pos
-	lower_corner.y -= 10
+	lower_corner.y = tip.y + info_pos.y - tip_width / 2
 	
 	var verts = PoolVector2Array()
 	verts.push_back(tip + info_pos)
@@ -51,11 +52,7 @@ func _draw():
 	verts.push_back(lower_corner)
 	
 	var colors = PoolColorArray()
-	
-	# TODO: get color from entity-info canvas item node
-	colors.push_back(Color8(45, 31, 59))
-	colors.push_back(Color8(45, 31, 59))
-	colors.push_back(Color8(45, 31, 59))
+	colors.push_back(($"../..".get_theme().get_stylebox("panel", "PanelContainer") as StyleBoxFlat).bg_color)
 	
 	draw_polygon(verts, colors, PoolVector2Array(), null, null, true)
 	update()
