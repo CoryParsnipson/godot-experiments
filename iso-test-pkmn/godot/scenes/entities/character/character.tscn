@@ -284,10 +284,10 @@ _turn_debounce_timer = NodePath("../../turn_debounce_timer")
 
 [node name="movement-visual" parent="debug" instance=ExtResource( 5 )]
 entity = NodePath("../..")
+local_enable = false
 
 [node name="entity-info" parent="debug" instance=ExtResource( 3 )]
 entity = NodePath("../..")
-offset = Vector2( 32, -32 )
-start_minimized = true
+offset = Vector2( 40, -32 )
 
 [connection signal="timeout" from="turn_debounce_timer" to="scripts/movement" method="_on_turn_debounce_timeout"]

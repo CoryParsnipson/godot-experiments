@@ -3,7 +3,7 @@ extends "res://scenes/_debug/debug.gd"
 export (NodePath) onready var content = get_node(content)
 export (Color) var key_color = Color.powderblue
 export (Color) var value_color = Color.white
-export (bool) onready var start_minimized = true
+export (bool) var start_minimized = true
 
 export (Array, String) var suppress_properties = []
 export (Dictionary) var rename_properties = {}
@@ -85,17 +85,19 @@ func _resize_menu(is_minimized):
 	else:
 		_update_entity_info()
 		_draw_entity_info()
+	update()
 
 
 func _on_minimize_toggled(button_pressed):
-	_resize_menu(!_is_minimized)
+	_resize_menu(button_pressed)
 
 
 func _ready():
 	var btn = content.get_node_or_null("button-minimize")
 	if btn:
-		btn.set_pressed(start_minimized)
-
+		btn.emit_signal("toggled", !start_minimized)
+		btn.set_pressed(!start_minimized)
+	
 
 func _process(_delta):
 	if not _is_minimized:
