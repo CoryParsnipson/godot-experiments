@@ -88,6 +88,31 @@ func vector_to_direction(vector: Vector2, default_dir = Direction.SOUTH_WEST):
 	return dir
 
 
+## Convert direction to vector (in cartesian coordinates)
+##
+## This will take a direction enum value and change it to a vector of unit length.
+## The convention is that 0 degrees is east and then increasing values are
+## clockwise.
+func direction_to_vector(direction):
+	match (direction):
+		Direction.EAST:
+			return Vector2(1, 0)
+		Direction.SOUTH_EAST:
+			return Vector2(1, 1).normalized()
+		Direction.SOUTH:
+			return Vector2(0, 1)
+		Direction.SOUTH_WEST:
+			return Vector2(-1, 1).normalized()
+		Direction.WEST:
+			return Vector2(-1, 0)
+		Direction.NORTH_WEST:
+			return Vector2(-1, -1).normalized()
+		Direction.NORTH:
+			return Vector2(0, -1)
+		Direction.NORTH_EAST:
+			return Vector2(1, -1).normalized()
+
+
 ## Poll input and return a vector depending on which keys are pressed
 func get_input(movement_strategy, allow_diagonal: bool = false):
 	var up_pressed = Input.is_action_pressed("up")

@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/mixins/mixin.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/mixins/interactable/interactable.gd" type="Script" id=2]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 5.09902
+
+[node name="interactable" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="interactable-area" type="Area2D" parent="." index="0"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="collision-shape" type="CollisionShape2D" parent="interactable-area" index="0"]
+shape = SubResource( 1 )
+
+[connection signal="area_entered" from="interactable-area" to="." method="_on_entered"]
+[connection signal="area_exited" from="interactable-area" to="." method="_on_exited"]
