@@ -18,6 +18,8 @@ func _decode_hint_string(hint):
 	var enum_values = hint.split(",", false)
 	for val in enum_values:
 		var kv = val.split(":", false)
+		if kv.size() != 2:
+			continue
 		decoded[int(kv[1])] = kv[0]
 	
 	return decoded
@@ -31,7 +33,8 @@ func _update_entity_info():
 			var property_value = entity.get(property.name)
 			if property.hint_string:
 				var enum_string = _decode_hint_string(property.hint_string)
-				property_value = enum_string[property_value]
+				if not enum_string.empty():
+					property_value = enum_string[property_value]
 				
 			if property.name in suppress_properties:
 				continue

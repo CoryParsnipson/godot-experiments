@@ -1,10 +1,18 @@
 extends "res://scenes/mixins/mixin.gd"
 
-func _on_entered(area):
-	print("interactor detected")
-	pass # Replace with function body.
+export (NodePath) onready var interactable_parent = get_node(interactable_parent)
 
 
-func _on_exited(area):
-	print("interactor left")
-	pass # Replace with function body.
+func can_interact(interactor : Node) -> bool:
+	if interactable_parent and interactable_parent.has_method("can_interact"):
+		return interactable_parent.can_interact(interactor)
+	
+	print("[WARNING] (interactable.can_interact): interactable does not have can_interact() defined.")
+	return false
+
+
+func interact(interactor : Node):
+	if interactable_parent and interactable_parent.has_method("interact"):
+		return interactable_parent.interact(interactor)
+	
+	print("[WARNING] (interactable.interact): interactable does not have interact() defined.")\

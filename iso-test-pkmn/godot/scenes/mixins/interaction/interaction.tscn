@@ -8,6 +8,8 @@ radius = 5.38516
 
 [node name="interaction" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+_state = NodePath("")
+_parent = NodePath("")
 
 [node name="interaction-area" type="Area2D" parent="." index="0"]
 collision_layer = 0
@@ -15,3 +17,6 @@ collision_mask = 2
 
 [node name="collision-shape" type="CollisionShape2D" parent="interaction-area" index="0"]
 shape = SubResource( 1 )
+
+[connection signal="area_entered" from="interaction-area" to="." method="_on_interactable_entered"]
+[connection signal="area_exited" from="interaction-area" to="." method="_on_interactable_exited"]

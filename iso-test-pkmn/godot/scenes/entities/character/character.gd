@@ -24,3 +24,8 @@ export (Vector2) var movement_vector = Vector2(0, 0)
 export (CharacterState) var movement_state = CharacterState.STAND
 export (lib_movement.Direction) var direction = lib_movement.Direction.SOUTH_WEST
 export (lib_movement.MovementStrategy) var movement_strategy = lib_movement.MovementStrategy.UP_IS_NORTHWEST
+
+# -----------------------------------------------------------------------------
+# interactables
+# -----------------------------------------------------------------------------
+export (Array, NodePath) var interactables = []
