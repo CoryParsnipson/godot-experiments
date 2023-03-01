@@ -1,11 +1,11 @@
-extends Node2D
+extends "res://scenes/mixins/mixin.gd"
 
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _kinematic_body = get_node(_kinematic_body)
 export (NodePath) onready var _animations = get_node(_animations)
-export (NodePath) onready var _turn_debounce_timer = get_node(_turn_debounce_timer)
 
 onready var _tilemap = lib_tilemap.get_nearest_tilemap(owner)
+onready var _turn_debounce_timer = $"turn_debounce_timer"
 
 var _movement_vector = Vector2(0, 0)
 var _destination = Vector2(0, 0)

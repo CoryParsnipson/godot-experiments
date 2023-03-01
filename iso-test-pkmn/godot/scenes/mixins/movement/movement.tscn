@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/mixins/movement/movement.gd" type="Script" id=1]
+[ext_resource path="res://scenes/mixins/mixin.tscn" type="PackedScene" id=2]
+
+[node name="movement" instance=ExtResource( 2 )]
+script = ExtResource( 1 )
+_state = NodePath("")
+_kinematic_body = NodePath("")
+_animations = NodePath("")
+
+[node name="turn_debounce_timer" type="Timer" parent="." index="0"]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="timeout" from="turn_debounce_timer" to="." method="_on_turn_debounce_timeout"]

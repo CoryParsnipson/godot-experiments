@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://assets/graphics/sprites-character-base.png" type="Texture" id=1]
-[ext_resource path="res://scenes/entities/character/movement.gd" type="Script" id=2]
+[ext_resource path="res://scenes/mixins/movement/movement.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/_debug/entity-info/entity-info.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/entities/character/character.gd" type="Script" id=4]
 [ext_resource path="res://scenes/_debug/movement-visual/movement-visual.tscn" type="PackedScene" id=5]
@@ -267,18 +267,12 @@ position = Vector2( 0, 8 )
 rotation = 1.5708
 shape = SubResource( 1 )
 
-[node name="turn_debounce_timer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
-
 [node name="mixins" type="Node2D" parent="."]
 
-[node name="movement" type="Node2D" parent="mixins"]
-script = ExtResource( 2 )
+[node name="movement" parent="mixins" instance=ExtResource( 2 )]
 _state = NodePath("../..")
 _kinematic_body = NodePath("../..")
 _animations = NodePath("../../animations")
-_turn_debounce_timer = NodePath("../../turn_debounce_timer")
 
 [node name="debug" type="Node2D" parent="."]
 
@@ -288,5 +282,3 @@ entity = NodePath("../..")
 [node name="entity-info" parent="debug" instance=ExtResource( 3 )]
 entity = NodePath("../..")
 offset = Vector2( 40, -32 )
-
-[connection signal="timeout" from="turn_debounce_timer" to="mixins/movement" method="_on_turn_debounce_timeout"]
