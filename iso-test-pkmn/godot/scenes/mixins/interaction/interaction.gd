@@ -2,7 +2,7 @@ extends "res://scenes/mixins/mixin.gd"
 
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _parent = get_node(_parent)
-
+export (String) var interact_keybinding = "accept"
 
 func _on_interactable_entered(area):
 	if not _state:
@@ -22,7 +22,7 @@ func _on_interactable_exited(area):
 
 
 func _physics_process(_delta):
-	if _state.movement_state == _state.CharacterState.STAND and Input.is_action_just_released("interact"):
+	if _state.movement_state == _state.CharacterState.STAND and Input.is_action_just_released(interact_keybinding):
 		if _state.interactables.empty():
 			return
 		

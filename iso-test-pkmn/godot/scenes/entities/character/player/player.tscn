@@ -10,6 +10,7 @@
 [node name="interaction" parent="mixins" index="1" instance=ExtResource( 1 )]
 _state = NodePath("../..")
 _parent = NodePath("../..")
+interact_keybinding = "accept"
 
 [node name="interaction-offset" type="Node2D" parent="mixins" index="2"]
 script = ExtResource( 4 )
