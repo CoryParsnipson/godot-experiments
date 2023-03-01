@@ -1,22 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/mixins/interaction/interaction.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/entities/character/character.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/entities/character/player/input-controller.gd" type="Script" id=3]
-[ext_resource path="res://scenes/entities/character/player/interaction-offset.gd" type="Script" id=4]
+[ext_resource path="res://scenes/mixins/input-controller/input-controller.tscn" type="PackedScene" id=4]
 
 [node name="player" instance=ExtResource( 2 )]
 
 [node name="interaction" parent="mixins" index="1" instance=ExtResource( 1 )]
 _state = NodePath("../..")
 _parent = NodePath("../..")
-interact_keybinding = "accept"
 
-[node name="interaction-offset" type="Node2D" parent="mixins" index="2"]
-script = ExtResource( 4 )
-_state = NodePath("../..")
-_interaction = NodePath("../interaction")
-
-[node name="input-controller" type="Node2D" parent="mixins" index="3"]
-script = ExtResource( 3 )
-_state = NodePath("../..")
+[node name="input-controller" parent="mixins" index="2" instance=ExtResource( 4 )]
+character = NodePath("../..")
+interaction = NodePath("../interaction")

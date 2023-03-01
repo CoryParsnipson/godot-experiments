@@ -114,11 +114,11 @@ func direction_to_vector(direction):
 
 
 ## Poll input and return a vector depending on which keys are pressed
-func get_input(movement_strategy, allow_diagonal: bool = false):
-	var up_pressed = Input.is_action_pressed("up")
-	var left_pressed = Input.is_action_pressed("left")
-	var right_pressed = Input.is_action_pressed("right")
-	var down_pressed = Input.is_action_pressed("down")
+func get_movement_vector(directions_pressed : Dictionary, movement_strategy, allow_diagonal: bool = false):
+	var up_pressed = directions_pressed["up"]
+	var left_pressed = directions_pressed["left"]
+	var right_pressed = directions_pressed["right"]
+	var down_pressed = directions_pressed["down"]
 	
 	var movement_vector = Vector2(0, 0)
 	

@@ -10,6 +10,7 @@ radius = 5.38516
 script = ExtResource( 2 )
 _state = NodePath("")
 _parent = NodePath("")
+interact_keybinding = "accept"
 
 [node name="interaction-area" type="Area2D" parent="." index="0"]
 collision_layer = 0
