@@ -16,7 +16,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Singleton="*res://scenes/main/singleton.gd"
+lib_game_state="*res://global/scripts/lib-game-state.gd"
 lib_isometric="*res://global/scripts/lib-isometric.gd"
 lib_tilemap="*res://global/scripts/lib-tilemap.gd"
 lib_movement="*res://global/scripts/lib-movement.gd"

@@ -7,7 +7,7 @@ export var smoothing_factor = 5
 
 
 func is_enabled():
-	return local_enable and Singleton.debug_enable
+	return local_enable and lib_game_state.debug_enable
 
 
 func hide():

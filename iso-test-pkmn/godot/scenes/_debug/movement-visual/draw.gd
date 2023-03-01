@@ -8,8 +8,8 @@ var _tile_half_size
 
 func upscale(vec):
 	var scaled_vec = vec
-	scaled_vec.x *= Singleton.pixel_upscale.x
-	scaled_vec.y *= Singleton.pixel_upscale.y
+	scaled_vec.x *= lib_game_state.pixel_upscale.x
+	scaled_vec.y *= lib_game_state.pixel_upscale.y
 	return scaled_vec
 
 
