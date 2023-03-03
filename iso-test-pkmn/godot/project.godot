@@ -16,10 +16,10 @@ config/icon="res://icon.png"
 
 [autoload]
 
-lib_game_state="*res://global/scripts/lib-game-state.gd"
-lib_isometric="*res://global/scripts/lib-isometric.gd"
-lib_tilemap="*res://global/scripts/lib-tilemap.gd"
-lib_movement="*res://global/scripts/lib-movement.gd"
+game="*res://global/autoload/game/game.tscn"
+lib_isometric="*res://global/autoload/lib/lib-isometric.gd"
+lib_tilemap="*res://global/autoload/lib/lib-tilemap.gd"
+lib_movement="*res://global/autoload/lib/lib-movement.gd"
 
 [display]
 

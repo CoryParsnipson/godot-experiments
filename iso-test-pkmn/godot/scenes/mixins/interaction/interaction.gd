@@ -35,7 +35,7 @@ func _physics_process(_delta):
 	
 	var dest_tile_id = lib_tilemap.world_to_map(tilemap, _state.global_position) + tile_id_delta
 	var dest_pos = lib_tilemap.map_to_world(tilemap, dest_tile_id)
-	var dest_pos_centered_on_tile = dest_pos + (tilemap.cell_size / 2 * lib_game_state.pixel_upscale * Vector2(0, 1))
+	var dest_pos_centered_on_tile = dest_pos + (tilemap.cell_size / 2 * game.pixel_upscale * Vector2(0, 1))
 	
 	if (_interaction_area):
 		_interaction_area.global_position = dest_pos_centered_on_tile

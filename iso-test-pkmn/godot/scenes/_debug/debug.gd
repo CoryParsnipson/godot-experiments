@@ -7,26 +7,26 @@ export var smoothing_factor = 5
 
 
 func is_enabled():
-	return local_enable and lib_game_state.debug_enable
+	return local_enable and game.debug_enable
 
 
 func hide():
 	.hide()
-	$"ui-layer/ui-root".hide()
+	$"debug-layer/ui-root".hide()
 	
 
 func show():
 	.show()
-	$"ui-layer/ui-root".show()
+	$"debug-layer/ui-root".show()
 	
 
 func set_position(pos):
-	$"ui-layer/ui-root".rect_position = pos
+	$"debug-layer/ui-root".rect_position = pos
 
 
 func lerp_to_position(pos, delta):
-	$"ui-layer/ui-root".rect_position = lerp(
-		$"ui-layer/ui-root".rect_position,
+	$"debug-layer/ui-root".rect_position = lerp(
+		$"debug-layer/ui-root".rect_position,
 		pos,
 		delta * smoothing_factor
 	)

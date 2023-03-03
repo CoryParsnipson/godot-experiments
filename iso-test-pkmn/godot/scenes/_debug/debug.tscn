@@ -7,16 +7,17 @@
 [node name="debug" type="Node2D"]
 script = ExtResource( 1 )
 
-[node name="ui-layer" type="CanvasLayer" parent="."]
+[node name="debug-layer" type="CanvasLayer" parent="."]
+layer = 100
 
-[node name="ui-root" type="Control" parent="ui-layer"]
+[node name="ui-root" type="Control" parent="debug-layer"]
 margin_right = 40.0
 margin_bottom = 40.0
 theme = ExtResource( 3 )
 
-[node name="default-bg" type="PanelContainer" parent="ui-layer/ui-root"]
+[node name="default-bg" type="PanelContainer" parent="debug-layer/ui-root"]
 
-[node name="default-text" type="Label" parent="ui-layer/ui-root/default-bg"]
+[node name="default-text" type="Label" parent="debug-layer/ui-root/default-bg"]
 margin_right = 145.0
 margin_bottom = 20.0
 custom_fonts/font = ExtResource( 2 )
