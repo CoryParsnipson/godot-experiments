@@ -8,4 +8,5 @@ func can_interact(_interactor : Node) -> bool:
 
 ## Needed for interactable mixin
 func interact(_interactor : Node):
+	game.dialogue_manager.exist()
 	print("TODO: begin dialog box with text")

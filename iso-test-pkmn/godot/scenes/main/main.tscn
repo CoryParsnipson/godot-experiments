@@ -1,13 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/main/main.gd" type="Script" id=2]
 [ext_resource path="res://scenes/_debug/mouse-coord/mouse-coord.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/ui/dialogue-box/dialogue-box.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/ui/dialogue-manager/dialogue-manager.tscn" type="PackedScene" id=5]
 
 [node name="main" type="Node2D"]
 script = ExtResource( 2 )
+dialogue_manager = NodePath("ui-layer/ui-root/dialogue-manager")
 
 [node name="pixel-upscale" type="Node2D" parent="."]
 scale = Vector2( 3, 3 )
@@ -19,9 +19,6 @@ scale = Vector2( 3, 3 )
 [node name="ui-root" type="Control" parent="ui-layer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-
-[node name="dialogue-box" parent="ui-layer/ui-root" instance=ExtResource( 4 )]
-visible = false
 
 [node name="dialogue-manager" parent="ui-layer/ui-root" instance=ExtResource( 5 )]
 

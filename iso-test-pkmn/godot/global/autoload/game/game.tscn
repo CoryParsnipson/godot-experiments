@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://global/autoload/game/game.gd" type="Script" id=1]
+[ext_resource path="res://scenes/ui/dialogue-manager/default/dialogue-manager.gd" type="Script" id=2]
 
 [node name="game" type="Node2D"]
 script = ExtResource( 1 )
+dialogue_manager = NodePath("dialogue-manager")
+
+[node name="dialogue-manager" type="Node2D" parent="."]
+script = ExtResource( 2 )

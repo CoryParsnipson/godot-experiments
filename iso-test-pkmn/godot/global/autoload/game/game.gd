@@ -16,3 +16,9 @@ export (InputState) var input_state = InputState.NORMAL
 
 ## enlarge game assets (this scales all non-UI game nodes)
 export (Vector2) var pixel_upscale = Vector2(3, 3)
+
+# -----------------------------------------------------------------------------
+# services
+# -----------------------------------------------------------------------------
+## dialogue manager (used to operate dialogue boxes)
+export (NodePath) onready var dialogue_manager = get_node(dialogue_manager)
