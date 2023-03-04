@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/entities/character/player/red/red.tscn" type="PackedScene" id=1]
 [ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=2]
+[ext_resource path="res://scenes/levels/player-house-floor-2/wall-sign.dialogue.tres" type="Resource" id=3]
 [ext_resource path="res://scenes/entities/downstairs-house/downstairs-house.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/entities/bookshelf/bookshelf.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/entities/desk/desk.tscn" type="PackedScene" id=6]
@@ -71,6 +72,7 @@ position = Vector2( 80, 0 )
 
 [node name="wall-sign" parent="map/main/YSort" instance=ExtResource( 9 )]
 position = Vector2( 128, 8 )
+interact_data = ExtResource( 3 )
 
 [node name="snes" parent="map/main/YSort" instance=ExtResource( 10 )]
 position = Vector2( -16, 8 )

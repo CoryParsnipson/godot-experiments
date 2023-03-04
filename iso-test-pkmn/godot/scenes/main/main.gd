@@ -6,4 +6,4 @@ func _ready():
 	$"pixel-upscale".scale = game.pixel_upscale
 
 	# locate services
-	game.dialogue_manager = dialogue_manager
+	game.dialogue = dialogue_manager

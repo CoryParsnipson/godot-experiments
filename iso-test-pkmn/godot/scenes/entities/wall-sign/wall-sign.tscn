@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/graphics/sprites-house-interior.png" type="Texture" id=1]
 [ext_resource path="res://scenes/mixins/interactable/interactable.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/entities/wall-sign/wall-sign.gd" type="Script" id=3]
+[ext_resource path="res://scenes/entities/wall-sign/default-text.dialogue.tres" type="Resource" id=4]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 1 )
@@ -10,6 +11,7 @@ region = Rect2( 0, 160, 32, 32 )
 
 [node name="wall-sign" type="Node2D"]
 script = ExtResource( 3 )
+interact_data = ExtResource( 4 )
 
 [node name="sprite" type="Sprite" parent="."]
 texture = SubResource( 1 )
