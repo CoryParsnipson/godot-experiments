@@ -8,6 +8,14 @@ radius = 5.09902
 
 [node name="interactable" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+interactable_east = true
+interactable_southeast = true
+interactable_south = true
+interactable_southwest = true
+interactable_west = true
+interactable_northwest = true
+interactable_north = true
+interactable_northeast = true
 interactable_parent = NodePath("")
 
 [node name="interactable-area" type="Area2D" parent="." index="0"]

@@ -6,6 +6,7 @@ export (String) var interact_keybinding = "accept"
 
 onready var _interaction_area = get_node_or_null("interaction-area")
 
+
 func _on_interactable_entered(area):
 	if not _state:
 		print("[WARNING] (interaction._on_interactable_entered): entity _state node not provided")
