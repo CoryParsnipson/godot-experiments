@@ -9,10 +9,10 @@ enum CharacterState { STAND, WALK, TURN }
 export (bool) var allow_diagonal = false
 
 ## determines how fast the character will walk
-export (int) var walk_speed = 150
+export (int) var walk_speed = 175
 
 ## delay (in seconds) between turning and walking (quick press button to turn w/o walking)
-export (float) var turn_debounce_duration = 0.2
+export (float) var turn_debounce_duration = 0.15
 
 ## control speed of walk animation when press and holding walk into a wall
 export (float) var hitting_wall_animation_speed = 0.35

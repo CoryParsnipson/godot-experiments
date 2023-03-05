@@ -173,9 +173,11 @@ func _physics_process(delta):
 			_state.movement_state = _state.CharacterState.STAND
 			return
 			
-		# keys are pressed and there is a direction change, go to turn state
+		# keys are pressed and there is a direction change
 		if new_direction != get_direction():
-			_state.movement_state = _state.CharacterState.TURN
+			set_direction(new_direction)
+			set_destination(_tilemap, _state.movement_vector)
+			_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
 			return
 			
 		# keys are pressed, but no direction change. Continue walking
