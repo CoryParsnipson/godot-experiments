@@ -6,14 +6,16 @@ export (int) var version = 1
 export (Color) var color = null
 export (Color) var shadow_color = null
 export (float) var reveal_interval = null
+export (float) var fast_reveal_interval = null
 export (game.DialogueBoxType) var dialogue_box_type = null
 export (Array, String) var lines = []
 
 
-func _init(_lines = [], type = game.DialogueBoxType.NORMAL, _reveal_interval = null, _color = null, _shadow_color = null):
+func _init(_lines = [], type = game.DialogueBoxType.NORMAL, _reveal_interval = null, _fast_reveal_interval = null, _color = null, _shadow_color = null):
 	color = _color
 	shadow_color = _shadow_color
 	reveal_interval = _reveal_interval
+	fast_reveal_interval = _fast_reveal_interval
 	dialogue_box_type = type
 	lines = _lines
 

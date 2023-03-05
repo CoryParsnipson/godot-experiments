@@ -8,5 +8,6 @@ version = 1
 color = null
 shadow_color = null
 reveal_interval = null
+fast_reveal_interval = null
 dialogue_box_type = 0
 lines = [ "This is a wall sign." ]

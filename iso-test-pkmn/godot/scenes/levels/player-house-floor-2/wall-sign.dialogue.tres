@@ -8,5 +8,6 @@ version = 1
 color = null
 shadow_color = null
 reveal_interval = null
+fast_reveal_interval = null
 dialogue_box_type = 1
 lines = [ "It's a posted notice...", "If you're confused, ask for HELP! Press the L or R Button!" ]

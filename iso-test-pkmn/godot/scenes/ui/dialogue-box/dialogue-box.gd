@@ -38,6 +38,16 @@ func set_reveal_interval(reveal_interval):
 	reveal_timer.wait_time = reveal_interval
 
 
+func get_fast_reveal_interval():
+	return fast_reveal_interval
+
+
+func set_fast_reveal_interval(interval):
+	if not interval:
+		return
+	fast_reveal_interval = interval
+
+
 func get_color(_type : String = "", _name : String = ""):
 	return content.get_color("default_color")
 	
@@ -79,8 +89,8 @@ func _ready():
 
 func _input(event):
 	if event.is_action_pressed(advance_dialogue_keybinding):
-		_unpressed_reveal_interval = reveal_timer.wait_time
-		set_reveal_interval(fast_reveal_interval)
+		_unpressed_reveal_interval = get_reveal_interval()
+		set_reveal_interval(get_fast_reveal_interval())
 
 	if event.is_action_released(advance_dialogue_keybinding):
 		set_reveal_interval(_unpressed_reveal_interval)

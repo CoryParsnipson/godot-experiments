@@ -41,17 +41,19 @@ func _unset_input_mode():
 	game.input_mode = _prev_input_mode
 
 
-func _setup_dialogue_box(dbox, data):	
+func _setup_dialogue_box(dbox, data):
 	# capture original settings
 	_orig_dialogue_box_settings.color = dbox.get_color()
 	_orig_dialogue_box_settings.shadow_color = dbox.get_shadow_color()
 	_orig_dialogue_box_settings.reveal_interval = dbox.get_reveal_interval()
+	_orig_dialogue_box_settings.fast_reveal_interval = dbox.get_fast_reveal_interval()
 	
 	# override settings based on DialogueData
 	dbox.set_text("")
 	dbox.set_color(data.color)
 	dbox.set_shadow_color(data.shadow_color)
 	dbox.set_reveal_interval(data.reveal_interval)
+	dbox.set_fast_reveal_interval(data.fast_reveal_interval)
 	
 	dbox.show()
 
@@ -61,6 +63,7 @@ func _teardown_dialogue_box(dbox):
 	dbox.set_color(_orig_dialogue_box_settings.color)
 	dbox.set_shadow_color(_orig_dialogue_box_settings.shadow_color)
 	dbox.set_reveal_interval(_orig_dialogue_box_settings.reveal_interval)
+	dbox.set_fast_reveal_interval(_orig_dialogue_box_settings.fast_reveal_interval)
 	
 	dbox.hide()
 
@@ -84,7 +87,7 @@ func _ready():
 
 func _input(event):
 	# check if we are in the middle of dialogue and player wants to continue to the next line
-	if event.is_action_pressed(advance_dialogue_keybinding if advance_dialogue_keybinding else "accept"):
+	if event.is_action_pressed(advance_dialogue_keybinding):
 		# IMPORTANT: defer this call so the signal get emitted on the next frame. It is important
 		# because if we don't do this, the input controller will detect the "accept" input as
 		# released and the same button press to close the current dialogue will trigger the dialogue
