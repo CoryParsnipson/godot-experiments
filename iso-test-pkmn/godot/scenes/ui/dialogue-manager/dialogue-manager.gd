@@ -1,10 +1,71 @@
 extends Control
 
+signal advance_dialogue
+
+export (String) onready var advance_dialogue_keybinding = "accept"
+
 export (NodePath) onready var dialogue_box_normal = get_node(dialogue_box_normal)
 export (NodePath) onready var dialogue_box_sign = get_node(dialogue_box_sign)
 
+onready var _prev_input_mode = game.input_mode
+onready var _orig_dialogue_box_settings = DialogueData.new()
 
-func get_dialogue_box(type):
+
+func play(data):
+	if not data or not data is DialogueData:
+		print("[WARNING] dialogue-manager.play: received invalid DialogueData!")
+		return
+
+	var dbox = _get_dialogue_box(data.dialogue_box_type)
+
+	_set_input_mode()
+	_setup_dialogue_box(dbox, data)
+
+	for line in data.lines:
+		dbox.set_text(line)
+		
+		dbox.reveal()
+		yield(dbox, "reveal_finished")
+		yield(self, "advance_dialogue")
+	
+	_teardown_dialogue_box(dbox)
+	_unset_input_mode()
+
+
+func _set_input_mode():
+	_prev_input_mode = game.input_mode
+	game.input_mode = game.InputMode.DIALOGUE
+
+
+func _unset_input_mode():
+	game.input_mode = _prev_input_mode
+
+
+func _setup_dialogue_box(dbox, data):	
+	# capture original settings
+	_orig_dialogue_box_settings.color = dbox.get_color()
+	_orig_dialogue_box_settings.shadow_color = dbox.get_shadow_color()
+	_orig_dialogue_box_settings.reveal_interval = dbox.get_reveal_interval()
+	
+	# override settings based on DialogueData
+	dbox.set_text("")
+	dbox.set_color(data.color)
+	dbox.set_shadow_color(data.shadow_color)
+	dbox.set_reveal_interval(data.reveal_interval)
+	
+	dbox.show()
+
+
+func _teardown_dialogue_box(dbox):
+	dbox.set_text("")
+	dbox.set_color(_orig_dialogue_box_settings.color)
+	dbox.set_shadow_color(_orig_dialogue_box_settings.shadow_color)
+	dbox.set_reveal_interval(_orig_dialogue_box_settings.reveal_interval)
+	
+	dbox.hide()
+
+
+func _get_dialogue_box(type):
 	match (type):
 		game.DialogueBoxType.NORMAL:
 			return dialogue_box_normal
@@ -15,29 +76,18 @@ func get_dialogue_box(type):
 			return dialogue_box_normal
 
 
-func display(data):
-	if not data or not data is DialogueData:
-		print("[WARNING] dialogue-manager.display: received invalid DialogueData!")
-		return
-	
-	var prev_input_state = game.input_state
-	game.input_state = game.InputMode.DIALOGUE
-	
-	for line in data.lines:
-		# TODO: need to yield or something so pressing "accept" will progress through lines
-		var dbox = get_dialogue_box(data.dialogue_box_type)
-		dbox.text(line)
-		dbox.show()
-		dbox.reveal()
-	
-		# TODO: when user presses "accept", the reveal speed should get faster. When they release, the reveal speed
-		# should go back to normal. When the user presses "accept" once all the text is revealed, it will
-		# start revealing the next line of text or close the dialogue box if there is no more text.
-	
-	game.input_state = prev_input_state
-
-
 func _ready():
 	# hide all dialogue boxes
-	for child in get_children():
+	for child in $"dialogue-boxes".get_children():
 		child.hide()
+
+
+func _input(event):
+	# check if we are in the middle of dialogue and player wants to continue to the next line
+	if event.is_action_pressed(advance_dialogue_keybinding if advance_dialogue_keybinding else "accept"):
+		# IMPORTANT: defer this call so the signal get emitted on the next frame. It is important
+		# because if we don't do this, the input controller will detect the "accept" input as
+		# released and the same button press to close the current dialogue will trigger the dialogue
+		# to start again.
+		call_deferred("emit_signal", "advance_dialogue")
+		get_tree().set_input_as_handled() # block all other handlers from using this event

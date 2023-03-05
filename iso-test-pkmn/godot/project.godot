@@ -31,6 +31,10 @@ lib_isometric="*res://global/autoload/lib/lib-isometric.gd"
 lib_tilemap="*res://global/autoload/lib/lib-tilemap.gd"
 lib_movement="*res://global/autoload/lib/lib-movement.gd"
 
+[debug]
+
+gdscript/warnings/unused_signal=false
+
 [display]
 
 window/size/width=1920

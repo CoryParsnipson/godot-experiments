@@ -2,7 +2,7 @@ extends "res://scenes/mixins/mixin.gd"
 
 export (NodePath) onready var interactable_parent = get_node(interactable_parent)
 
-
+# TODO: make directional enable (i.e. a sign that can only be interacted from the front)
 func can_interact(interactor : Node) -> bool:
 	if interactable_parent and interactable_parent.has_method("can_interact"):
 		return interactable_parent.can_interact(interactor)

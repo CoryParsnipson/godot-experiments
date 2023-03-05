@@ -18,18 +18,21 @@ region = Rect2( 0, 0, 96, 64 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 2 )
-dialogue_box_normal = NodePath("dialogue-box-normal")
-dialogue_box_sign = NodePath("dialogue-box-sign")
+dialogue_box_normal = NodePath("dialogue-boxes/dialogue-box-normal")
+dialogue_box_sign = NodePath("dialogue-boxes/dialogue-box-sign")
 
-[node name="dialogue-box-normal" parent="." instance=ExtResource( 1 )]
+[node name="dialogue-boxes" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="dialogue-box-normal" parent="dialogue-boxes" instance=ExtResource( 1 )]
+visible = false
 texture = SubResource( 1 )
 
-[node name="dialogue-box-sign" parent="." instance=ExtResource( 1 )]
+[node name="dialogue-box-sign" parent="dialogue-boxes" instance=ExtResource( 1 )]
 texture = SubResource( 2 )
 region_rect = Rect2( 0, 0, 78, 36 )
-patch_margin_left = 38
-patch_margin_top = 20
-patch_margin_right = 38
-patch_margin_bottom = 20
-
-[editable path="dialogue-box-sign"]
+patch_margin_left = 39
+patch_margin_top = 18
+patch_margin_right = 39
+patch_margin_bottom = 18

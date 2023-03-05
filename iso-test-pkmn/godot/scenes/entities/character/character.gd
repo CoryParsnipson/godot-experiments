@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-enum CharacterState { STAND, WALK, TURN } # TODO: should this go somewhere else?
+enum CharacterState { STAND, WALK, TURN }
 
 # -----------------------------------------------------------------------------
 # customizable character settings

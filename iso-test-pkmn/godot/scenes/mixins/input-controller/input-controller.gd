@@ -30,10 +30,14 @@ func handle_character_interaction():
 	if interaction._parent.interactables.empty():
 		return
 		
-	if Input.is_action_just_released(interaction.interact_keybinding):
+	if Input.is_action_just_pressed(interaction.interact_keybinding):
 		interaction._parent.interactables[0].interact(character)
 
 
 func _physics_process(_delta):
+	# disable input if we are not in gameplay mode (i.e. in the middle of cutscene or dialogue)
+	if game.input_mode != game.InputMode.GAMEPLAY:
+		return
+	
 	handle_character_movement()
 	handle_character_interaction()
