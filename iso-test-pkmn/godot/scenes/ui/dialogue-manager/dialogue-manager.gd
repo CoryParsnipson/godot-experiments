@@ -55,6 +55,7 @@ func _setup_dialogue_box(dbox, data):
 	dbox.set_reveal_interval(data.reveal_interval)
 	dbox.set_fast_reveal_interval(data.fast_reveal_interval)
 	
+	dbox.is_active = true
 	dbox.show()
 
 
@@ -65,6 +66,7 @@ func _teardown_dialogue_box(dbox):
 	dbox.set_reveal_interval(_orig_dialogue_box_settings.reveal_interval)
 	dbox.set_fast_reveal_interval(_orig_dialogue_box_settings.fast_reveal_interval)
 	
+	dbox.is_active = false
 	dbox.hide()
 
 
