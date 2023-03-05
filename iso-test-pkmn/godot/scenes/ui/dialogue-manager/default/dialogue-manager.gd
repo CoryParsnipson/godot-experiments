@@ -5,6 +5,5 @@ extends Node
 ## The functions and interface in this file should be identical to dialogue-manager so they
 ## can be seamlessly swapped out for each other.
 
-func exist():
-	print("[WARNING] default-dialogue-manager.exist: Default dialogue manager has been invoked.")
-	print("Default Dialogue Manager does nothing!")
+func play():
+	print("[WARNING] default-dialogue-manager.play: Default dialogue manager has been invoked.")
