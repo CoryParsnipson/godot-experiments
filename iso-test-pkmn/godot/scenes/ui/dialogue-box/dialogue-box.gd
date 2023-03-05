@@ -8,6 +8,7 @@ signal _wakeup(reason)
 
 ## this is set by dialogue-manager when it is currently using this dialogue box (do not touch)
 export (bool) onready var is_active = false
+export (bool) onready var allow_skip = true
 export (String) onready var advance_dialogue_keybinding = "accept"
 export (int) onready var shortpress_threshold = 200 # in milliseconds
 
@@ -119,6 +120,13 @@ func _wait_on_skip_signal():
 	emit_signal("_wakeup", WakeupReason.SKIP)
 
 
+func _is_shortpress(start_time):
+	if not start_time:
+		return false
+	
+	return OS.get_ticks_msec() - start_time <= shortpress_threshold
+
+
 func _ready():
 	set_reveal_interval(default_reveal_interval)
 	_unpressed_reveal_interval = get_reveal_interval()
@@ -133,5 +141,5 @@ func _input(event):
 	if is_active and _reveal_in_progress and event.is_action_released(advance_dialogue_keybinding):
 		set_reveal_interval(_unpressed_reveal_interval)
 		
-		if _button_press_start and OS.get_ticks_msec() - _button_press_start <= shortpress_threshold:
+		if allow_skip and _is_shortpress(_button_press_start):
 			emit_signal("reveal_skip")

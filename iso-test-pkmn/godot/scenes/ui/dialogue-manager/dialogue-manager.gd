@@ -47,6 +47,7 @@ func _setup_dialogue_box(dbox, data):
 	_orig_dialogue_box_settings.shadow_color = dbox.get_shadow_color()
 	_orig_dialogue_box_settings.reveal_interval = dbox.get_reveal_interval()
 	_orig_dialogue_box_settings.fast_reveal_interval = dbox.get_fast_reveal_interval()
+	_orig_dialogue_box_settings.allow_skip = dbox.allow_skip
 	
 	# override settings based on DialogueData
 	dbox.set_text("")
@@ -54,6 +55,7 @@ func _setup_dialogue_box(dbox, data):
 	dbox.set_shadow_color(data.shadow_color)
 	dbox.set_reveal_interval(data.reveal_interval)
 	dbox.set_fast_reveal_interval(data.fast_reveal_interval)
+	dbox.allow_skip = data.allow_skip
 	
 	dbox.is_active = true
 	dbox.show()
@@ -65,6 +67,7 @@ func _teardown_dialogue_box(dbox):
 	dbox.set_shadow_color(_orig_dialogue_box_settings.shadow_color)
 	dbox.set_reveal_interval(_orig_dialogue_box_settings.reveal_interval)
 	dbox.set_fast_reveal_interval(_orig_dialogue_box_settings.fast_reveal_interval)
+	dbox.allow_skip = _orig_dialogue_box_settings.allow_skip
 	
 	dbox.is_active = false
 	dbox.hide()
