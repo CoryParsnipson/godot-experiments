@@ -29,6 +29,8 @@ func get_text():
 
 
 func set_text(msg):
+	msg = msg.replace("\\n", "\n")
+	
 	content.text = msg
 	content_shadow.text = msg
 
