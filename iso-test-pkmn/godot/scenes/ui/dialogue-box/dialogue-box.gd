@@ -95,6 +95,14 @@ func _teardown_reveal():
 	emit_signal("reveal_finished")
 
 
+func show_cursor():
+	$"next-cursor".show()
+
+
+func hide_cursor():
+	$"next-cursor".hide()
+
+
 func reveal(reveal_interval = null):
 	_setup_reveal(reveal_interval)
 	

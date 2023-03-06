@@ -28,7 +28,8 @@ func play(data):
 	if data.disable_game_input:
 		_set_input_mode()
 
-	for line in data.lines:
+	for idx in data.lines.size():
+		var line = data.lines[idx]
 		# if we come out of yield and the dialogue box has already been torn down
 		if not _is_playing:
 			return
@@ -37,7 +38,11 @@ func play(data):
 		
 		_dbox.reveal()
 		yield(_dbox, "reveal_finished")
+		if idx != data.lines.size() - 1:
+			_dbox.show_cursor()
+		
 		yield(self, "advance_dialogue")
+		_dbox.hide_cursor()
 	
 	if data.disable_game_input:
 		_unset_input_mode()

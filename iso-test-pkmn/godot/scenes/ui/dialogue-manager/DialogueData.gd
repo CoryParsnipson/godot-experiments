@@ -40,8 +40,3 @@ func from_json(json_string):
 		if not p in self:
 			continue
 		set(p, json_result.result[p])
-
-
-func auto_chunk_text(_dialogue_box):
-	# TODO
-	pass
