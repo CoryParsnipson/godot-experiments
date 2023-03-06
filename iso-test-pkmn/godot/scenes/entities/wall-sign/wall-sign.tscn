@@ -18,4 +18,5 @@ texture = SubResource( 1 )
 
 [node name="interactable" parent="." instance=ExtResource( 2 )]
 position = Vector2( 16, 8 )
+interact_on_enter = true
 interactable_parent = NodePath("..")

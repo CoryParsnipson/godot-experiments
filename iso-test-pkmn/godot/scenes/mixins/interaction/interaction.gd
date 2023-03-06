@@ -1,4 +1,9 @@
 extends "res://scenes/mixins/mixin.gd"
+class_name Interaction
+
+enum InteractEventType { INTERACTOR_ENTERED, INTERACTOR_EXITED }
+
+signal interact_event_occurred(type, interactor, interactable)
 
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _parent = get_node(_parent)
@@ -13,7 +18,17 @@ func _on_interactable_entered(area):
 		return
 	
 	if area.owner.can_interact(_parent):
-		_state.interactables.push_back(area.owner.interactable_parent)
+		_state.interactables.push_back(area.owner)
+		var _err = connect("interact_event_occurred", area.owner, "_on_interact_event")
+		emit_signal(
+			"interact_event_occurred",
+			InteractEventType.INTERACTOR_ENTERED,
+			_parent,
+			area.owner.interactable_parent
+		)
+		
+		if area.owner.interact_on_enter:
+			area.owner.interact(_parent)
 
 
 func _on_interactable_exited(area):
@@ -21,7 +36,14 @@ func _on_interactable_exited(area):
 		print("[WARNING] (interaction._on_interactable_entered): entity _state node not provided")
 		return
 	
-	_state.interactables.erase(area.owner.interactable_parent)
+	_state.interactables.erase(area.owner)
+	emit_signal(
+		"interact_event_occurred",
+		InteractEventType.INTERACTOR_EXITED,
+		_parent,
+		area.owner.interactable_parent
+	)
+	disconnect("interact_event_occurred", area.owner, "_on_interact_event")
 
 
 func _physics_process(_delta):

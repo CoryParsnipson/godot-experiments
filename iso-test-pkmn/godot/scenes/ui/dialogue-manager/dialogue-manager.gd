@@ -10,26 +10,44 @@ export (NodePath) onready var dialogue_box_sign = get_node(dialogue_box_sign)
 onready var _prev_input_mode = game.input_mode
 onready var _orig_dialogue_box_settings = DialogueData.new()
 
+var _is_playing = false
+var _dbox = null
+
 
 func play(data):
 	if not data or not data is DialogueData:
 		print("[WARNING] dialogue-manager.play: received invalid DialogueData!")
 		return
+	
+	if _is_playing:
+		return
 
-	var dbox = _get_dialogue_box(data.dialogue_box_type)
+	_dbox = _get_dialogue_box(data.dialogue_box_type)
 
-	_set_input_mode()
-	_setup_dialogue_box(dbox, data)
+	_setup_dialogue_box(_dbox, data)
+	if data.disable_game_input:
+		_set_input_mode()
 
 	for line in data.lines:
-		dbox.set_text(line)
+		# if we come out of yield and the dialogue box has already been torn down
+		if not _is_playing:
+			return
+			
+		_dbox.set_text(line)
 		
-		dbox.reveal()
-		yield(dbox, "reveal_finished")
+		_dbox.reveal()
+		yield(_dbox, "reveal_finished")
 		yield(self, "advance_dialogue")
 	
-	_teardown_dialogue_box(dbox)
-	_unset_input_mode()
+	if data.disable_game_input:
+		_unset_input_mode()
+	_teardown_dialogue_box(_dbox)
+
+
+func stop():
+	if not _is_playing:
+		return
+	_teardown_dialogue_box(_dbox)
 
 
 func _set_input_mode():
@@ -57,6 +75,7 @@ func _setup_dialogue_box(dbox, data):
 	dbox.set_fast_reveal_interval(data.fast_reveal_interval)
 	dbox.allow_skip = data.allow_skip
 	
+	_is_playing = true
 	dbox.is_active = true
 	dbox.show()
 
@@ -69,6 +88,7 @@ func _teardown_dialogue_box(dbox):
 	dbox.set_fast_reveal_interval(_orig_dialogue_box_settings.fast_reveal_interval)
 	dbox.allow_skip = _orig_dialogue_box_settings.allow_skip
 	
+	_is_playing = false
 	dbox.is_active = false
 	dbox.hide()
 

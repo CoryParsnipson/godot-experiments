@@ -12,3 +12,4 @@ fast_reveal_interval = null
 dialogue_box_type = 0
 lines = [ "This is a wall sign." ]
 allow_skip = true
+disable_game_input = false

@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "DialogueData",
 "language": "GDScript",
 "path": "res://scenes/ui/dialogue-manager/DialogueData.gd"
+}, {
+"base": "Node2D",
+"class": "Interaction",
+"language": "GDScript",
+"path": "res://scenes/mixins/interaction/interaction.gd"
 } ]
 _global_script_class_icons={
-"DialogueData": ""
+"DialogueData": "",
+"Interaction": ""
 }
 
 [application]

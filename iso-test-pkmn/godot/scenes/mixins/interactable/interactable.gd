@@ -1,33 +1,23 @@
 extends "res://scenes/mixins/mixin.gd"
 
-export (bool) var interactable_east
-export (bool) var interactable_southeast
-export (bool) var interactable_south
-export (bool) var interactable_southwest
-export (bool) var interactable_west
-export (bool) var interactable_northwest
-export (bool) var interactable_north
-export (bool) var interactable_northeast
+export (bool) var interactable_east = true
+export (bool) var interactable_southeast = true
+export (bool) var interactable_south = true
+export (bool) var interactable_southwest = true
+export (bool) var interactable_west = true
+export (bool) var interactable_northwest = true
+export (bool) var interactable_north = true
+export (bool) var interactable_northeast = true
+
+export (bool) var interact_on_enter = false
 
 export (NodePath) onready var interactable_parent = get_node(interactable_parent)
 
 
-func _get_direction_of_interactor(interactor):
-	var interactable_map = lib_tilemap.get_nearest_tilemap(interactable_parent)
-	var interactor_map = lib_tilemap.get_nearest_tilemap(interactor)
-
-	var interactable_tile_id = lib_tilemap.world_to_map(interactable_map, $"interactable-area".global_position)
-	var interactor_tile_id = lib_tilemap.world_to_map(interactor_map, interactor.global_position)
-
-	# get the tilemap coordinates of both objects and then get direction
-	# based on difference in coordinates
-	var delta = interactor_tile_id - interactable_tile_id
-	delta = lib_isometric.cartesian_to_isometric(delta)
-	
-	return lib_movement.vector_to_direction(delta, null)
-
-
 func _can_interact_from_direction(direction):
+	if not direction:
+		return false
+	
 	match(direction):
 		lib_movement.Direction.EAST:
 			return interactable_east
@@ -48,7 +38,8 @@ func _can_interact_from_direction(direction):
 
 
 func can_interact(interactor : Node) -> bool:
-	if not _can_interact_from_direction(_get_direction_of_interactor(interactor)):
+	var d = lib_tilemap.get_direction_of_entity($"interactable-area", interactor)
+	if not _can_interact_from_direction(d):
 		return false
 	
 	if interactable_parent and interactable_parent.has_method("can_interact"):
@@ -62,4 +53,9 @@ func interact(interactor : Node):
 	if interactable_parent and interactable_parent.has_method("interact"):
 		return interactable_parent.interact(interactor)
 	
-	print("[WARNING] (interactable.interact): interactable does not have interact() defined.")\
+	print("[WARNING] (interactable.interact): interactable does not have interact() defined.")
+
+
+func _on_interact_event(event, interactor, interactable):
+	if interactable_parent and interactable_parent.has_method("_on_interact_event"):
+		return interactable_parent._on_interact_event(event, interactor, interactable)

@@ -7,3 +7,6 @@ extends Node
 
 func play():
 	print("[WARNING] default-dialogue-manager.play: Default dialogue manager has been invoked.")
+
+func stop():
+	print("[WARNING] default-dialogue-manager.stop: Default dialogue manager has been invoked.")

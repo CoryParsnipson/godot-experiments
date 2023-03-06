@@ -51,3 +51,19 @@ func snap_to_tilemap(node, map, position = null, offset = Vector2(0, 0)):
 	var world_pos = map_to_world(map, tile_pos)
 	
 	node.global_position = world_pos + offset
+
+
+## gets the relative direction of two entities on a tilemap
+func get_direction_of_entity(entity, other):
+	var pov_map = lib_tilemap.get_nearest_tilemap(entity)
+	var other_map = lib_tilemap.get_nearest_tilemap(other)
+
+	var pov_tile_id = lib_tilemap.world_to_map(pov_map, entity.global_position)
+	var other_tile_id = lib_tilemap.world_to_map(other_map, other.global_position)
+
+	# get the tilemap coordinates of both objects and then get direction
+	# based on difference in coordinates
+	var delta = other_tile_id - pov_tile_id
+	delta = lib_isometric.cartesian_to_isometric(delta)
+	
+	return lib_movement.vector_to_direction(delta, null)

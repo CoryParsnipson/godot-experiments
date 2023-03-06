@@ -10,6 +10,7 @@ export (float) var fast_reveal_interval = null
 export (game.DialogueBoxType) var dialogue_box_type = null
 export (Array, String) var lines = []
 export (bool) var allow_skip = true
+export (bool) var disable_game_input = true
 
 
 func to_json():
