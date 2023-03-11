@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://scenes/ui/dialogue-manager/DialogueData.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+version = 1
+color = null
+shadow_color = null
+reveal_interval = null
+fast_reveal_interval = null
+dialogue_box_type = 0
+lines = [ "It's crammed full of POKéMON books." ]
+allow_skip = true
+disable_game_input = true
