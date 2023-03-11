@@ -1,0 +1,117 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=1]
+[ext_resource path="res://scenes/entities/character/player/red/red.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/entities/tv/tv.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/levels/player-house-floor-1/tv.dialogue.tres" type="Resource" id=4]
+[ext_resource path="res://scenes/entities/upstairs-house/upstairs-house.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/entities/rug-small/rug-small.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/entities/window-house/window-house.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/entities/potted-plant/potted-plant.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/entities/cupboard/cupboard.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/entities/dining-table/dining-table.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/entities/chair-facing-se/chair-facing-se.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/entities/chair-facing-nw/chair-facing-nw.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/entities/kitchen/kitchen.tscn" type="PackedScene" id=13]
+[ext_resource path="res://scenes/entities/rug-large/rug-large.tscn" type="PackedScene" id=14]
+
+[node name="player-house-floor-1" type="Node2D"]
+
+[node name="map" type="Node2D" parent="."]
+
+[node name="empty tilemap" type="TileMap" parent="map"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+
+[node name="ground" type="TileMap" parent="map"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -196588, 0, 9, -131052, 0, 6, -65516, 0, 6, 20, 0, 6, 65556, 0, 6, 131092, 0, 6, 196628, 0, 6, 262152, 0, 9, 262153, 0, 6, 262154, 0, 6, 262158, 0, 6, 262159, 0, 6, 262160, 0, 6, 262161, 0, 6, 262162, 0, 6, 262163, 0, 6, 262164, 0, 6, 327691, 0, 6, 327692, 0, 6, 327693, 0, 6 )
+
+[node name="floor" type="TileMap" parent="map"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -196600, 0, 5, -196599, 0, 2, -196598, 0, 2, -196597, 0, 2, -196596, 0, 2, -196595, 0, 2, -196594, 0, 2, -196593, 0, 2, -196592, 0, 2, -196591, 0, 2, -196590, 0, 2, -196589, 0, 2, -131064, 0, 3, -131063, 0, 1, -131062, 0, 1, -131061, 0, 1, -131060, 0, 1, -131059, 0, 1, -131058, 0, 1, -131057, 0, 1, -131056, 0, 1, -131055, 0, 1, -131054, 0, 2, -131053, 0, 2, -65528, 0, 3, -65527, 0, 1, -65526, 0, 1, -65525, 0, 1, -65524, 0, 1, -65523, 0, 1, -65522, 0, 1, -65521, 0, 1, -65520, 0, 1, -65519, 0, 1, -65518, 0, 1, -65517, 0, 1, 8, 0, 3, 9, 0, 1, 10, 0, 1, 11, 0, 1, 12, 0, 1, 13, 0, 1, 14, 0, 1, 15, 0, 1, 16, 0, 1, 17, 0, 1, 18, 0, 1, 19, 0, 1, 65544, 0, 3, 65545, 0, 1, 65546, 0, 1, 65547, 0, 1, 65548, 0, 1, 65549, 0, 1, 65550, 0, 1, 65551, 0, 1, 65552, 0, 1, 65553, 0, 1, 65554, 0, 1, 65555, 0, 1, 131080, 0, 3, 131081, 0, 1, 131082, 0, 1, 131083, 0, 1, 131084, 0, 1, 131085, 0, 1, 131086, 0, 1, 131087, 0, 1, 131088, 0, 1, 131089, 0, 1, 131090, 0, 1, 131091, 0, 1, 196616, 0, 3, 196617, 0, 1, 196618, 0, 1, 196619, 0, 1, 196620, 0, 1, 196621, 0, 1, 196622, 0, 1, 196623, 0, 1, 196624, 0, 1, 196625, 0, 1, 196626, 0, 1, 196627, 0, 1, 262154, 0, 1, 262155, 0, 1, 262156, 0, 1 )
+
+[node name="rug-small" parent="map/floor" instance=ExtResource( 6 )]
+position = Vector2( 320, 120 )
+
+[node name="rug-large" parent="map/floor" instance=ExtResource( 14 )]
+position = Vector2( 112, 128 )
+
+[node name="main" type="TileMap" parent="map"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -262137, 0, 7, -262136, 0, 7, -262135, 0, 7, -262134, 0, 7, -262133, 0, 7, -262132, 0, 7, -262131, 0, 7, -262130, 0, 7, -262129, 0, 7, -262128, 0, 7, -262127, 0, 7, -262126, 0, 7, -262125, 0, 7, -196601, 0, 7, -131065, 0, 7, -131061, 0, 65536, -131060, 0, 65537, -131059, 0, 65537, -131058, 0, 65537, -131057, 0, 65537, -131056, 0, 65544, -65529, 0, 7, -65525, 0, 65538, -65524, 0, 65539, -65523, 0, 65539, -65522, 0, 65539, -65521, 0, 65539, -65520, 0, 65541, 7, 0, 7, 11, 0, 65538, 12, 0, 65539, 13, 0, 65539, 14, 0, 65539, 15, 0, 65539, 16, 0, 65541, 65543, 0, 7, 65547, 0, 65542, 65548, 0, 65540, 65549, 0, 65540, 65550, 0, 65540, 65551, 0, 65540, 65552, 0, 65543, 131079, 0, 7, 196615, 0, 7 )
+
+[node name="upper-wall" type="TileMap" parent="map/main"]
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -327674, 0, 8, -327673, 0, 8, -327672, 0, 8, -327671, 0, 8, -327670, 0, 8, -327669, 0, 8, -327668, 0, 8, -327667, 0, 8, -327666, 0, 8, -327665, 0, 8, -327664, 0, 8, -327663, 0, 8, -327662, 0, 8, -262138, 0, 8, -196602, 0, 8, -131066, 0, 8, -65530, 0, 8, 6, 0, 8, 65542, 0, 8, 131078, 0, 8 )
+
+[node name="window-house" parent="map/main/upper-wall" instance=ExtResource( 7 )]
+position = Vector2( 288, 80 )
+
+[node name="YSort" type="YSort" parent="map/main"]
+
+[node name="red" parent="map/main/YSort" instance=ExtResource( 2 )]
+position = Vector2( 192, 128 )
+
+[node name="Camera2D" type="Camera2D" parent="map/main/YSort/red"]
+current = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="chair-facing-nw-1" parent="map/main/YSort" instance=ExtResource( 12 )]
+position = Vector2( 256, 112 )
+
+[node name="chair-facing-nw-2" parent="map/main/YSort" instance=ExtResource( 12 )]
+position = Vector2( 240, 120 )
+
+[node name="chair-facing-se-1" parent="map/main/YSort" instance=ExtResource( 11 )]
+position = Vector2( 192, 88 )
+
+[node name="chair-facing-se-2" parent="map/main/YSort" instance=ExtResource( 11 )]
+position = Vector2( 208, 80 )
+
+[node name="cupboard" parent="map/main/YSort" instance=ExtResource( 9 )]
+position = Vector2( 224, 64 )
+
+[node name="dining-table" parent="map/main/YSort" instance=ExtResource( 10 )]
+position = Vector2( 224, 104 )
+
+[node name="kitchen" parent="map/main/YSort" instance=ExtResource( 13 )]
+position = Vector2( 192, 48 )
+
+[node name="potted-plant-1" parent="map/main/YSort" instance=ExtResource( 8 )]
+position = Vector2( 272, 168 )
+
+[node name="potted-plant-2" parent="map/main/YSort" instance=ExtResource( 8 )]
+position = Vector2( 96, 80 )
+
+[node name="tv" parent="map/main/YSort" instance=ExtResource( 3 )]
+position = Vector2( 256, 80 )
+interact_data = ExtResource( 4 )
+
+[node name="upstairs-house" parent="map/main/YSort" instance=ExtResource( 5 )]
+position = Vector2( 336, 120 )
+
+[node name="collision" type="TileMap" parent="map"]
+visible = false
+mode = 1
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -262137, 0, 0, -262136, 0, 0, -262135, 0, 0, -262134, 0, 0, -262133, 0, 0, -262132, 0, 0, -262131, 0, 0, -262130, 0, 0, -262129, 0, 0, -262128, 0, 0, -262127, 0, 0, -262126, 0, 0, -262125, 0, 0, -262124, 0, 0, -196601, 0, 0, -196588, 0, 0, -131065, 0, 0, -131052, 0, 0, -65529, 0, 0, -65516, 0, 0, 7, 0, 0, 20, 0, 0, 65543, 0, 0, 65556, 0, 0, 131079, 0, 0, 131092, 0, 0, 196615, 0, 0, 196628, 0, 0, 262151, 0, 0, 262152, 0, 0, 262153, 0, 0, 262157, 0, 0, 262158, 0, 0, 262159, 0, 0, 262160, 0, 0, 262161, 0, 0, 262162, 0, 0, 262163, 0, 0, 262164, 0, 0, 327689, 0, 0, 327690, 0, 0, 327691, 0, 0, 327692, 0, 0, 327693, 0, 0 )

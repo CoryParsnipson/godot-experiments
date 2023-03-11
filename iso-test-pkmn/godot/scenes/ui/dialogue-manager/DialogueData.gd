@@ -40,3 +40,11 @@ func from_json(json_string):
 		if not p in self:
 			continue
 		set(p, json_result.result[p])
+
+func generate_auto_chunks(_dialogue_box):
+	# TODO: implement feature where the dialogue manager can automatically split up lines that
+	# are too long into multiple lines.
+	#
+	# NOTE: in the original game, this has a special animation where the lines scroll up. See the
+	# TV on the first floor of the player's house.
+	pass

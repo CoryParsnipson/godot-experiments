@@ -43,7 +43,7 @@ func _on_interactable_exited(area):
 		_parent,
 		area.owner.interactable_parent
 	)
-	disconnect("interact_event_occurred", area.owner, "_on_interact_event")
+	call_deferred("disconnect", "interact_event_occurred", area.owner, "_on_interact_event")
 
 
 func _physics_process(_delta):
