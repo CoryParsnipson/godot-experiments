@@ -36,6 +36,9 @@ func _on_interactable_exited(area):
 		print("[WARNING] (interaction._on_interactable_entered): entity _state node not provided")
 		return
 	
+	if not (area.owner in _state.interactables):
+		return
+	
 	_state.interactables.erase(area.owner)
 	emit_signal(
 		"interact_event_occurred",
