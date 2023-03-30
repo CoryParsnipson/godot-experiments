@@ -1,5 +1,8 @@
 extends "res://scenes/mixins/mixin.gd"
 
+signal pre_move(movement, entity)
+signal post_move(movement, entity)
+
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _kinematic_body = get_node(_kinematic_body)
 export (NodePath) onready var _animations = get_node(_animations)
