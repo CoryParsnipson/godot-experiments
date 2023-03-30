@@ -30,6 +30,7 @@ visible = false
 texture = SubResource( 1 )
 
 [node name="dialogue-box-sign" parent="dialogue-boxes" instance=ExtResource( 1 )]
+visible = false
 texture = SubResource( 2 )
 region_rect = Rect2( 0, 0, 78, 36 )
 patch_margin_left = 39
