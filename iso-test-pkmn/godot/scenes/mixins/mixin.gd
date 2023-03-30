@@ -18,6 +18,8 @@ func _on_physics_process(_delta):
 func _ready():
 	if not enable:
 		return
+	
+	yield(self, "ready") # important: wait until all children are initialized before proceeding
 	_on_ready()
 
 

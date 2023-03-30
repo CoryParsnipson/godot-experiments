@@ -129,10 +129,10 @@ func _on_turn_debounce_timeout():
 	_state.movement_state = _state.CharacterState.STAND
 	
 
-func _ready():
+func _on_ready():
 	# initialize some stuff
 	_turn_debounce_timer.wait_time = _state.turn_debounce_duration
-	
+		
 	# on load, align this thing to the tilemap
 	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 	
@@ -140,7 +140,7 @@ func _ready():
 	_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
 
 
-func _physics_process(delta):
+func _on_physics_process(delta):
 	# check movement vector and decide if we need to react to anything
 	var new_direction = get_new_direction(_state.movement_vector)
 	
