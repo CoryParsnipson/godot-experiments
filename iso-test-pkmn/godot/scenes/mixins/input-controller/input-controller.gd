@@ -64,7 +64,7 @@ func handle_character_interaction():
 		character.interactables[0].interact(character)
 
 
-func _physics_process(_delta):
+func _on_physics_process(_delta):
 	# disable input if we are not in gameplay mode (i.e. in the middle of cutscene or dialogue)
 	if game.input_mode != game.InputMode.GAMEPLAY:
 		return

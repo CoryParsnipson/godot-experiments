@@ -49,7 +49,7 @@ func _on_interactable_exited(area):
 	call_deferred("disconnect", "interact_event_occurred", area.owner, "_on_interact_event")
 
 
-func _physics_process(_delta):
+func _on_physics_process(_delta):
 	# use the tilemap to find position of which tile is in front of the player
 	# and move the interaction area to that tile
 	var tilemap = lib_tilemap.get_nearest_tilemap(_state)
