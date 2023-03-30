@@ -13,6 +13,8 @@ onready var _turn_debounce_timer = $"turn_debounce_timer"
 var _movement_vector = Vector2(0, 0)
 var _destination = Vector2(0, 0)
 var _is_turning = false
+var _move_cancelled = false
+var _post_movement_against_wall_already_emitted = false
 
 
 ## Begin a move for this character to a map tile specified by movement_vector.
@@ -107,6 +109,25 @@ func is_against_wall(map, dest):
 	return _kinematic_body.test_move(_kinematic_body.global_transform, remaining_length)
 
 
+## This will cancel any movement that is in progress and set the character state
+## to STAND.
+##
+## emit_post_move -> bool; if true, will emit the post_move signal on cancel
+## snap_to_tilemap -> bool; if true, will snap to nearest tile on cancel
+func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
+	set_destination(_tilemap, Vector2(0, 0))
+	_movement_vector = Vector2(0, 0)
+	_state.movement_state = _state.CharacterState.STAND
+	_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
+	_move_cancelled = true
+	
+	if emit_post_move:
+		emit_signal("post_move", self, _state)
+	
+	if snap_to_tilemap:
+		lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
+
+
 ## Generate the name of an animation based on character state and direction
 ## state values.
 ##
@@ -152,7 +173,13 @@ func _on_physics_process(delta):
 		if _state.movement_vector == Vector2(0, 0):
 			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
 			return
-			
+		
+		emit_signal("pre_move", self, _state)
+		_post_movement_against_wall_already_emitted = false
+		if _move_cancelled:
+			_move_cancelled = false
+			return
+		
 		# player is standing and key is pressed in new direction
 		if new_direction != get_direction():
 			_state.movement_state = _state.CharacterState.TURN
@@ -168,7 +195,15 @@ func _on_physics_process(delta):
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
 		if not move_finished:
 			return
-			
+		
+		# emit post movement signal after every tile move
+		if is_against_wall(_tilemap, _destination):
+			if not _post_movement_against_wall_already_emitted:
+				emit_signal("post_move", self, _state)
+				_post_movement_against_wall_already_emitted = true
+		else:
+			emit_signal("post_move", self, _state)
+		
 		# move is done and no keys pressed, so go back to standing	
 		if _state.movement_vector == Vector2(0, 0):
 			set_destination(_tilemap, Vector2(0, 0))
