@@ -2,6 +2,7 @@ extends "res://scenes/mixins/mixin.gd"
 
 signal pre_move(movement, entity)
 signal post_move(movement, entity)
+signal move(movement, entity)
 
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _kinematic_body = get_node(_kinematic_body)
@@ -14,7 +15,7 @@ var _movement_vector = Vector2(0, 0)
 var _destination = Vector2(0, 0)
 var _is_turning = false
 var _move_cancelled = false
-var _post_movement_against_wall_already_emitted = false
+var _movement_against_wall_emitted = false
 
 
 ## Begin a move for this character to a map tile specified by movement_vector.
@@ -134,12 +135,16 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 ## determine if the user, who has just pressed a key that causes the player to
 ## change direction is still holding it down. If not, then this was just a turn
 ## (no tile movement involved). Else, then we need to immediately transition
-## into walking state. Conveniently, if we just transition to STAND state, the
-## state machine polls for input and sets everything up for us. (Just to
-## clarify this behavior in case it is confusing later...)
+## into walking state.
 func _on_turn_debounce_timeout():
 	_is_turning = false
-	_state.movement_state = lib_movement.MoveState.STAND
+	
+	# check movement vector and decide if we need to react to anything
+	var new_direction = get_new_direction(_state.movement_vector)
+	if _state.movement_vector == Vector2(0, 0):
+		_state.movement_state = lib_movement.MoveState.STAND
+	else:
+		_state.movement_state = lib_movement.MoveState.WALK
 	
 
 func _on_ready():
@@ -153,6 +158,24 @@ func _on_ready():
 	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 
 
+func _emit_pre_movement_signal():
+	emit_signal("pre_move", self, _state)
+	_movement_against_wall_emitted = false
+
+
+func _emit_movement_signal():
+	if is_against_wall(_tilemap, _destination):
+		if not _movement_against_wall_emitted:
+			emit_signal("move", self, _state)
+			_movement_against_wall_emitted = true
+	else:
+		emit_signal("move", self, _state)
+
+
+func _emit_post_movement_signal():
+	emit_signal("post_move", self, _state)
+
+
 func _on_physics_process(delta):
 	# check movement vector and decide if we need to react to anything
 	var new_direction = get_new_direction(_state.movement_vector)
@@ -163,8 +186,7 @@ func _on_physics_process(delta):
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			return
 		
-		emit_signal("pre_move", self, _state)
-		_post_movement_against_wall_already_emitted = false
+		_emit_pre_movement_signal()
 		if _move_cancelled:
 			_move_cancelled = false
 			return
@@ -185,19 +207,12 @@ func _on_physics_process(delta):
 		if not move_finished:
 			return
 		
-		# emit post movement signal after every tile move
-		if is_against_wall(_tilemap, _destination):
-			if not _post_movement_against_wall_already_emitted:
-				emit_signal("post_move", self, _state)
-				_post_movement_against_wall_already_emitted = true
-		else:
-			emit_signal("post_move", self, _state)
-		
 		# move is done and no keys pressed, so go back to standing	
 		if _state.movement_vector == Vector2(0, 0):
 			set_destination(_tilemap, Vector2(0, 0))
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			_state.movement_state = lib_movement.MoveState.STAND
+			_emit_post_movement_signal()
 			return
 			
 		# keys are pressed and there is a direction change
@@ -221,6 +236,8 @@ func _on_physics_process(delta):
 				-1,
 				_state.hitting_wall_animation_speed
 				)
+		
+		_emit_movement_signal()
 			
 	elif _state.movement_state == lib_movement.MoveState.TURN:
 		if _is_turning:
