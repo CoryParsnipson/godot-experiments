@@ -1,5 +1,8 @@
 extends Node
 
+## character movement states
+enum MoveState { STAND, WALK, TURN }
+
 ## Explicit definition for directions. Used for character movement.
 enum Direction {
 	NORTH,
@@ -170,3 +173,15 @@ func get_movement_vector(directions_pressed : Dictionary, movement_strategy, all
 				movement_vector = Vector2(1, 1)
 		
 	return movement_vector
+
+
+## Generate the name of an animation based on character state and direction
+## state values.
+##
+## move_state -> a MoveState enum value (e.g. WALK, STAND)
+## direction -> a lib_movement.Direction enum value (e.g. NORTH_WEST, etc)
+func get_animation_id(move_state, direction):
+	var state_string = str(MoveState.keys()[move_state]).to_lower()
+	return state_string + "-" + lib_movement.direction_suffix_str(direction)
+
+

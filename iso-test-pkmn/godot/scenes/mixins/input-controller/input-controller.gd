@@ -52,7 +52,7 @@ func handle_character_interaction():
 	if not interaction:
 		return
 		
-	if character.movement_state != character.CharacterState.STAND:
+	if character.movement_state != lib_movement.MoveState.STAND:
 		return
 		
 	if character.interactables.empty():

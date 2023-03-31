@@ -1,7 +1,5 @@
 extends KinematicBody2D
 
-enum CharacterState { STAND, WALK, TURN }
-
 # -----------------------------------------------------------------------------
 # customizable character settings
 # -----------------------------------------------------------------------------
@@ -21,7 +19,7 @@ export (float) var hitting_wall_animation_speed = 0.35
 # shared character state (do not touch)
 # -----------------------------------------------------------------------------
 export (Vector2) var movement_vector = Vector2(0, 0)
-export (CharacterState) var movement_state = CharacterState.STAND
+export (lib_movement.MoveState) var movement_state = lib_movement.MoveState.STAND
 export (lib_movement.Direction) var direction = lib_movement.Direction.SOUTH_WEST
 export (lib_movement.MovementStrategy) var movement_strategy = lib_movement.MovementStrategy.UP_IS_NORTHWEST
 

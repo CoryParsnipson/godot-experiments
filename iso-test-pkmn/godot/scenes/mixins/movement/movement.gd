@@ -117,8 +117,8 @@ func is_against_wall(map, dest):
 func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 	set_destination(_tilemap, Vector2(0, 0))
 	_movement_vector = Vector2(0, 0)
-	_state.movement_state = _state.CharacterState.STAND
-	_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
+	_state.movement_state = lib_movement.MoveState.STAND
+	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 	_move_cancelled = true
 	
 	if emit_post_move:
@@ -126,17 +126,6 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 	
 	if snap_to_tilemap:
 		lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
-
-
-## Generate the name of an animation based on character state and direction
-## state values.
-##
-## character_state -> a CharacterState enum value (e.g. WALK, STAND)
-## direction -> a lib_movement.Direction enum value (e.g. NORTH_WEST, etc)
-func make_anim_string(character_state, direction):
-	# TODO: move this conversion code into a library?
-	var state_string = str(_state.CharacterState.keys()[character_state]).to_lower()
-	return state_string + "-" + lib_movement.direction_suffix_str(direction)
 
 
 ## Handle movement events when turn_debounce_timer ends
@@ -150,7 +139,7 @@ func make_anim_string(character_state, direction):
 ## clarify this behavior in case it is confusing later...)
 func _on_turn_debounce_timeout():
 	_is_turning = false
-	_state.movement_state = _state.CharacterState.STAND
+	_state.movement_state = lib_movement.MoveState.STAND
 	
 
 func _on_ready():
@@ -161,17 +150,17 @@ func _on_ready():
 	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 	
 	# initialize animation
-	_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
+	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 
 
 func _on_physics_process(delta):
 	# check movement vector and decide if we need to react to anything
 	var new_direction = get_new_direction(_state.movement_vector)
 	
-	if _state.movement_state == _state.CharacterState.STAND:
+	if _state.movement_state == lib_movement.MoveState.STAND:
 		# player is standing and not pressing keys, do nothing
 		if _state.movement_vector == Vector2(0, 0):
-			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
+			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			return
 		
 		emit_signal("pre_move", self, _state)
@@ -182,15 +171,15 @@ func _on_physics_process(delta):
 		
 		# player is standing and key is pressed in new direction
 		if new_direction != get_direction():
-			_state.movement_state = _state.CharacterState.TURN
+			_state.movement_state = lib_movement.MoveState.TURN
 			return
 		
 		# key is pressed in same direction we are currently facing
 		set_destination(_tilemap, _state.movement_vector)
-		_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
-		_state.movement_state = _state.CharacterState.WALK
+		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
+		_state.movement_state = lib_movement.MoveState.WALK
 
-	elif _state.movement_state == _state.CharacterState.WALK:
+	elif _state.movement_state == lib_movement.MoveState.WALK:
 		# execute movement, ignore user input unless the movement finishes
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
 		if not move_finished:
@@ -207,15 +196,15 @@ func _on_physics_process(delta):
 		# move is done and no keys pressed, so go back to standing	
 		if _state.movement_vector == Vector2(0, 0):
 			set_destination(_tilemap, Vector2(0, 0))
-			_animations.play(make_anim_string(_state.CharacterState.STAND, get_direction()))
-			_state.movement_state = _state.CharacterState.STAND
+			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
+			_state.movement_state = lib_movement.MoveState.STAND
 			return
 			
 		# keys are pressed and there is a direction change
 		if new_direction != get_direction():
 			set_direction(new_direction)
 			set_destination(_tilemap, _state.movement_vector)
-			_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
+			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 			return
 			
 		# keys are pressed, but no direction change. Continue walking
@@ -227,19 +216,19 @@ func _on_physics_process(delta):
 		if is_against_wall(_tilemap, _destination):
 			# play walk animation at half speed
 			_animations.play(
-				make_anim_string(_state.CharacterState.WALK,
+				lib_movement.get_animation_id(lib_movement.MoveState.WALK,
 				get_direction()),
 				-1,
 				_state.hitting_wall_animation_speed
 				)
 			
-	elif _state.movement_state == _state.CharacterState.TURN:
+	elif _state.movement_state == lib_movement.MoveState.TURN:
 		if _is_turning:
 			return
 			
 		_is_turning = true
 		set_direction(new_direction)
-		_animations.play(make_anim_string(_state.CharacterState.WALK, get_direction()))
+		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		_turn_debounce_timer.start() # transitions to STAND state in _on_turn_debounce_timeout()
 
 	else:
