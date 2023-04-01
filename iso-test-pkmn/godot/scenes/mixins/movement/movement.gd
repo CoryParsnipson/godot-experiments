@@ -140,7 +140,6 @@ func _on_turn_debounce_timeout():
 	_is_turning = false
 	
 	# check movement vector and decide if we need to react to anything
-	var new_direction = get_new_direction(_state.movement_vector)
 	if _state.movement_vector == Vector2(0, 0):
 		_state.movement_state = lib_movement.MoveState.STAND
 	else:
