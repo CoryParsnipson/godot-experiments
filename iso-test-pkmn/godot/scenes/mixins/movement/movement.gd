@@ -129,34 +129,6 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 		lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 
 
-## Handle movement events when turn_debounce_timer ends
-##
-## When the timer expires, the movement script needs to poll input again to 
-## determine if the user, who has just pressed a key that causes the player to
-## change direction is still holding it down. If not, then this was just a turn
-## (no tile movement involved). Else, then we need to immediately transition
-## into walking state.
-func _on_turn_debounce_timeout():
-	_is_turning = false
-	
-	# check movement vector and decide if we need to react to anything
-	if _state.movement_vector == Vector2(0, 0):
-		_state.movement_state = lib_movement.MoveState.STAND
-	else:
-		_state.movement_state = lib_movement.MoveState.WALK
-	
-
-func _on_ready():
-	# initialize some stuff
-	_turn_debounce_timer.wait_time = _state.turn_debounce_duration
-		
-	# on load, align this thing to the tilemap
-	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
-	
-	# initialize animation
-	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
-
-
 func _emit_pre_movement_signal():
 	emit_signal("pre_move", self, _state)
 	_movement_against_wall_emitted = false
@@ -173,6 +145,42 @@ func _emit_movement_signal():
 
 func _emit_post_movement_signal():
 	emit_signal("post_move", self, _state)
+
+
+## Handle movement events when turn_debounce_timer ends
+##
+## When the timer expires, the movement script needs to poll input again to 
+## determine if the user, who has just pressed a key that causes the player to
+## change direction is still holding it down. If not, then this was just a turn
+## (no tile movement involved). Else, then we need to immediately transition
+## into walking state.
+func _on_turn_debounce_timeout():
+	_is_turning = false
+	
+	# check movement vector and decide if we need to react to anything
+	if _state.movement_vector.length() == 0:
+		_state.movement_state = lib_movement.MoveState.STAND
+	else:
+		var new_direction = get_new_direction(_state.movement_vector)
+		var curr_direction = get_direction()
+
+		if new_direction == curr_direction:
+			set_destination(_tilemap, _state.movement_vector)
+			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
+			_state.movement_state = lib_movement.MoveState.WALK
+		elif new_direction != curr_direction:
+			_state.movement_state = lib_movement.MoveState.TURN
+
+
+func _on_ready():
+	# initialize some stuff
+	_turn_debounce_timer.wait_time = _state.turn_debounce_duration
+		
+	# on load, align this thing to the tilemap
+	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
+	
+	# initialize animation
+	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 
 
 func _on_physics_process(delta):
@@ -201,13 +209,18 @@ func _on_physics_process(delta):
 		_state.movement_state = lib_movement.MoveState.WALK
 
 	elif _state.movement_state == lib_movement.MoveState.WALK:
+		if _movement_vector.length() == 0:
+			print("[WARNING] movement.physics_process: entered WALK state with zero length movement vector. This should not be possible.")
+			_state.movement_state = lib_movement.MoveState.STAND
+			return
+		
 		# execute movement, ignore user input unless the movement finishes
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
 		if not move_finished:
 			return
 		
 		# move is done and no keys pressed, so go back to standing	
-		if _state.movement_vector == Vector2(0, 0):
+		if _state.movement_vector.length() == 0:
 			set_destination(_tilemap, Vector2(0, 0))
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			_state.movement_state = lib_movement.MoveState.STAND
@@ -245,7 +258,7 @@ func _on_physics_process(delta):
 		_is_turning = true
 		set_direction(new_direction)
 		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
-		_turn_debounce_timer.start() # transitions to STAND state in _on_turn_debounce_timeout()
+		_turn_debounce_timer.start()
 
 	else:
 		print("[WARNING] (character._physics_process) character is in an invalid state")
