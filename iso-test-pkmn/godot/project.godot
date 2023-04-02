@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Interaction",
 "language": "GDScript",
 "path": "res://scenes/mixins/interaction/interaction.gd"
-} ]
+}, {
+"base": "Node2D",
+"class": "Level",
+"language": "GDScript",
+"path": "res://scenes/levels/level.gd"
+}]
 _global_script_class_icons={
 "DialogueData": "",
-"Interaction": ""
+"Interaction": "",
+"Level": ""
 }
 
 [application]
