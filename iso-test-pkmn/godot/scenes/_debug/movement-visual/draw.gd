@@ -42,6 +42,9 @@ func _ready():
 
 
 func _draw():
+	if not _dbg or not _dbg.is_enabled():
+		return
+	
 	# to get accurate world position drawn to CanvasLayer, subtract this scene's global pos
 	var self_pos = _dbg.global_position
 	

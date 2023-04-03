@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/entities/character/player/red/red.tscn" type="PackedScene" id=2]
@@ -15,10 +15,29 @@
 [ext_resource path="res://scenes/entities/kitchen/kitchen.tscn" type="PackedScene" id=13]
 [ext_resource path="res://scenes/entities/rug-large/rug-large.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/levels/level.tscn" type="PackedScene" id=15]
+[ext_resource path="res://scenes/gizmos/spawner/spawner.tscn" type="PackedScene" id=16]
 
 [node name="player-house-floor-1" instance=ExtResource( 15 )]
 
-[node name="map" type="Node2D" parent="." index="0"]
+[node name="Camera2D" type="Camera2D" parent="." index="0"]
+current = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="spawn-points" type="Node2D" parent="." index="1"]
+
+[node name="downstairs" parent="spawn-points" index="0" instance=ExtResource( 16 )]
+position = Vector2( 320, 120 )
+parent = NodePath("../../map/main/YSort")
+entity_to_spawn = ExtResource( 2 )
+
+[node name="front-door" parent="spawn-points" index="1" instance=ExtResource( 16 )]
+position = Vector2( 112, 128 )
+parent = NodePath("../../map/main/YSort")
+entity_to_spawn = ExtResource( 2 )
+
+[node name="map" type="Node2D" parent="." index="2"]
 
 [node name="empty tilemap" type="TileMap" parent="map" index="0"]
 visible = false
@@ -66,48 +85,40 @@ position = Vector2( 288, 80 )
 
 [node name="YSort" type="YSort" parent="map/main" index="1"]
 
-[node name="red" parent="map/main/YSort" index="0" instance=ExtResource( 2 )]
-position = Vector2( 192, 128 )
-
-[node name="Camera2D" type="Camera2D" parent="map/main/YSort/red" index="5"]
-current = true
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="chair-facing-nw-1" parent="map/main/YSort" index="1" instance=ExtResource( 12 )]
+[node name="chair-facing-nw-1" parent="map/main/YSort" index="0" instance=ExtResource( 12 )]
 position = Vector2( 256, 112 )
 
-[node name="chair-facing-nw-2" parent="map/main/YSort" index="2" instance=ExtResource( 12 )]
+[node name="chair-facing-nw-2" parent="map/main/YSort" index="1" instance=ExtResource( 12 )]
 position = Vector2( 240, 120 )
 
-[node name="chair-facing-se-1" parent="map/main/YSort" index="3" instance=ExtResource( 11 )]
+[node name="chair-facing-se-1" parent="map/main/YSort" index="2" instance=ExtResource( 11 )]
 position = Vector2( 192, 88 )
 
-[node name="chair-facing-se-2" parent="map/main/YSort" index="4" instance=ExtResource( 11 )]
+[node name="chair-facing-se-2" parent="map/main/YSort" index="3" instance=ExtResource( 11 )]
 position = Vector2( 208, 80 )
 
-[node name="cupboard" parent="map/main/YSort" index="5" instance=ExtResource( 9 )]
+[node name="cupboard" parent="map/main/YSort" index="4" instance=ExtResource( 9 )]
 position = Vector2( 224, 64 )
 
-[node name="dining-table" parent="map/main/YSort" index="6" instance=ExtResource( 10 )]
+[node name="dining-table" parent="map/main/YSort" index="5" instance=ExtResource( 10 )]
 position = Vector2( 224, 104 )
 
-[node name="kitchen" parent="map/main/YSort" index="7" instance=ExtResource( 13 )]
+[node name="kitchen" parent="map/main/YSort" index="6" instance=ExtResource( 13 )]
 position = Vector2( 192, 48 )
 
-[node name="potted-plant-1" parent="map/main/YSort" index="8" instance=ExtResource( 8 )]
+[node name="potted-plant-1" parent="map/main/YSort" index="7" instance=ExtResource( 8 )]
 position = Vector2( 272, 168 )
 
-[node name="potted-plant-2" parent="map/main/YSort" index="9" instance=ExtResource( 8 )]
+[node name="potted-plant-2" parent="map/main/YSort" index="8" instance=ExtResource( 8 )]
 position = Vector2( 96, 80 )
 
-[node name="tv" parent="map/main/YSort" index="10" instance=ExtResource( 3 )]
+[node name="tv" parent="map/main/YSort" index="9" instance=ExtResource( 3 )]
 position = Vector2( 256, 80 )
 interact_data = ExtResource( 4 )
 
-[node name="upstairs-house" parent="map/main/YSort" index="11" instance=ExtResource( 5 )]
+[node name="upstairs-house" parent="map/main/YSort" index="10" instance=ExtResource( 5 )]
 position = Vector2( 336, 120 )
+destination = "res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn"
 
 [node name="collision" type="TileMap" parent="map" index="4"]
 visible = false

@@ -25,4 +25,3 @@ tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65536, 0, 0, 65537, 0, 0 )
 
 [node name="trigger" parent="." instance=ExtResource( 3 )]
 position = Vector2( -16, 0 )
-show_uninitialized_warning = true

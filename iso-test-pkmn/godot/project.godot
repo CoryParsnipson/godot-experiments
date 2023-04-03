@@ -23,11 +23,17 @@ _global_script_classes=[ {
 "class": "Level",
 "language": "GDScript",
 "path": "res://scenes/levels/level.gd"
-}]
+}, {
+"base": "ColorRect",
+"class": "ScreenWipe",
+"language": "GDScript",
+"path": "res://scenes/ui/screen-wipe/screen-wipe.gd"
+} ]
 _global_script_class_icons={
 "DialogueData": "",
 "Interaction": "",
-"Level": ""
+"Level": "",
+"ScreenWipe": ""
 }
 
 [application]

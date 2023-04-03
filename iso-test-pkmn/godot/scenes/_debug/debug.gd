@@ -2,7 +2,7 @@ extends Node2D
 
 export (NodePath) onready var entity = get_node(entity)
 export (Vector2) var offset = Vector2(0, 0)
-export (bool) var local_enable = true
+export (bool) var local_enable = false
 export var smoothing_factor = 5
 
 

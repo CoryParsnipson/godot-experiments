@@ -1,6 +1,6 @@
 extends Node2D
 
-export (lib_movement.Direction) var facing = lib_movement.Direction.SOUTH_EAST
+export (lib_movement.Direction) var facing = lib_movement.Direction.NORTH_WEST
 export (String, FILE) var destination
 
 
@@ -52,7 +52,7 @@ func enter_stairs(movement, entity):
 	movement.enable = true
 	entity.walk_speed = entity.walk_speed / 2
 	entity.movement_state = lib_movement.MoveState.WALK
-	movement.set_destination(movement._tilemap, Vector2(1, -1))
+	movement.set_destination(movement._tilemap, Vector2(-1, 0))
 	
 	# fade to black
 	game.screen_wipe.wipe(ScreenWipe.Type.FADE_TO_BLACK)
@@ -62,12 +62,12 @@ func enter_stairs(movement, entity):
 	var level = load(destination)
 	var scenes = game.swap_scene(level, true)
 	var new_level = scenes[0]
-
+	
 	# TODO: everything below this line actually should belong to door in new scene??
 	# spawn player character at opposite end of stairs
 	var spawns = new_level.get_spawn_points()
-	if "upstairs" in spawns:
-		var player = spawns["upstairs"].spawn()
+	if "downstairs" in spawns:
+		var player = spawns["downstairs"].spawn()
 
 		# attach camera to player
 		var camera = new_level.get_node_or_null("Camera2D")
@@ -81,3 +81,4 @@ func enter_stairs(movement, entity):
 
 	# re-enable player input
 	game.input_mode = prev_input_mode
+

@@ -282,3 +282,4 @@ entity = NodePath("../..")
 [node name="entity-info" parent="debug" instance=ExtResource( 3 )]
 entity = NodePath("../..")
 offset = Vector2( 40, -32 )
+local_enable = true
