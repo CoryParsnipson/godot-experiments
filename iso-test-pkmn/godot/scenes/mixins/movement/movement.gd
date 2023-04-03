@@ -3,6 +3,7 @@ extends "res://scenes/mixins/mixin.gd"
 signal pre_move(movement, entity)
 signal post_move(movement, entity)
 signal move(movement, entity)
+signal turn(movement, entity)
 
 export (NodePath) onready var _state = get_node(_state)
 export (NodePath) onready var _kinematic_body = get_node(_kinematic_body)
@@ -147,6 +148,10 @@ func _emit_post_movement_signal():
 	emit_signal("post_move", self, _state)
 
 
+func _emit_turn_signal():
+	emit_signal("turn", self, _state)
+
+
 ## Handle movement events when turn_debounce_timer ends
 ##
 ## When the timer expires, the movement script needs to poll input again to 
@@ -224,6 +229,7 @@ func _on_physics_process(delta):
 			set_destination(_tilemap, Vector2(0, 0))
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			_state.movement_state = lib_movement.MoveState.STAND
+			_emit_movement_signal()
 			_emit_post_movement_signal()
 			return
 			
@@ -232,6 +238,7 @@ func _on_physics_process(delta):
 			set_direction(new_direction)
 			set_destination(_tilemap, _state.movement_vector)
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
+			_emit_movement_signal()
 			return
 			
 		# keys are pressed, but no direction change. Continue walking
@@ -254,11 +261,13 @@ func _on_physics_process(delta):
 	elif _state.movement_state == lib_movement.MoveState.TURN:
 		if _is_turning:
 			return
-			
+		
 		_is_turning = true
 		set_direction(new_direction)
 		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		_turn_debounce_timer.start()
+		
+		_emit_turn_signal()
 
 	else:
 		print("[WARNING] (character._physics_process) character is in an invalid state")

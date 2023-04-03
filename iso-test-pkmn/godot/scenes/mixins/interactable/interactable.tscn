@@ -16,6 +16,7 @@ interactable_west = true
 interactable_northwest = true
 interactable_north = true
 interactable_northeast = true
+interact_on_enter = false
 interactable_parent = NodePath("")
 
 [node name="interactable-area" type="Area2D" parent="." index="0"]

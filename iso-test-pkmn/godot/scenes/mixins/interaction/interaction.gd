@@ -11,6 +11,8 @@ export (String) var interact_keybinding = "accept"
 
 onready var _interaction_area = get_node_or_null("interaction-area")
 
+var _update_pos_on_physics_process = false
+
 
 func _on_interactable_entered(area):
 	if not _state:
@@ -49,13 +51,13 @@ func _on_interactable_exited(area):
 	call_deferred("disconnect", "interact_event_occurred", area.owner, "_on_interact_event")
 
 
-func _on_physics_process(_delta):
+func _update_position(_movement, _entity):
 	# use the tilemap to find position of which tile is in front of the player
 	# and move the interaction area to that tile
 	var tilemap = lib_tilemap.get_nearest_tilemap(_state)
 	if not tilemap:
 		return
-	
+		
 	var tile_id_delta = lib_movement.direction_to_vector(_state.direction)
 	tile_id_delta = lib_isometric.isometric_to_cartesian(tile_id_delta).normalized()
 	
@@ -66,3 +68,20 @@ func _on_physics_process(_delta):
 	if (_interaction_area):
 		_interaction_area.global_position = dest_pos_centered_on_tile
 
+
+func _on_ready():
+	_update_position(null, null) # set initial pos
+	
+	var mv = _parent.find_node("movement")
+	if mv:
+		mv.connect("turn", self, "_update_position")
+		mv.connect("move", self, "_update_position")
+	else:
+		_update_pos_on_physics_process = true
+
+
+func _on_physics_process(_delta):
+	if not _update_pos_on_physics_process:
+		return
+		
+	_update_position(null, null)
