@@ -2,6 +2,7 @@ extends Node2D
 
 export (lib_movement.Direction) var facing = lib_movement.Direction.SOUTH_EAST
 export (String, FILE) var destination
+export (String) var spawn_point
 
 
 func on_trigger_entered(body):
@@ -59,21 +60,21 @@ func enter_stairs(movement, entity):
 	yield(game.screen_wipe, "screen_wipe_done")
 
 	# change scenes
-	var level = load(destination)
-	var scenes = game.swap_scene(level, true)
-	var new_level = scenes[0]
-
-	# TODO: everything below this line actually should belong to door in new scene??
-	# spawn player character at opposite end of stairs
-	var spawns = new_level.get_spawn_points()
-	if "upstairs" in spawns:
-		var player = spawns["upstairs"].spawn()
-
-		# attach camera to player
-		var camera = new_level.get_node_or_null("Camera2D")
-		if camera:
-			camera.get_parent().remove_child(camera)
-			player.add_child(camera)
+	var level = load(destination).instance()
+	level.post_load_actions.append(
+		SpawnCommand.new().set_data({
+			"level" : level,
+			"spawn_id" : spawn_point,
+			"return_key" : "target",
+		})
+	)
+	level.post_load_actions.append(
+		AttachCameraCommand.new().set_data({
+			"level" : level,
+			# "target" datum is set by SpawnCommmand return_key above
+		})
+	)
+	game.swap_scene(level, true)
 
 	# fade to normal
 	game.screen_wipe.wipe(ScreenWipe.Type.FADE_TO_NORMAL)

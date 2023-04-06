@@ -41,6 +41,7 @@ func from_json(json_string):
 			continue
 		set(p, json_result.result[p])
 
+
 func generate_auto_chunks(_dialogue_box):
 	# TODO: implement feature where the dialogue manager can automatically split up lines that
 	# are too long into multiple lines.

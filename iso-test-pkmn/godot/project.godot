@@ -9,6 +9,16 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Command",
+"class": "AttachCameraCommand",
+"language": "GDScript",
+"path": "res://global/classes/attach-camera-command.gd"
+}, {
+"base": "Resource",
+"class": "Command",
+"language": "GDScript",
+"path": "res://global/classes/command.gd"
+}, {
 "base": "Resource",
 "class": "DialogueData",
 "language": "GDScript",
@@ -24,16 +34,30 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/levels/level.gd"
 }, {
+"base": "Command",
+"class": "MultiCommand",
+"language": "GDScript",
+"path": "res://global/classes/multi-command.gd"
+}, {
 "base": "ColorRect",
 "class": "ScreenWipe",
 "language": "GDScript",
 "path": "res://scenes/ui/screen-wipe/screen-wipe.gd"
+}, {
+"base": "Command",
+"class": "SpawnCommand",
+"language": "GDScript",
+"path": "res://global/classes/spawn-command.gd"
 } ]
 _global_script_class_icons={
+"AttachCameraCommand": "",
+"Command": "",
 "DialogueData": "",
 "Interaction": "",
 "Level": "",
-"ScreenWipe": ""
+"MultiCommand": "",
+"ScreenWipe": "",
+"SpawnCommand": ""
 }
 
 [application]

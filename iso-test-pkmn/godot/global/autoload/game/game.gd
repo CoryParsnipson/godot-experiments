@@ -18,15 +18,15 @@ export (InputMode) var input_mode = InputMode.GAMEPLAY
 ## enlarge game assets (this scales all non-UI game nodes)
 export (Vector2) var pixel_upscale = Vector2(3, 3)
 
+# -----------------------------------------------------------------------------
+# services
+# -----------------------------------------------------------------------------
 ## level root (where the levels are stored in the main scene)
 export (NodePath) var level_root
 
 ## screen wipe UI element
 export (NodePath) var screen_wipe
 
-# -----------------------------------------------------------------------------
-# services
-# -----------------------------------------------------------------------------
 ## dialogue manager (used to operate dialogue boxes)
 export (NodePath) onready var dialogue = get_node(dialogue)
 
@@ -35,11 +35,9 @@ export (NodePath) onready var dialogue = get_node(dialogue)
 # -----------------------------------------------------------------------------
 ## Push a scene onto the level root (in a stack-like fashion)
 ##
-## level -> resource of new scene to load onto scene stack
+## level -> instance of new scene to load onto scene stack
 func push_scene(level):
-	var inst = level.instance()
-	level_root.add_child(inst)
-	return inst
+	level_root.add_child(level)
 
 
 ## Swap a scene onto the level root. This will remove the top scene and replace
@@ -47,14 +45,15 @@ func push_scene(level):
 ## return null. If destroy_scene is false, it will not free the old scene and
 ## return a reference to it instead.
 ##
-## level -> resource reference to Level class (or descendent)
+## level -> instance of resource reference to Level class (or descendent)
 ## destroy_scene -> bool
 func swap_scene(level, destroy_scene):
 	var old_level = pop_scene()
 	if destroy_scene and old_level:
 		old_level.queue_free()
 
-	return [push_scene(level), old_level if not destroy_scene else null]
+	push_scene(level)
+	return old_level if not destroy_scene else null
 
 
 ## Pop the top scene off the level root (in a stack-like fashion)

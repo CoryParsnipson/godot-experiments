@@ -19,15 +19,9 @@
 
 [node name="player-house-floor-1" instance=ExtResource( 15 )]
 
-[node name="Camera2D" type="Camera2D" parent="." index="0"]
-current = true
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="spawn-points" type="Node2D" parent="." index="0"]
 
-[node name="spawn-points" type="Node2D" parent="." index="1"]
-
-[node name="downstairs" parent="spawn-points" index="0" instance=ExtResource( 16 )]
+[node name="upstairs" parent="spawn-points" index="0" instance=ExtResource( 16 )]
 position = Vector2( 320, 120 )
 parent = NodePath("../../map/main/YSort")
 entity_to_spawn = ExtResource( 2 )
@@ -37,7 +31,7 @@ position = Vector2( 112, 128 )
 parent = NodePath("../../map/main/YSort")
 entity_to_spawn = ExtResource( 2 )
 
-[node name="map" type="Node2D" parent="." index="2"]
+[node name="map" type="Node2D" parent="." index="1"]
 
 [node name="empty tilemap" type="TileMap" parent="map" index="0"]
 visible = false
@@ -119,6 +113,7 @@ interact_data = ExtResource( 4 )
 [node name="upstairs-house" parent="map/main/YSort" index="10" instance=ExtResource( 5 )]
 position = Vector2( 336, 120 )
 destination = "res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn"
+spawn_point = "downstairs"
 
 [node name="collision" type="TileMap" parent="map" index="4"]
 visible = false

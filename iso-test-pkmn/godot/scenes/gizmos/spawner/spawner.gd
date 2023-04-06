@@ -17,8 +17,9 @@ func _ready():
 		$"debug-layer/ui-root/visual".hide()
 
 
-func spawn():
+func spawn(props = {}):
 	var inst = entity_to_spawn.instance()
+	inst.position = position
 	
 	if not instance_name.empty():
 		inst.name = instance_name
@@ -26,7 +27,9 @@ func spawn():
 	var insertion_point = self if not parent else parent
 	var place_to_insert = get_node(insertion_point)
 	
-	place_to_insert.call_deferred("add_child", inst)
-	inst.position = position
+	for key in props:
+		inst.set(key, props[key])
+	
+	place_to_insert.add_child(inst)
 	
 	return inst
