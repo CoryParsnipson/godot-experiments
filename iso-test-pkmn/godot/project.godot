@@ -12,12 +12,12 @@ _global_script_classes=[ {
 "base": "Command",
 "class": "AttachCameraCommand",
 "language": "GDScript",
-"path": "res://global/classes/attach-camera-command.gd"
+"path": "res://global/classes/command/attach-camera-command.gd"
 }, {
 "base": "Resource",
 "class": "Command",
 "language": "GDScript",
-"path": "res://global/classes/command.gd"
+"path": "res://global/classes/command/command.gd"
 }, {
 "base": "Resource",
 "class": "DialogueData",
@@ -37,7 +37,7 @@ _global_script_classes=[ {
 "base": "Command",
 "class": "MultiCommand",
 "language": "GDScript",
-"path": "res://global/classes/multi-command.gd"
+"path": "res://global/classes/command/multi-command.gd"
 }, {
 "base": "ColorRect",
 "class": "ScreenWipe",
@@ -47,7 +47,7 @@ _global_script_classes=[ {
 "base": "Command",
 "class": "SpawnCommand",
 "language": "GDScript",
-"path": "res://global/classes/spawn-command.gd"
+"path": "res://global/classes/command/spawn-command.gd"
 } ]
 _global_script_class_icons={
 "AttachCameraCommand": "",
