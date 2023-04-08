@@ -43,6 +43,7 @@ func _on_visibility_changed():
 
 
 func _ready():
+	_on_visibility_changed()
 	if Engine.editor_hint:
 		return
 		
