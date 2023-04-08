@@ -16,7 +16,7 @@ var _movement_vector = Vector2(0, 0)
 var _destination = Vector2(0, 0)
 var _is_turning = false
 var _move_cancelled = false
-var _movement_against_wall_emitted = false
+var _movement_against_wall_emitted = null
 
 
 ## Begin a move for this character to a map tile specified by movement_vector.
@@ -25,10 +25,10 @@ var _movement_against_wall_emitted = false
 ## of many frames via _physics_process. This function saves the movement_vector
 ## and destination to state. (_movement_vector and _destination, respectively).
 ## 
-## map -> tilemap to use as reference
 ## movement_vector -> Vector2() delta to move. I.e. Vector(-1, 1) means move
 ##   one tile to the left on x axis and one tile down on y axis.
-func set_destination(map, movement_vector):
+## map -> tilemap to use as reference
+func set_destination(movement_vector, map = _tilemap):
 	if not map:
 		print("[WARNING] (movement.set_destination) invalid tilemap node provided")
 		return
@@ -117,7 +117,7 @@ func is_against_wall(map, dest):
 ## emit_post_move -> bool; if true, will emit the post_move signal on cancel
 ## snap_to_tilemap -> bool; if true, will snap to nearest tile on cancel
 func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
-	set_destination(_tilemap, Vector2(0, 0))
+	set_destination(Vector2(0, 0))
 	_movement_vector = Vector2(0, 0)
 	_state.movement_state = lib_movement.MoveState.STAND
 	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
@@ -132,14 +132,15 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 
 func _emit_pre_movement_signal():
 	emit_signal("pre_move", self, _state)
-	_movement_against_wall_emitted = false
+	_movement_against_wall_emitted = null
 
 
 func _emit_movement_signal():
 	if is_against_wall(_tilemap, _destination):
-		if not _movement_against_wall_emitted:
+		var dir = get_direction()
+		if not _movement_against_wall_emitted or _movement_against_wall_emitted != dir:
 			emit_signal("move", self, _state)
-			_movement_against_wall_emitted = true
+			_movement_against_wall_emitted = dir
 	else:
 		emit_signal("move", self, _state)
 
@@ -170,7 +171,7 @@ func _on_turn_debounce_timeout():
 		var curr_direction = get_direction()
 
 		if new_direction == curr_direction:
-			set_destination(_tilemap, _state.movement_vector)
+			set_destination(_state.movement_vector)
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 			_state.movement_state = lib_movement.MoveState.WALK
 		elif new_direction != curr_direction:
@@ -209,7 +210,7 @@ func _on_physics_process(delta):
 			return
 		
 		# key is pressed in same direction we are currently facing
-		set_destination(_tilemap, _state.movement_vector)
+		set_destination(_state.movement_vector)
 		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		_state.movement_state = lib_movement.MoveState.WALK
 
@@ -226,7 +227,7 @@ func _on_physics_process(delta):
 		
 		# move is done and no keys pressed, so go back to standing	
 		if _state.movement_vector.length() == 0:
-			set_destination(_tilemap, Vector2(0, 0))
+			set_destination(Vector2(0, 0))
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 			_state.movement_state = lib_movement.MoveState.STAND
 			_emit_movement_signal()
@@ -236,13 +237,13 @@ func _on_physics_process(delta):
 		# keys are pressed and there is a direction change
 		if new_direction != get_direction():
 			set_direction(new_direction)
-			set_destination(_tilemap, _state.movement_vector)
+			set_destination(_state.movement_vector)
 			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 			_emit_movement_signal()
 			return
 			
 		# keys are pressed, but no direction change. Continue walking
-		set_destination(_tilemap, _state.movement_vector)
+		set_destination(_state.movement_vector)
 		
 		# NOTE: if the character is following another character one tile behind
 		# but both are moving at the same speed, this function will return true,

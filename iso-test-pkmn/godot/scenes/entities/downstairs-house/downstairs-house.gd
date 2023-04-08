@@ -22,11 +22,11 @@ func on_trigger_exited(body):
 
 
 func enter_stairs(movement, entity):
-	var player_dir_on_pre_move = lib_movement.vector_to_direction(
+	var player_dir_on_move = lib_movement.vector_to_direction(
 		lib_isometric.cartesian_to_isometric(entity.movement_vector))
 
 	# only want to trigger stairs cutscene if player moves into it	
-	if player_dir_on_pre_move != facing:
+	if player_dir_on_move != facing:
 		return
 	
 	# disable player input
@@ -40,7 +40,7 @@ func enter_stairs(movement, entity):
 	# manually set animation to walk cycle
 	var anim = entity.find_node("animations")
 	if anim:
-		anim.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, player_dir_on_pre_move))
+		anim.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, player_dir_on_move))
 	else:
 		print("[WARNING] upstairs-house.enter_stairs: triggered entity has no animations component")
 	
@@ -53,7 +53,7 @@ func enter_stairs(movement, entity):
 	movement.enable = true
 	entity.walk_speed = entity.walk_speed / 2
 	entity.movement_state = lib_movement.MoveState.WALK
-	movement.set_destination(movement._tilemap, Vector2(-1, 0))
+	movement.set_destination(Vector2(-1, 0))
 	
 	# fade to black
 	game.screen_wipe.wipe(ScreenWipe.Type.FADE_TO_BLACK)
