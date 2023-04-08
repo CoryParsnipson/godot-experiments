@@ -220,6 +220,10 @@ func _on_physics_process(delta):
 			_state.movement_state = lib_movement.MoveState.STAND
 			return
 		
+		if _move_cancelled:
+			_move_cancelled = false
+			return
+		
 		# execute movement, ignore user input unless the movement finishes
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
 		if not move_finished:
