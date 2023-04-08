@@ -1,3 +1,4 @@
+tool
 extends Node2D
 
 export (NodePath) onready var entity = get_node(entity)
@@ -32,11 +33,23 @@ func lerp_to_position(pos, delta):
 	)
 
 
+func _on_visibility_changed():
+	# this runs in the editor
+	# need to toggle the visibility on everything in the debug layer when user clicks the eyeball icon
+	if is_visible_in_tree():
+		$"debug-layer/ui-root".show()
+	else:
+		$"debug-layer/ui-root".hide()
+
+
 func _ready():
 	set_position(entity.get_global_transform_with_canvas().origin)
 
 
 func _physics_process(delta):
+	if Engine.editor_hint:
+		return
+	
 	if not is_enabled() and visible:
 		hide()
 		return

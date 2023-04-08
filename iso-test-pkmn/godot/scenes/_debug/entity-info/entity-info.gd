@@ -1,6 +1,7 @@
+tool
 extends "res://scenes/_debug/debug.gd"
 
-export (NodePath) onready var content = get_node(content)
+export (NodePath) var content
 export (Color) var key_color = Color.powderblue
 export (Color) var value_color = Color.white
 export (bool) var start_minimized = true
@@ -99,12 +100,22 @@ func _on_minimize_toggled(button_pressed):
 
 
 func _ready():
+	if Engine.editor_hint:
+		return
+	
+	content = get_node_or_null(content)
+	if not content:
+		print("[WARNING] entity-info.ready: content nodepath is unset (%s)" % content)
+	
 	_min_btn = content.get_node_or_null("button-minimize")
 	if _min_btn:
 		_min_btn.set_pressed(start_minimized)
 	
 
 func _process(_delta):
+	if Engine.editor_hint:
+		return
+	
 	if not _is_minimized:
 		_update_entity_info()
 		_draw_entity_info()
