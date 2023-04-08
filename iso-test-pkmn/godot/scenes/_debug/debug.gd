@@ -1,7 +1,7 @@
 tool
 extends Node2D
 
-export (NodePath) onready var entity = get_node(entity)
+export (NodePath) var entity
 export (Vector2) var offset = Vector2(0, 0)
 export (bool) var local_enable = false
 export var smoothing_factor = 5
@@ -43,6 +43,10 @@ func _on_visibility_changed():
 
 
 func _ready():
+	if Engine.editor_hint:
+		return
+		
+	entity = get_node(entity)
 	set_position(entity.get_global_transform_with_canvas().origin)
 
 
