@@ -33,6 +33,17 @@ export (NodePath) onready var dialogue = get_node(dialogue)
 # -----------------------------------------------------------------------------
 # game library functions
 # -----------------------------------------------------------------------------
+
+## set the game.input_mode variable to the value specified and return the
+## previous value of input_mode. There is no difference between directly
+## setting input and using this function, other than syntactical niceness of
+## getting the old value and setting a new value in one line.
+func set_input_mode(new_input_mode):
+	var prev_input_mode = game.input_mode
+	game.input_mode = new_input_mode
+	return prev_input_mode
+
+
 ## Push a scene onto the level root (in a stack-like fashion)
 ##
 ## level -> instance of new scene to load onto scene stack

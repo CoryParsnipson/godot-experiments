@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/ui/dialogue-manager/DialogueData.gd"
 }, {
+"base": "Command",
+"class": "InputModeCommand",
+"language": "GDScript",
+"path": "res://global/classes/command/input-mode-command.gd"
+}, {
 "base": "Node2D",
 "class": "Interaction",
 "language": "GDScript",
@@ -45,6 +50,11 @@ _global_script_classes=[ {
 "path": "res://scenes/ui/screen-wipe/screen-wipe.gd"
 }, {
 "base": "Command",
+"class": "ScreenWipeCommand",
+"language": "GDScript",
+"path": "res://global/classes/command/screen-wipe-command.gd"
+}, {
+"base": "Command",
 "class": "SpawnCommand",
 "language": "GDScript",
 "path": "res://global/classes/command/spawn-command.gd"
@@ -53,10 +63,12 @@ _global_script_class_icons={
 "AttachCameraCommand": "",
 "Command": "",
 "DialogueData": "",
+"InputModeCommand": "",
 "Interaction": "",
 "Level": "",
 "MultiCommand": "",
 "ScreenWipe": "",
+"ScreenWipeCommand": "",
 "SpawnCommand": ""
 }
 

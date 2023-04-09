@@ -33,5 +33,17 @@ func wipe(type):
 	$animations.play(screen_wipe_to_string(type))
 
 
+func seek(seconds : float, update : bool = false):
+	$animations.seek(seconds, update)
+
+
+func pause():
+	$animations.stop(false)
+
+
+func resume():
+	$animations.play()
+
+
 func _on_animation_finished(anim_name):
 	emit_signal("screen_wipe_done", anim_name)

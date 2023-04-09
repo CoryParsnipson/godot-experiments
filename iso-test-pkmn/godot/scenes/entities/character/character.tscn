@@ -1,10 +1,149 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://assets/graphics/sprites-character-base.png" type="Texture" id=1]
 [ext_resource path="res://scenes/mixins/movement/movement.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/_debug/entity-info/entity-info.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/entities/character/character.gd" type="Script" id=4]
 [ext_resource path="res://scenes/_debug/movement-visual/movement-visual.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/entities/character/animations.gd" type="Script" id=6]
+
+[sub_resource type="Animation" id=25]
+resource_name = "downstairs-enter-nw"
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "downstairs-enter-nw" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "stand-ne"
+length = 0.2
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "stand-ne" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "stand-nw"
+length = 0.2
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "stand-nw" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "stand-se"
+length = 0.2
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "stand-se" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "stand-sw"
+length = 0.2
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "stand-sw" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=21]
+resource_name = "upstairs-enter-se"
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "upstairs-enter-se" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "walk-ne"
+length = 0.6
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-ne" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "walk-nw"
+length = 0.6
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-nw" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "walk-se"
+length = 0.6
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-se" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "walk-sw"
+length = 0.6
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-sw" ),
+"times": PoolRealArray( 0 )
+}
 
 [sub_resource type="Animation" id=4]
 resource_name = "stand-ne"
@@ -238,6 +377,114 @@ tracks/1/keys = {
 "values": [ false ]
 }
 
+[sub_resource type="Animation" id=24]
+resource_name = "downstairs-enter-nw"
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-nw", "stand-nw" ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("animations:_path_follower_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("animations")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "set_remote_transform_path"
+}, {
+"args": [  ],
+"method": "unset_remote_transform_path"
+} ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("sprite:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=26]
+resource_name = "upstairs-enter-se"
+tracks/0/type = "animation"
+tracks/0/path = NodePath("animations/walk-stand-animations")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "walk-se", "stand-se" ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("animations")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "set_remote_transform_path"
+}, {
+"args": [  ],
+"method": "unset_remote_transform_path"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("animations:_path_follower_offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("sprite:z_index")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 10 ]
+}
+
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 3.0
 height = 4.0
@@ -247,6 +494,20 @@ script = ExtResource( 4 )
 movement_strategy = 1
 
 [node name="animations" type="AnimationPlayer" parent="."]
+anims/downstairs-enter-nw = SubResource( 25 )
+anims/stand-ne = SubResource( 10 )
+anims/stand-nw = SubResource( 11 )
+anims/stand-se = SubResource( 12 )
+anims/stand-sw = SubResource( 13 )
+anims/upstairs-enter-se = SubResource( 21 )
+anims/walk-ne = SubResource( 14 )
+anims/walk-nw = SubResource( 15 )
+anims/walk-se = SubResource( 16 )
+anims/walk-sw = SubResource( 17 )
+script = ExtResource( 6 )
+
+[node name="walk-stand-animations" type="AnimationPlayer" parent="animations"]
+root_node = NodePath("../..")
 anims/stand-ne = SubResource( 4 )
 anims/stand-nw = SubResource( 5 )
 anims/stand-se = SubResource( 2 )
@@ -256,11 +517,17 @@ anims/walk-nw = SubResource( 7 )
 anims/walk-se = SubResource( 8 )
 anims/walk-sw = SubResource( 9 )
 
+[node name="portal-animations" type="AnimationPlayer" parent="animations"]
+root_node = NodePath("../..")
+anims/downstairs-enter-nw = SubResource( 24 )
+anims/upstairs-enter-se = SubResource( 26 )
+
 [node name="sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
+flip_h = true
 hframes = 10
 vframes = 10
-frame = 20
+frame = 21
 
 [node name="collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 8 )

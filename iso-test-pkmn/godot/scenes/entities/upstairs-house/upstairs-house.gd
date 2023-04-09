@@ -1,9 +1,12 @@
 extends Node2D
 
+enum StairsType { Upstairs, Downstairs }
+
 export (lib_movement.Direction) var facing = lib_movement.Direction.SOUTH_EAST
 export (String, FILE) var destination
 export (String) var spawn_point
 
+export (StairsType) var stairs_type = StairsType.Upstairs
 
 func on_trigger_entered(body):
 	var mv = body.find_node("movement")
@@ -21,6 +24,24 @@ func on_trigger_exited(body):
 	mv.call_deferred("disconnect", "move", self, "enter_stairs")
 
 
+func play_animation(entity, movement, portal_type, action_string):
+	var animations = entity.find_node("animations")
+	if not animations:
+		return
+	
+	# create path string
+	var path_selector = "%s-%s-%s" % \
+		[portal_type, action_string, lib_movement.direction_suffix_str(movement.get_direction())]
+	var path_follower_path = "paths/%s/path-follow" % path_selector
+	var remote_transform_path = "%s/remote-transform" % path_follower_path
+	
+	animations._remote_transform_target = get_node(remote_transform_path).get_path()
+	animations._path_follower_target = get_node(path_follower_path).get_path()
+	animations._path_follow_target = entity.get_path()
+		
+	animations.play(path_selector)
+
+
 func enter_stairs(movement, entity):
 	var player_dir_on_move = lib_movement.vector_to_direction(
 		lib_isometric.cartesian_to_isometric(entity.movement_vector))
@@ -30,36 +51,21 @@ func enter_stairs(movement, entity):
 		return
 	
 	# disable player input
-	var prev_input_mode = game.input_mode
-	game.input_mode = game.InputMode.CUTSCENE
-	
-	# cancel the movement initiated by trigger entrance
+	var prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
 	movement.enable = false
-	movement.cancel_movement()
 	
-	# manually set animation to walk cycle
-	var anim = entity.find_node("animations")
-	if anim:
-		anim.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, player_dir_on_move))
-	else:
-		print("[WARNING] upstairs-house.enter_stairs: triggered entity has no animations component")
-	
-	# disable collisions
-	var col = entity.get_node_or_null("collider")
-	if col:
-		col.disabled = true
-
-	# move sprite up stairs
-	movement.enable = true
-	entity.walk_speed = entity.walk_speed / 2
-	entity.movement_state = lib_movement.MoveState.WALK
-	movement.set_destination(Vector2(1, -1))
+	play_animation(entity, movement, str(StairsType.keys()[stairs_type]).to_lower(), "enter")
 	
 	# fade to black
-	game.screen_wipe.wipe(ScreenWipe.Type.FADE_TO_BLACK)
+	var swc = ScreenWipeCommand.new().set_data({
+		"screen-wipe" : game.screen_wipe,
+		"type" : ScreenWipe.Type.FADE_TO_BLACK,
+		"pre-wipe-delay" : 0.4,
+	})
+	swc.execute()
 	yield(game.screen_wipe, "screen_wipe_done")
 
-	# change scenes
+	# setup scene change
 	var level = load(destination).instance()
 	level.post_load_actions.append(
 		SpawnCommand.new().set_data({
@@ -74,11 +80,17 @@ func enter_stairs(movement, entity):
 			# "target" datum is set by SpawnCommmand return_key above
 		})
 	)
+	level.post_load_actions.append(
+		ScreenWipeCommand.new().set_data({
+			"screen-wipe" : game.screen_wipe,
+			"type" : ScreenWipe.Type.FADE_TO_NORMAL,
+		})
+	)
+	level.post_load_actions.append(
+		InputModeCommand.new().set_data({
+			"input-mode" : prev_input_mode,
+		})
+	)
+	
+	# change scene
 	game.swap_scene(level, true)
-
-	# fade to normal
-	game.screen_wipe.wipe(ScreenWipe.Type.FADE_TO_NORMAL)
-	#yield(game.screen_wipe, "screen_wipe_done")
-
-	# re-enable player input
-	game.input_mode = prev_input_mode

@@ -22,6 +22,12 @@ func execute(locals = {}):
 	var camera = level.get_node_or_null(camera_name if camera_name else "")
 	if not camera:
 		camera = Camera2D.new()
+		
+		var instance_name = get_context("camera_name", locals, true)
+		if not instance_name:
+			instance_name = "player-camera"
+		camera.set_name(instance_name)
+		
 		camera.current = true
 		target.add_child(camera)
 	
