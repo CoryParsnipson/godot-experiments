@@ -8,6 +8,7 @@ export (String) var spawn_point
 
 export (StairsType) var stairs_type = StairsType.Upstairs
 
+
 func on_trigger_entered(body):
 	var mv = body.find_node("movement")
 	if not mv:
@@ -70,8 +71,8 @@ func enter_stairs(movement, entity):
 	level.post_load_actions.append(
 		SpawnCommand.new().set_data({
 			"level" : level,
-			"spawn_id" : spawn_point,
-			"return_key" : "target",
+			"spawn-id" : spawn_point,
+			"return-key" : "target",
 		})
 	)
 	level.post_load_actions.append(
