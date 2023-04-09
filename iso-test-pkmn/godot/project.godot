@@ -25,6 +25,11 @@ _global_script_classes=[ {
 "path": "res://scenes/ui/dialogue-manager/DialogueData.gd"
 }, {
 "base": "Command",
+"class": "FuncrefCommand",
+"language": "GDScript",
+"path": "res://global/classes/command/funcref-command.gd"
+}, {
+"base": "Command",
 "class": "InputModeCommand",
 "language": "GDScript",
 "path": "res://global/classes/command/input-mode-command.gd"
@@ -63,6 +68,7 @@ _global_script_class_icons={
 "AttachCameraCommand": "",
 "Command": "",
 "DialogueData": "",
+"FuncrefCommand": "",
 "InputModeCommand": "",
 "Interaction": "",
 "Level": "",
