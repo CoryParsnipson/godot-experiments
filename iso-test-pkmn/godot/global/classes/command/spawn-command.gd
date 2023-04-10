@@ -31,7 +31,7 @@ func execute(locals = {}):
 		
 		var ret = { return_key : s.get_path() }
 		if spawner_return_key:
-			ret[spawner_return_key] = spawns[spawn_id]
+			ret[spawner_return_key] = spawns[spawn_id].get_path()
 		
 		return ret
 	

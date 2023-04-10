@@ -3,9 +3,27 @@ class_name Command
 
 export (String) var id
 
+## normally, multi-commands will wait until each command finishes before executing
+## the next one. Setting this will cause the multi-command to move on to the keep
+## going even if this command yields. Note that this means the subsequence commands
+## in the multi-command will not have access to the return values of this command!
+export (bool) var fire_and_forget = false
+
 ## use this for information that can be specified before the execution
 ## and use locals for when information has to be specified at call time
 export (Dictionary) var data
+
+
+## public interface; initialize a new Command. Set a human readable string
+## as id for easier debugging.
+func _init(_id = "Command"):
+	self.id = _id
+
+
+## public interface; set value of fire and forget
+func set_fire_and_forget(_fire_and_forget):
+	fire_and_forget = _fire_and_forget
+	return self
 
 
 ## public interface; perform some function
@@ -26,12 +44,6 @@ func execute(locals = {}) -> Dictionary:
 func unexecute(locals = {}) -> Dictionary:
 	print("[WARNING] Command (%s).unexecute is unimplemented. Locals = %s" % [id, locals])
 	return {}
-
-
-## public interface; initialize a new Command. Set a human readable string
-## as id for easier debugging.
-func _init(_id = "Command"):
-	self.id = _id
 
 
 ## helper function to get a variable from context; This first checks locals

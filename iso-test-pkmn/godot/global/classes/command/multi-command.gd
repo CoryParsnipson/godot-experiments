@@ -30,6 +30,9 @@ func execute(locals = {}) -> Dictionary:
 		input.merge(return_values)
 		
 		var ret = command.execute(input)
+		if command.fire_and_forget:
+			continue
+		
 		if ret is GDScriptFunctionState:
 			ret = yield(ret, "completed")
 		return_values.merge(ret, true)
