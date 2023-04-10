@@ -51,9 +51,14 @@ func execute(locals = {}):
 	if not movement:
 		return {}
 	
+	var disable_input = get_context("disable-input", locals, true)
+	var prev_input_mode = game.input_mode
+	if disable_input != null:
+		prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
+	
 	# its necessary to disable movement or the animation will get immediately
 	# overwritten by movement mixin
-	var prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
+	var prev_movement_enable = movement.enable
 	movement.enable = false
 	
 	# create path string
@@ -78,7 +83,9 @@ func execute(locals = {}):
 	lib_tilemap.snap_to_tilemap(target, lib_tilemap.get_nearest_tilemap(target))
 	
 	# re-enable movement and player input after animation is done
-	movement.enable = true
-	game.set_input_mode(prev_input_mode)
+	movement.enable = prev_movement_enable
+	
+	if disable_input != null:
+		game.set_input_mode(prev_input_mode)
 
 	return {}

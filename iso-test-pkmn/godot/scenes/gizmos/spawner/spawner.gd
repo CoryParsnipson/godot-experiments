@@ -5,6 +5,7 @@ export (String) var instance_name = ""
 
 export (NodePath) var parent
 export (PackedScene) var entity_to_spawn
+export (NodePath) var portal
 
 
 func _ready():

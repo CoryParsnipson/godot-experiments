@@ -29,6 +29,7 @@ entity_to_spawn = ExtResource( 2 )
 position = Vector2( 112, 16 )
 parent = NodePath("../../map/main/YSort")
 entity_to_spawn = ExtResource( 2 )
+portal = NodePath("../../map/main/YSort/downstairs-house")
 
 [node name="map" type="Node2D" parent="." index="1"]
 
