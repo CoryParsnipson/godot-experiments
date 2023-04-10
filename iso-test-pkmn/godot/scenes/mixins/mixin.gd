@@ -1,6 +1,8 @@
 extends Node2D
 
-export var enable = true
+signal enable_changed
+
+export var enable = true setget _on_enable_changed
 
 
 func _on_ready():
@@ -33,3 +35,8 @@ func _physics_process(_delta):
 	if not enable:
 		return
 	_on_physics_process(_delta)
+
+
+func _on_enable_changed(new_enable):
+	enable = new_enable
+	emit_signal("enable_changed")
