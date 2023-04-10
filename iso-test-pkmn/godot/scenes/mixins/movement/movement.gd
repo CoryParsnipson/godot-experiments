@@ -143,6 +143,7 @@ func _emit_movement_signal():
 			_movement_against_wall_emitted = dir
 	else:
 		emit_signal("move", self, _state)
+		_movement_against_wall_emitted = null
 
 
 func _emit_post_movement_signal():
