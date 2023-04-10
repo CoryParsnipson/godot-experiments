@@ -42,6 +42,7 @@ func play_animation(entity, movement, portal_type_string, action_string):
 		entity.get_path()
 	)
 	animations.play(path_selector)
+	yield(animations, "animation_finished")
 
 
 func enter_stairs(movement, entity):
@@ -55,18 +56,20 @@ func enter_stairs(movement, entity):
 	# disable player input
 	var prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
 	movement.enable = false
-	
-	play_animation(entity, movement, str(StairsType.keys()[portal_type]).to_lower(), "enter")
-	
+
 	# fade to black
 	var swc = ScreenWipeCommand.new().set_data({
 		"screen-wipe" : game.screen_wipe,
 		"type" : ScreenWipe.Type.FADE_TO_BLACK,
-		"pre-wipe-delay" : 0.4,
+		"pre-wipe-delay" : 0.2,
 	})
 	swc.execute()
-	yield(game.screen_wipe, "screen_wipe_done")
-
+	
+	yield(
+		play_animation(entity, movement, str(StairsType.keys()[portal_type]).to_lower(), "enter"),
+		"completed"
+	)
+	
 	# setup scene change
 	var level = load(destination).instance()
 	level.post_load_actions.append(
@@ -96,8 +99,10 @@ func enter_stairs(movement, entity):
 		ScreenWipeCommand.new().set_data({
 			"screen-wipe" : game.screen_wipe,
 			"type" : ScreenWipe.Type.FADE_TO_NORMAL,
+			"pre-wipe-delay" : 0.1,
 		})
 	)
+	# NOTE: maybe it's better to disable input inside PlayPortalAnimationCommand?
 	level.post_load_actions.append(
 		InputModeCommand.new().set_data({
 			"input-mode" : prev_input_mode,

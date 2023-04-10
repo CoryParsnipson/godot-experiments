@@ -9,6 +9,7 @@
 
 [sub_resource type="Animation" id=25]
 resource_name = "downstairs-enter-nw"
+length = 0.9
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/portal-animations")
 tracks/0/interp = 1
@@ -22,6 +23,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=29]
 resource_name = "downstairs-exit-se"
+length = 0.75
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/portal-animations")
 tracks/0/interp = 1
@@ -91,6 +93,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=21]
 resource_name = "upstairs-enter-se"
+length = 0.9
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/portal-animations")
 tracks/0/interp = 1
@@ -104,7 +107,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=28]
 resource_name = "upstairs-exit-nw"
-length = 0.95
+length = 0.9
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/portal-animations")
 tracks/0/interp = 1
@@ -406,7 +409,8 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id=24]
 resource_name = "downstairs-enter-nw"
-step = 0.05
+length = 0.9
+step = 0.025
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/walk-stand-animations")
 tracks/0/interp = 1
@@ -415,7 +419,7 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "clips": PoolStringArray( "walk-nw", "stand-nw" ),
-"times": PoolRealArray( 0, 0.85 )
+"times": PoolRealArray( 0, 0.875 )
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("animations:_path_follower_offset")
@@ -424,7 +428,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0.0, 1.05 ]
@@ -436,7 +440,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -453,7 +457,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.825 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -465,7 +469,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0.85 ),
+"times": PoolRealArray( 0.875 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
@@ -475,7 +479,8 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id=30]
 resource_name = "downstairs-exit-se"
-step = 0.05
+length = 0.75
+step = 0.025
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/walk-stand-animations")
 tracks/0/interp = 1
@@ -484,7 +489,7 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "clips": PoolStringArray( "walk-se", "stand-se" ),
-"times": PoolRealArray( 0, 0.85 )
+"times": PoolRealArray( 0, 0.725 )
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("animations:_path_follower_offset")
@@ -493,7 +498,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.725 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0.0, 1.05 ]
@@ -505,7 +510,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.725 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -522,7 +527,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.85 ),
+"times": PoolRealArray( 0.725 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
@@ -544,7 +549,8 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id=26]
 resource_name = "upstairs-enter-se"
-step = 0.05
+length = 0.9
+step = 0.025
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/walk-stand-animations")
 tracks/0/interp = 1
@@ -553,7 +559,7 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "clips": PoolStringArray( "walk-se", "stand-se" ),
-"times": PoolRealArray( 0, 0.85 )
+"times": PoolRealArray( 0, 0.875 )
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("animations:_path_follower_offset")
@@ -562,7 +568,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0.0, 1.05 ]
@@ -574,7 +580,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -591,7 +597,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.85 ),
+"times": PoolRealArray( 0.875 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
@@ -613,7 +619,8 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id=27]
 resource_name = "upstairs-exit-nw"
-step = 0.05
+length = 0.9
+step = 0.025
 tracks/0/type = "animation"
 tracks/0/path = NodePath("animations/walk-stand-animations")
 tracks/0/interp = 1
@@ -622,7 +629,7 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "clips": PoolStringArray( "walk-nw", "stand-nw" ),
-"times": PoolRealArray( 0, 0.85 )
+"times": PoolRealArray( 0, 0.875 )
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("animations:_path_follower_offset")
@@ -631,7 +638,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0.0, 1.05 ]
@@ -643,7 +650,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.85 ),
+"times": PoolRealArray( 0, 0.875 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -660,7 +667,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.85 ),
+"times": PoolRealArray( 0.875 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
@@ -722,12 +729,11 @@ anims/upstairs-enter-se = SubResource( 26 )
 anims/upstairs-exit-nw = SubResource( 27 )
 
 [node name="sprite" type="Sprite" parent="."]
-z_index = 10
 texture = ExtResource( 1 )
 flip_h = true
 hframes = 10
 vframes = 10
-frame = 21
+frame = 20
 
 [node name="collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 8 )
