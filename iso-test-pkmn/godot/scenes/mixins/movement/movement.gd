@@ -17,6 +17,8 @@ var _destination = Vector2(0, 0)
 var _is_turning = false
 var _move_cancelled = false
 var _movement_against_wall_emitted = null
+var _last_animation_played = ""
+var _last_animation_speed = 1.0
 
 
 ## Begin a move for this character to a map tile specified by movement_vector.
@@ -111,6 +113,33 @@ func is_against_wall(map, dest):
 	return _kinematic_body.test_move(_kinematic_body.global_transform, remaining_length)
 
 
+## Play animation. This checks the last animation flag and does not call the
+## animation player if the two match.
+##
+## animation_player -> reference to AnimationPlayer component
+## anim_string -> string containing name of animation to play
+## custom_blend -> float for custom blend parameter of AnimationPlayer.play()
+## custom_speed -> float for custom speed parameter of AnimationPlayer.play()
+func _play_animation(animation_player, anim_string, custom_blend = -1, custom_speed = 1.0):
+	if anim_string == _last_animation_played and custom_speed == _last_animation_speed:
+		return
+	
+	# if the AnimationPlayer reference uses animation tracks, setting a custom speed during
+	# play() will not affect the reference animation track. So as a workaround, iterate
+	# through all the children of animation player and set the speed to custom_speed
+	var players = []
+	players.append_array(animation_player.get_children())
+	while (players.size() > 0):
+		players.append_array(players.front().get_children())
+		if players.front() is AnimationPlayer:
+			players.front().playback_speed = custom_speed
+		players.pop_front()
+	
+	animation_player.play(anim_string, custom_blend, custom_speed)
+	_last_animation_played = anim_string
+	_last_animation_speed = custom_speed
+
+
 ## This will cancel any movement that is in progress and set the character state
 ## to STAND.
 ##
@@ -119,8 +148,9 @@ func is_against_wall(map, dest):
 func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 	set_destination(Vector2(0, 0))
 	_movement_vector = Vector2(0, 0)
+	_state.movement_vector = _movement_vector
 	_state.movement_state = lib_movement.MoveState.STAND
-	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
+	_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 	_move_cancelled = true
 	
 	if emit_post_move:
@@ -136,7 +166,7 @@ func _emit_pre_movement_signal():
 
 
 func _emit_movement_signal():
-	if is_against_wall(_tilemap, _destination):
+	if _state.is_moving_against_wall:
 		var dir = get_direction()
 		if not _movement_against_wall_emitted or _movement_against_wall_emitted != dir:
 			emit_signal("move", self, _state)
@@ -173,7 +203,6 @@ func _on_turn_debounce_timeout():
 
 		if new_direction == curr_direction:
 			set_destination(_state.movement_vector)
-			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 			_state.movement_state = lib_movement.MoveState.WALK
 		elif new_direction != curr_direction:
 			_state.movement_state = lib_movement.MoveState.TURN
@@ -187,22 +216,24 @@ func _on_ready():
 	lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 	
 	# initialize animation
-	_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
+	_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 
 
 func _on_physics_process(delta):
 	# check movement vector and decide if we need to react to anything
 	var new_direction = get_new_direction(_state.movement_vector)
+	_state.is_moving_against_wall = false
 	
 	if _state.movement_state == lib_movement.MoveState.STAND:
-		# player is standing and not pressing keys, do nothing
-		if _state.movement_vector == Vector2(0, 0):
-			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
-			return
-		
 		_emit_pre_movement_signal()
 		if _move_cancelled:
 			_move_cancelled = false
+			return
+		
+		_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
+		
+		# player is standing and not pressing keys, do nothing
+		if _state.movement_vector == Vector2(0, 0):
 			return
 		
 		# player is standing and key is pressed in new direction
@@ -212,7 +243,6 @@ func _on_physics_process(delta):
 		
 		# key is pressed in same direction we are currently facing
 		set_destination(_state.movement_vector)
-		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		_state.movement_state = lib_movement.MoveState.WALK
 
 	elif _state.movement_state == lib_movement.MoveState.WALK:
@@ -223,45 +253,46 @@ func _on_physics_process(delta):
 		
 		if _move_cancelled:
 			_move_cancelled = false
+			_state.movement_state = lib_movement.MoveState.STAND
 			return
+		
+		# NOTE: if the character is following another character one tile behind
+		# but both are moving at the same speed, this function will return true,
+		# incorrectly. Not sure how to fix...
+		_state.is_moving_against_wall = is_against_wall(_tilemap, _destination)
+		if _state.is_moving_against_wall:
+			# play walk animation at slow speed when against wall
+			_play_animation(
+				_animations,
+				lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()),
+				-1,
+				_state.hitting_wall_animation_speed
+			)
+		else:
+			_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		
 		# execute movement, ignore user input unless the movement finishes
 		var move_finished = move_to_tile(_tilemap, _movement_vector, _destination, delta)
 		if not move_finished:
 			return
-		
+			
 		# move is done and no keys pressed, so go back to standing	
 		if _state.movement_vector.length() == 0:
-			set_destination(Vector2(0, 0))
-			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
-			_state.movement_state = lib_movement.MoveState.STAND
 			_emit_movement_signal()
+			set_destination(Vector2(0, 0))
+			_state.movement_state = lib_movement.MoveState.STAND
 			_emit_post_movement_signal()
 			return
-			
+		
 		# keys are pressed and there is a direction change
 		if new_direction != get_direction():
 			set_direction(new_direction)
 			set_destination(_state.movement_vector)
-			_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 			_emit_movement_signal()
 			return
-			
+		
 		# keys are pressed, but no direction change. Continue walking
 		set_destination(_state.movement_vector)
-		
-		# NOTE: if the character is following another character one tile behind
-		# but both are moving at the same speed, this function will return true,
-		# incorrectly. Not sure how to fix...
-		if is_against_wall(_tilemap, _destination):
-			# play walk animation at half speed
-			_animations.play(
-				lib_movement.get_animation_id(lib_movement.MoveState.WALK,
-				get_direction()),
-				-1,
-				_state.hitting_wall_animation_speed
-				)
-		
 		_emit_movement_signal()
 			
 	elif _state.movement_state == lib_movement.MoveState.TURN:
@@ -270,7 +301,7 @@ func _on_physics_process(delta):
 		
 		_is_turning = true
 		set_direction(new_direction)
-		_animations.play(lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
+		_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.WALK, get_direction()))
 		_turn_debounce_timer.start()
 		
 		_emit_turn_signal()

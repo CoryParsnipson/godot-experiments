@@ -52,13 +52,17 @@ func handle_character_interaction():
 	if not interaction:
 		return
 		
-	if character.movement_state != lib_movement.MoveState.STAND:
+	if character.movement_state != lib_movement.MoveState.STAND and not character.is_moving_against_wall:
 		return
 		
 	if character.interactables.empty():
 		return
 
 	if Input.is_action_just_pressed(interaction.interact_keybinding):
+		var mv = character.find_node("movement")
+		if mv:
+			mv.cancel_movement()
+		
 		character.interactables[0].interact(character)
 	elif character.interactables[0].interact_on_enter and interact_on_enter_was_retriggered():
 		character.interactables[0].interact(character)
