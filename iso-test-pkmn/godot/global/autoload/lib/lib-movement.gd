@@ -115,6 +115,13 @@ func direction_to_vector(direction):
 			return Vector2(1, -1).normalized()
 
 
+## Flip the direction 180 degrees.
+##
+## direction -> lib_movement.Direction to flip
+func invert_direction(direction):
+	return vector_to_direction(direction_to_vector(direction).rotated(deg2rad(180)))
+
+
 ## Poll input and return a vector depending on which keys are pressed
 func get_movement_vector(directions_pressed : Dictionary, movement_strategy, allow_diagonal: bool = false):
 	var up_pressed = directions_pressed["up"]

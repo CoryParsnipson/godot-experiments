@@ -152,6 +152,7 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 	_movement_vector = Vector2(0, 0)
 	_state.movement_vector = _movement_vector
 	_state.movement_state = lib_movement.MoveState.STAND
+	_state.is_moving_against_wall = false
 	_play_animation(_animations, lib_movement.get_animation_id(lib_movement.MoveState.STAND, get_direction()))
 	_move_cancelled = true
 	
@@ -160,12 +161,6 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 	
 	if snap_to_tilemap:
 		lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
-
-
-func _on_enable_changed_hook(new_enable):
-	if not _state:
-		return
-	_state.is_moving_against_wall = false
 
 
 func _emit_pre_movement_signal():

@@ -6,7 +6,7 @@ enum DoorType { Door, Upstairs, Downstairs }
 export (String, FILE) var destination_scene
 export (String) var destination_spawn_id
 export (DoorType) var type = DoorType.Door
-export (lib_movement.Direction) var facing = lib_movement.Direction.SOUTH_EAST
+export (lib_movement.Direction) var facing = lib_movement.Direction.NORTH_WEST
 export (bool) var destroy_old_scene = true
 
 
@@ -28,7 +28,7 @@ func on_trigger_exited(body):
 
 func can_enter(_movement, entity) -> bool:
 	# only want to trigger stairs cutscene if player moves into it
-	if entity.direction != facing or destination_scene.empty():
+	if entity.direction != lib_movement.invert_direction(facing) or destination_scene.empty():
 		return false
 	
 	return true
@@ -43,8 +43,7 @@ func _pre_enter_door(level, _movement, entity):
 		var spawn = spawns[destination_spawn_id]
 		var dest_portal = spawn.get_node(spawn.portal)
 		if dest_portal:
-			player_dir = dest_portal.facing
-			# TODO: need to flip this vector 180 degrees
+			player_dir = lib_movement.invert_direction(dest_portal.facing)
 	
 	level.post_load_actions.append(
 		SpawnCommand.new().set_data({
@@ -77,6 +76,7 @@ func enter_door(movement, entity):
 	
 	# disable player input
 	var prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
+	movement.cancel_movement()
 	movement.enable = false
 	
 	# wait until the end of the update cycle, so movement disable can take effect

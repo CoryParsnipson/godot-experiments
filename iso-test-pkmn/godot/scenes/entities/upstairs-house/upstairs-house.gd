@@ -53,6 +53,7 @@ func enter_stairs(movement, entity):
 	# disable player input
 	var prev_input_mode = game.set_input_mode(game.InputMode.CUTSCENE)
 	movement.enable = false
+	movement.cancel_movement()
 
 	# fade to black
 	var swc = ScreenWipeCommand.new().set_data({
