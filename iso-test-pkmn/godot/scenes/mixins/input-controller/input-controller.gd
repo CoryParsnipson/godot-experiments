@@ -22,9 +22,7 @@ func interact_on_enter_was_retriggered():
 		character.movement_strategy,
 		character.allow_diagonal
 	)
-	var mv_dir = lib_movement.vector_to_direction(
-		lib_isometric.cartesian_to_isometric(mv)
-	)
+	var mv_dir = lib_movement.vector_to_direction(mv)
 	var interactable_dir = lib_tilemap.get_direction_of_entity(
 		character,
 		character.interactables[0]

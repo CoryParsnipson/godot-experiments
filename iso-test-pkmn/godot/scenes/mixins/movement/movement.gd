@@ -54,9 +54,11 @@ func get_direction():
 ## Get a lib_movement.Direction based on a movement vector
 ##
 ## movement_vector -> Vector2() delta from lib_movement.get_input()
-func get_new_direction(movement_vector):
-	var iso_movement_vector = lib_isometric.cartesian_to_isometric(movement_vector)
-	return lib_movement.vector_to_direction(iso_movement_vector, get_direction())
+func get_direction_from_movement_vector(movement_vector):
+	return lib_isometric.isometric_direction(
+		lib_movement.vector_to_direction(movement_vector, get_direction()),
+		_state.movement_strategy
+	)
 
 
 ## Move this character to the specified cell in a tilemap.
@@ -160,6 +162,12 @@ func cancel_movement(emit_post_move = false, snap_to_tilemap = false):
 		lib_tilemap.snap_to_tilemap(_kinematic_body, _tilemap)
 
 
+func _on_enable_changed_hook(new_enable):
+	if not _state:
+		return
+	_state.is_moving_against_wall = false
+
+
 func _emit_pre_movement_signal():
 	emit_signal("pre_move", self, _state)
 	_movement_against_wall_emitted = null
@@ -198,7 +206,7 @@ func _on_turn_debounce_timeout():
 	if _state.movement_vector.length() == 0:
 		_state.movement_state = lib_movement.MoveState.STAND
 	else:
-		var new_direction = get_new_direction(_state.movement_vector)
+		var new_direction = get_direction_from_movement_vector(_state.movement_vector)
 		var curr_direction = get_direction()
 
 		if new_direction == curr_direction:
@@ -221,7 +229,7 @@ func _on_ready():
 
 func _on_physics_process(delta):
 	# check movement vector and decide if we need to react to anything
-	var new_direction = get_new_direction(_state.movement_vector)
+	var new_direction = get_direction_from_movement_vector(_state.movement_vector)
 	_state.is_moving_against_wall = false
 	
 	if _state.movement_state == lib_movement.MoveState.STAND:

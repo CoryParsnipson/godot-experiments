@@ -63,7 +63,4 @@ func get_direction_of_entity(entity, other):
 
 	# get the tilemap coordinates of both objects and then get direction
 	# based on difference in coordinates
-	var delta = other_tile_id - pov_tile_id
-	delta = lib_isometric.cartesian_to_isometric(delta)
-	
-	return lib_movement.vector_to_direction(delta, null)
+	return lib_movement.vector_to_direction(other_tile_id - pov_tile_id, null)

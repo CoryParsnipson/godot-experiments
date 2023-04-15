@@ -21,7 +21,7 @@ export (float) var hitting_wall_animation_speed = 0.35
 export (Vector2) var movement_vector = Vector2(0, 0)
 export (lib_movement.MoveState) var movement_state = lib_movement.MoveState.STAND
 export (lib_movement.Direction) var direction = lib_movement.Direction.SOUTH_WEST
-export (lib_movement.MovementStrategy) var movement_strategy = lib_movement.MovementStrategy.UP_IS_NORTHWEST
+export (lib_movement.MovementStrategy) var movement_strategy = lib_movement.MovementStrategy.UP_IS_NORTHEAST
 export (bool) var is_moving_against_wall = false
 
 # -----------------------------------------------------------------------------

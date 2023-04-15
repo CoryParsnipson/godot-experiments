@@ -46,11 +46,8 @@ func play_animation(entity, movement, portal_type_string, action_string):
 
 
 func enter_stairs(movement, entity):
-	var player_dir_on_move = lib_movement.vector_to_direction(
-		lib_isometric.cartesian_to_isometric(entity.movement_vector))
-
 	# only want to trigger stairs cutscene if player moves into it	
-	if player_dir_on_move != facing or destination.empty():
+	if entity.direction != facing or destination.empty():
 		return
 	
 	# disable player input
@@ -76,7 +73,7 @@ func enter_stairs(movement, entity):
 		SpawnCommand.new().set_data({
 			"level" : level,
 			"spawn-id" : spawn_point,
-			"spawn-props" : { "direction" : player_dir_on_move },
+			"spawn-props" : { "direction" : entity.direction },
 			"spawner-return-key" : "last-spawn-point",
 			"return-key" : "target",
 		})

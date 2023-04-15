@@ -30,7 +30,6 @@ enum DirectionSuffix {
 	NE
 }
 
-
 ## specify how to interpret keystrokes
 ##
 ## UP_IS_NORTHWEST -> pressing "up" will move to the upper left tile
@@ -71,19 +70,19 @@ func vector_to_direction(vector: Vector2, default_dir = Direction.SOUTH_WEST):
 	match (round(fposmod(rad2deg(vector.angle()), 360)) as int):
 		0:
 			dir = Direction.EAST
-		27:
+		45:
 			dir = Direction.SOUTH_EAST
 		90:
 			dir = Direction.SOUTH
-		153:
+		135:
 			dir = Direction.SOUTH_WEST
 		180:
 			dir = Direction.WEST
-		207:
+		225:
 			dir = Direction.NORTH_WEST
 		270:
 			dir = Direction.NORTH
-		333:
+		315:
 			dir = Direction.NORTH_EAST
 		_:
 			print("[WARNING] (lib_movement.vector_to_direction) Vector is not predefined direction.")
