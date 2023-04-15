@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/ui/dialogue-manager/DialogueData.gd"
 }, {
+"base": "Node2D",
+"class": "Door",
+"language": "GDScript",
+"path": "res://scenes/entities/door/door.gd"
+}, {
 "base": "Command",
 "class": "FuncrefCommand",
 "language": "GDScript",
@@ -73,6 +78,7 @@ _global_script_class_icons={
 "AttachCameraCommand": "",
 "Command": "",
 "DialogueData": "",
+"Door": "",
 "FuncrefCommand": "",
 "InputModeCommand": "",
 "Interaction": "",

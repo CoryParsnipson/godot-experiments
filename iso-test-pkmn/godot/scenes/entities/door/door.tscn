@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/entities/door/door.gd" type="Script" id=1]
+[ext_resource path="res://scenes/gizmos/trigger/trigger.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/gizmos/spawner/spawner.tscn" type="PackedScene" id=3]
+
+[node name="door" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="spawner" parent="." instance=ExtResource( 3 )]
+show_visual = true
+portal = NodePath("..")
+
+[node name="trigger" parent="." instance=ExtResource( 2 )]
+show_uninitialized_warning = true
