@@ -1,15 +1,26 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://scenes/entities/door/door.gd" type="Script" id=1]
-[ext_resource path="res://scenes/gizmos/trigger/trigger.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/gizmos/spawner/spawner.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/gizmos/spawner/spawner.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/entities/door/door.gd" type="Script" id=2]
+[ext_resource path="res://scenes/gizmos/trigger/trigger.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/graphics/ui-gizmos.png" type="Texture" id=4]
 
-[node name="door" type="Node2D"]
-script = ExtResource( 1 )
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 32, 32 )
 
-[node name="spawner" parent="." instance=ExtResource( 3 )]
-show_visual = true
-portal = NodePath("..")
+[node name="door" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+destination_scene = ""
+destination_spawn_id = ""
+type = 0
+facing = 1
+destroy_old_scene = true
 
-[node name="trigger" parent="." instance=ExtResource( 2 )]
-show_uninitialized_warning = true
+[node name="sprite" type="Sprite" parent="." index="1"]
+texture = SubResource( 1 )
+offset = Vector2( 0, -8 )
+
+[node name="trigger" parent="." index="2" instance=ExtResource( 3 )]
+
+[node name="paths" type="Node2D" parent="." index="3"]

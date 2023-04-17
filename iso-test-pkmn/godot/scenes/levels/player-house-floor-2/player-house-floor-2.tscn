@@ -8,28 +8,20 @@
 [ext_resource path="res://scenes/entities/bookshelf/bookshelf.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/entities/snes/snes.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/entities/desk/desk.tscn" type="PackedScene" id=8]
-[ext_resource path="res://scenes/entities/downstairs-house/downstairs-house.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/levels/level.tscn" type="PackedScene" id=10]
 [ext_resource path="res://scenes/entities/wall-sign/wall-sign.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scenes/entities/bed/bed.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/levels/player-house-floor-2/wall-sign.dialogue.tres" type="Resource" id=13]
 [ext_resource path="res://scenes/levels/player-house-floor-2/player-house-floor-2.gd" type="Script" id=14]
+[ext_resource path="res://scenes/entities/door/downstairs-house/downstairs-house.tscn" type="PackedScene" id=16]
 
 [node name="player-house-floor-2" instance=ExtResource( 10 )]
 script = ExtResource( 14 )
 
-[node name="spawn-points" type="Node2D" parent="." index="0"]
-
-[node name="initial-spawn" parent="spawn-points" index="0" instance=ExtResource( 5 )]
+[node name="initial-spawn" parent="." index="0" instance=ExtResource( 5 )]
 position = Vector2( -32, 24 )
-parent = NodePath("../../map/main/YSort")
 entity_to_spawn = ExtResource( 2 )
-
-[node name="downstairs" parent="spawn-points" index="1" instance=ExtResource( 5 )]
-position = Vector2( 112, 16 )
-parent = NodePath("../../map/main/YSort")
-entity_to_spawn = ExtResource( 2 )
-portal = NodePath("../../map/main/YSort/downstairs-house")
+destination_nodepath = NodePath("../map/main/YSort")
 
 [node name="map" type="Node2D" parent="." index="1"]
 
@@ -72,13 +64,15 @@ position = Vector2( 24, -36 )
 [node name="desk" parent="map/main/YSort" index="2" instance=ExtResource( 8 )]
 position = Vector2( -32, -64 )
 
-[node name="drawers" parent="map/main/YSort" index="3" instance=ExtResource( 4 )]
-position = Vector2( 0, -48 )
-
-[node name="downstairs-house" parent="map/main/YSort" index="4" instance=ExtResource( 9 )]
+[node name="downstairs" parent="map/main/YSort" index="3" instance=ExtResource( 16 )]
 position = Vector2( 80, 0 )
-destination = "res://scenes/levels/player-house-floor-1/player-house-floor-1.tscn"
-spawn_point = "upstairs"
+entity_to_spawn = ExtResource( 2 )
+destination_nodepath = NodePath("..")
+destination_scene = "res://scenes/levels/player-house-floor-1/player-house-floor-1.tscn"
+destination_spawn_id = "upstairs"
+
+[node name="drawers" parent="map/main/YSort" index="4" instance=ExtResource( 4 )]
+position = Vector2( 0, -48 )
 
 [node name="wall-sign" parent="map/main/YSort" index="5" instance=ExtResource( 11 )]
 position = Vector2( 128, 8 )

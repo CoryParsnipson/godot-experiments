@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/entities/door/door.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/entities/door/upstairs-house/upstairs-house.gd" type="Script" id=2]
+[ext_resource path="res://assets/graphics/sprites-house-interior.png" type="Texture" id=3]
+[ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=4]
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 3 )
+region = Rect2( 128, 256, 64, 64 )
+
+[sub_resource type="Curve2D" id=2]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, -16, -8, 0, 0, 0, 0, 16, -16 )
+}
+
+[sub_resource type="Curve2D" id=3]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 16, -16, 0, 0, 0, 0, -16, -8 )
+}
+
+[node name="upstairs-house" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+spawn_position = NodePath("trigger")
+type = 1
+
+[node name="sprite" parent="." index="1"]
+position = Vector2( 16, 0 )
+texture = SubResource( 4 )
+offset = Vector2( 0, 0 )
+
+[node name="collision" type="TileMap" parent="." index="2"]
+visible = false
+position = Vector2( 16, 0 )
+mode = 1
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65536, 0, 0, 65537, 0, 0 )
+
+[node name="upstairs-enter-nw" type="Path2D" parent="paths" index="0"]
+position = Vector2( 16, 0 )
+curve = SubResource( 2 )
+
+[node name="path-follow" type="PathFollow2D" parent="paths/upstairs-enter-nw" index="0"]
+position = Vector2( -16, -8 )
+rotate = false
+loop = false
+
+[node name="remote-transform" type="RemoteTransform2D" parent="paths/upstairs-enter-nw/path-follow" index="0"]
+update_rotation = false
+update_scale = false
+
+[node name="upstairs-exit-nw" type="Path2D" parent="paths" index="1"]
+position = Vector2( 16, 0 )
+curve = SubResource( 3 )
+
+[node name="path-follow" type="PathFollow2D" parent="paths/upstairs-exit-nw" index="0"]
+position = Vector2( 16, -16 )
+rotate = false
+loop = false
+
+[node name="remote-transform" type="RemoteTransform2D" parent="paths/upstairs-exit-nw/path-follow" index="0"]
+update_rotation = false
+update_scale = false

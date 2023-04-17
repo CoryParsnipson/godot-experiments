@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://global/resources/tileset-house-interior.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/entities/character/player/red/red.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/entities/tv/tv.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/levels/player-house-floor-1/tv.dialogue.tres" type="Resource" id=4]
-[ext_resource path="res://scenes/entities/upstairs-house/upstairs-house.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/entities/rug-small/rug-small.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/entities/window-house/window-house.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/entities/potted-plant/potted-plant.tscn" type="PackedScene" id=8]
@@ -15,24 +14,11 @@
 [ext_resource path="res://scenes/entities/kitchen/kitchen.tscn" type="PackedScene" id=13]
 [ext_resource path="res://scenes/entities/rug-large/rug-large.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/levels/level.tscn" type="PackedScene" id=15]
-[ext_resource path="res://scenes/gizmos/spawner/spawner.tscn" type="PackedScene" id=16]
+[ext_resource path="res://scenes/entities/door/upstairs-house/upstairs-house.tscn" type="PackedScene" id=17]
 
 [node name="player-house-floor-1" instance=ExtResource( 15 )]
 
-[node name="spawn-points" type="Node2D" parent="." index="0"]
-
-[node name="upstairs" parent="spawn-points" index="0" instance=ExtResource( 16 )]
-position = Vector2( 320, 112 )
-parent = NodePath("../../map/main/YSort")
-entity_to_spawn = ExtResource( 2 )
-portal = NodePath("../../map/main/YSort/upstairs-house")
-
-[node name="front-door" parent="spawn-points" index="1" instance=ExtResource( 16 )]
-position = Vector2( 112, 128 )
-parent = NodePath("../../map/main/YSort")
-entity_to_spawn = ExtResource( 2 )
-
-[node name="map" type="Node2D" parent="." index="1"]
+[node name="map" type="Node2D" parent="." index="0"]
 
 [node name="empty tilemap" type="TileMap" parent="map" index="0"]
 visible = false
@@ -111,10 +97,12 @@ position = Vector2( 96, 80 )
 position = Vector2( 256, 80 )
 interact_data = ExtResource( 4 )
 
-[node name="upstairs-house" parent="map/main/YSort" index="10" instance=ExtResource( 5 )]
-position = Vector2( 336, 120 )
-destination = "res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn"
-spawn_point = "downstairs"
+[node name="upstairs" parent="map/main/YSort" index="10" instance=ExtResource( 17 )]
+position = Vector2( 320, 120 )
+entity_to_spawn = ExtResource( 2 )
+destination_nodepath = NodePath("..")
+destination_scene = "res://scenes/levels/player-house-floor-2/player-house-floor-2.tscn"
+destination_spawn_id = "downstairs"
 
 [node name="collision" type="TileMap" parent="map" index="4"]
 visible = false

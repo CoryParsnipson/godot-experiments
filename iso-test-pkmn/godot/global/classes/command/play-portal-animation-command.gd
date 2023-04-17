@@ -1,9 +1,6 @@
 extends Command
 class_name PlayPortalAnimationCommand
 
-# TODO: this should go into the portal entity (remember to define class_name on it)
-enum PortalType { Upstairs, Downstairs }
-
 
 func _init(id = "PlayPortalAnimation").(id):
 	pass
@@ -21,18 +18,14 @@ func execute(locals = {}):
 		print("[ERROR] PlayPortalAnimationCommand (%s).execute: received invalid last_spawn_point (%s)" % \
 			[id, last_spawn_point])
 		return {}
-
+	
 	var target_path = get_context("target", locals)
 	var target = level.get_node(target_path)
 	if not target:
 		print("[ERROR] PlayPortalAnimationCommand (%s).execute: missing character entity to animate (%s)" % \
 			[id, target])
 		return {}
-
-	var portal = last_spawn_point.get_node(last_spawn_point.portal)
-	if not portal:
-		return {}
-		
+	
 	var facing = get_context("facing", locals)
 	if not facing:
 		print("[ERROR] PlayPortalAnimationCommand (%s).execute: need direction value for animation received (%s)" % \
@@ -63,7 +56,7 @@ func execute(locals = {}):
 	
 	# create path string
 	var path_selector = "%s-%s-%s" % [ \
-		PortalType.keys()[portal.portal_type].to_lower(), \
+		Door.DoorType.keys()[last_spawn_point.type].to_lower(), \
 		portal_action, \
 		lib_movement.direction_suffix_str(facing)
 	]
@@ -71,15 +64,14 @@ func execute(locals = {}):
 	var remote_transform_path = "%s/remote-transform" % path_follower_path
 	
 	animations.set_path_members(
-		portal.get_node(remote_transform_path).get_path(),
-		portal.get_node(path_follower_path).get_path(),
+		last_spawn_point.get_node(remote_transform_path).get_path(),
+		last_spawn_point.get_node(path_follower_path).get_path(),
 		target.get_path()
 	)	
 	animations.play(path_selector)
 	yield(animations, "animation_finished")
 	
 	# snap to tilemap (clear rounding errors that may have been introduced by animation)
-	target.global_position = last_spawn_point.global_position
 	lib_tilemap.snap_to_tilemap(target, lib_tilemap.get_nearest_tilemap(target))
 	
 	# re-enable movement and player input after animation is done

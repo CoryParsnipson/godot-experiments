@@ -1,16 +1,17 @@
 extends Node2D
 
 export (bool) var show_visual = false
-export (String) var instance_name = ""
-
-export (NodePath) var parent
 export (PackedScene) var entity_to_spawn
-export (NodePath) var portal
+export (String) var spawn_instance_name = ""
+export (NodePath) var destination_nodepath
+export (NodePath) var spawn_position
 
 
 func _ready():
 	$"debug-layer/ui-root/visual".rect_position = \
 		get_global_transform_with_canvas().origin - $"debug-layer/ui-root/visual".rect_size / 2
+	
+	spawn_position = get_node_or_null(spawn_position)
 	
 	if show_visual:
 		$"debug-layer/ui-root/visual".show()
@@ -20,17 +21,18 @@ func _ready():
 
 func spawn(props = {}):
 	var inst = entity_to_spawn.instance()
-	inst.position = position
+	inst.position = position if not spawn_position else spawn_position.global_position
 	
-	if not instance_name.empty():
-		inst.name = instance_name
-		
-	var insertion_point = self if not parent else parent
-	var place_to_insert = get_node(insertion_point)
+	if not spawn_instance_name.empty():
+		inst.name = spawn_instance_name
 	
 	for key in props:
 		inst.set(key, props[key])
 	
-	place_to_insert.add_child(inst)
+	var insertion_point = self if not destination_nodepath else get_node_or_null(destination_nodepath)
+	if not insertion_point:
+		print("[ERROR] spawner (%s).spawn: invalid destination_nodepath (%s)" % [name, destination_nodepath])
+		return {}
 	
+	insertion_point.add_child(inst)
 	return inst

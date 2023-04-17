@@ -78,3 +78,12 @@ func pop_scene():
 	var scene = level_root.get_child(child_count - 1)
 	scene.get_parent().remove_child(scene)
 	return scene
+
+
+## Get a reference to the current scene
+func current_scene():
+	var child_count = level_root.get_child_count()
+	if child_count == 0:
+		return null
+	
+	return level_root.get_child(child_count - 1)

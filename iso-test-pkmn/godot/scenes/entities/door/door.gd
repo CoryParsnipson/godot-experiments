@@ -1,4 +1,4 @@
-extends Node2D
+extends "res://scenes/gizmos/spawner/spawner.gd"
 class_name Door
 
 enum DoorType { Door, Upstairs, Downstairs }
@@ -41,9 +41,10 @@ func _pre_enter_door(level, _movement, entity):
 	var spawns = level.get_spawn_points()
 	if destination_spawn_id in spawns:
 		var spawn = spawns[destination_spawn_id]
-		var dest_portal = spawn.get_node(spawn.portal)
-		if dest_portal:
-			player_dir = lib_movement.invert_direction(dest_portal.facing)
+		
+		# ideally this should be `if spawn is Door:` but we can't use class name in its own file
+		if spawn.get("facing") != null:
+			player_dir = lib_movement.invert_direction(spawn.facing)
 	
 	level.post_load_actions.append(
 		SpawnCommand.new().set_data({
@@ -82,8 +83,16 @@ func enter_door(movement, entity):
 	# wait until the end of the update cycle, so movement disable can take effect
 	yield(get_tree(), "idle_frame")
 	
-	_pre_enter_door(level, movement, entity)
+	var ret = _pre_enter_door(level, movement, entity)
+	if ret is GDScriptFunctionState:
+		yield(ret, "completed")
+	
+	# re-enable player input
+	level.post_load_actions.append(
+		InputModeCommand.new().set_data({
+			"input-mode" : prev_input_mode,
+		})
+	)
+	
 	game.swap_scene(level, destroy_old_scene)
 	_post_enter_door(level, movement, entity)
-
-	game.set_input_mode(prev_input_mode)
