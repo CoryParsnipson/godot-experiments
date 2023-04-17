@@ -24,19 +24,10 @@ script = ExtResource( 2 )
 spawn_position = NodePath("trigger")
 type = 1
 
-[node name="sprite" parent="." index="1"]
+[node name="sprite" parent="." index="0"]
 position = Vector2( 16, 0 )
 texture = SubResource( 4 )
 offset = Vector2( 0, 0 )
-
-[node name="collision" type="TileMap" parent="." index="2"]
-visible = false
-position = Vector2( 16, 0 )
-mode = 1
-tile_set = ExtResource( 4 )
-cell_size = Vector2( 32, 16 )
-format = 1
-tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65536, 0, 0, 65537, 0, 0 )
 
 [node name="upstairs-enter-nw" type="Path2D" parent="paths" index="0"]
 position = Vector2( 16, 0 )
@@ -63,3 +54,12 @@ loop = false
 [node name="remote-transform" type="RemoteTransform2D" parent="paths/upstairs-exit-nw/path-follow" index="0"]
 update_rotation = false
 update_scale = false
+
+[node name="collision" type="TileMap" parent="." index="5"]
+visible = false
+position = Vector2( 16, 0 )
+mode = 1
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65536, 0, 0, 65537, 0, 0 )

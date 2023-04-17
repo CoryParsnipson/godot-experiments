@@ -1,5 +1,6 @@
 extends "res://scenes/gizmos/spawner/spawner.gd"
 class_name Door
+tool
 
 enum DoorType { Door, Upstairs, Downstairs }
 enum DoorAction { Enter, Exit }

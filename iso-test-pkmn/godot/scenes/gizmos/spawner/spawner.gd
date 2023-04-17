@@ -1,6 +1,7 @@
 extends Node2D
+tool
 
-export (bool) var show_visual = false
+export (bool) var show_visual = false setget set_visual_visibility
 export (PackedScene) var entity_to_spawn
 export (String) var spawn_instance_name = ""
 export (NodePath) var destination_nodepath
@@ -8,15 +9,23 @@ export (NodePath) var spawn_position
 
 
 func _ready():
-	$"debug-layer/ui-root/visual".rect_position = \
-		get_global_transform_with_canvas().origin - $"debug-layer/ui-root/visual".rect_size / 2
+	if Engine.editor_hint:
+		set_visual_visibility(show_visual)
+		return
 	
 	spawn_position = get_node_or_null(spawn_position)
+	$"label-root/label-rect/spawn-id".text = name
+
+
+func set_visual_visibility(visibility):
+	show_visual = visibility
 	
-	if show_visual:
-		$"debug-layer/ui-root/visual".show()
+	if visibility:
+		$visual.show()
+		$"label-root".show()
 	else:
-		$"debug-layer/ui-root/visual".hide()
+		$visual.hide()
+		$"label-root".hide()
 
 
 func spawn(props = {}):

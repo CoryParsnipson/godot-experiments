@@ -9,7 +9,7 @@
 atlas = ExtResource( 2 )
 region = Rect2( 0, 256, 64, 64 )
 
-[sub_resource type="Curve2D" id=1]
+[sub_resource type="Curve2D" id=4]
 _data = {
 "points": PoolVector2Array( 0, 0, 0, 0, 32, 8, 0, 0, 0, 0, 8, 5 )
 }
@@ -25,23 +25,14 @@ spawn_position = NodePath("trigger")
 type = 2
 facing = 5
 
-[node name="sprite" parent="." index="1"]
+[node name="sprite" parent="." index="0"]
 texture = SubResource( 3 )
 
-[node name="collision" type="TileMap" parent="." index="2"]
-visible = false
-position = Vector2( 0, 8 )
-mode = 1
-tile_set = ExtResource( 4 )
-cell_size = Vector2( 32, 16 )
-format = 1
-tile_data = PoolIntArray( -1, 0, 0, -65536, 0, 0, 65535, 0, 0, 0, 0, 0 )
-
-[node name="trigger" parent="." index="3"]
+[node name="trigger" parent="." index="1"]
 position = Vector2( 32, 16 )
 
 [node name="downstairs-enter-se" type="Path2D" parent="paths" index="0"]
-curve = SubResource( 1 )
+curve = SubResource( 4 )
 
 [node name="path-follow" type="PathFollow2D" parent="paths/downstairs-enter-se" index="0"]
 position = Vector2( 32, 8 )
@@ -63,3 +54,18 @@ loop = false
 [node name="remote-transform" type="RemoteTransform2D" parent="paths/downstairs-exit-se/path-follow" index="0"]
 update_rotation = false
 update_scale = false
+
+[node name="visual" parent="." index="3"]
+position = Vector2( 32, 16 )
+
+[node name="label-root" parent="." index="4"]
+position = Vector2( 32, 16 )
+
+[node name="collision" type="TileMap" parent="." index="5"]
+visible = false
+position = Vector2( 0, 8 )
+mode = 1
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 32, 16 )
+format = 1
+tile_data = PoolIntArray( -1, 0, 0, -65536, 0, 0, 65535, 0, 0, 0, 0, 0 )

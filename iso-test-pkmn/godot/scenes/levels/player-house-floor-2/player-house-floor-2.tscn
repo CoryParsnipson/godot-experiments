@@ -18,12 +18,7 @@
 [node name="player-house-floor-2" instance=ExtResource( 10 )]
 script = ExtResource( 14 )
 
-[node name="initial-spawn" parent="." index="0" instance=ExtResource( 5 )]
-position = Vector2( -32, 24 )
-entity_to_spawn = ExtResource( 2 )
-destination_nodepath = NodePath("../map/main/YSort")
-
-[node name="map" type="Node2D" parent="." index="1"]
+[node name="map" type="Node2D" parent="." index="0"]
 
 [node name="ground" type="TileMap" parent="map" index="0"]
 mode = 1
@@ -53,7 +48,12 @@ cell_size = Vector2( 32, 16 )
 format = 1
 tile_data = PoolIntArray( -262151, 0, 8, -262150, 0, 8, -262149, 0, 8, -262148, 0, 8, -262147, 0, 8, -262146, 0, 8, -262145, 0, 8, -327680, 0, 8, -327679, 0, 8, -327678, 0, 8, -327677, 0, 8, -327676, 0, 8, -196615, 0, 8, -131079, 0, 8, -65543, 0, 8, -7, 0, 8, 65529, 0, 8, 131065, 0, 8, 196601, 0, 8 )
 
-[node name="YSort" type="YSort" parent="map/main" index="1"]
+[node name="initial-spawn" parent="map/main" index="1" instance=ExtResource( 5 )]
+position = Vector2( -32, 24 )
+entity_to_spawn = ExtResource( 2 )
+destination_nodepath = NodePath("../YSort")
+
+[node name="YSort" type="YSort" parent="map/main" index="2"]
 
 [node name="bed" parent="map/main/YSort" index="0" instance=ExtResource( 12 )]
 position = Vector2( -72, -28 )

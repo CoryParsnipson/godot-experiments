@@ -1,4 +1,5 @@
 extends Door
+tool
 
 
 func _pre_enter_door(level, _movement, entity):

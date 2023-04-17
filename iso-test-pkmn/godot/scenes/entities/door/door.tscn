@@ -17,10 +17,10 @@ type = 0
 facing = 1
 destroy_old_scene = true
 
-[node name="sprite" type="Sprite" parent="." index="1"]
+[node name="sprite" type="Sprite" parent="." index="0"]
 texture = SubResource( 1 )
 offset = Vector2( 0, -8 )
 
-[node name="trigger" parent="." index="2" instance=ExtResource( 3 )]
+[node name="trigger" parent="." index="1" instance=ExtResource( 3 )]
 
-[node name="paths" type="Node2D" parent="." index="3"]
+[node name="paths" type="Node2D" parent="." index="2"]
