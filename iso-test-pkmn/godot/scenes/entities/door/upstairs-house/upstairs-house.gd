@@ -12,11 +12,9 @@ func _pre_enter_door(level, _movement, entity):
 	).append(
 		# play entrance animation
 		PlayPortalAnimationCommand.new().set_data({
-			"level" : game.current_scene(),
-			"last-spawn-point" : self.get_path(),
+			"door" : self.get_path(),
+			"door-action" : DoorAction.Enter,
 			"target" : entity.get_path(),
-			"portal-action" : "enter",
-			"facing" : facing,
 		})
 	).execute()
 	if ret is GDScriptFunctionState:
@@ -28,7 +26,7 @@ func _pre_enter_door(level, _movement, entity):
 			"level" : level,
 			"spawn-id" : destination_spawn_id,
 			"spawn-props" : { "direction" : entity.direction },
-			"spawner-return-key" : "last-spawn-point",
+			"spawner-return-key" : "door",
 			"return-key" : "target",
 		})
 	)
@@ -46,10 +44,9 @@ func _pre_enter_door(level, _movement, entity):
 		})
 	)
 	level.post_load_actions.append(
-		PlayPortalAnimationCommand.new("UpstairsExitNWAnimation").set_data({
-			"level" : level,
-			# "last-spawn-point" datum is set by SpawnCommand "spawner-return-key" above
+		PlayPortalAnimationCommand.new("DownstairsExitSEAnimation").set_data({
+			# "door" datum is set by SpawnCommand "spawner-return-key" above
+			"door-action" : DoorAction.Exit,
 			# "target" datum is set by SpawnCommmand return_key above
-			"facing" : entity.direction,
 		})
 	)

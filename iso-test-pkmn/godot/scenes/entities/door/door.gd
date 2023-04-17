@@ -2,12 +2,28 @@ extends "res://scenes/gizmos/spawner/spawner.gd"
 class_name Door
 
 enum DoorType { Door, Upstairs, Downstairs }
+enum DoorAction { Enter, Exit }
 
 export (String, FILE) var destination_scene
 export (String) var destination_spawn_id
 export (DoorType) var type = DoorType.Door
 export (lib_movement.Direction) var facing = lib_movement.Direction.NORTH_WEST
 export (bool) var destroy_old_scene = true
+
+
+## this function should be used by inheritors to construct the proper animation string to use
+## when playing character animation entering or exiting this door. This string is used by both
+## the character animations and the door paths.
+##
+## door_type -> provide a Door.DoorType
+## door_action -> provide a Door.DoorAction
+## direction -> direction that the door is facing
+static func animation_id(door_type, door_action, direction):
+	return "%s-%s-%s" % [
+		DoorType.keys()[door_type].to_lower(),
+		DoorAction.keys()[door_action].to_lower(),
+		lib_movement.direction_suffix_str(direction)
+	]
 
 
 func on_trigger_entered(body):
