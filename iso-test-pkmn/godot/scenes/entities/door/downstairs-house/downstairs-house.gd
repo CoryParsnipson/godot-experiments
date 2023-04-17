@@ -11,7 +11,7 @@ func _pre_enter_door(level, _movement, entity):
 		})
 	).append(
 		# play entrance animation
-		PlayPortalAnimationCommand.new().set_data({
+		PlayDoorAnimationCommand.new().set_data({
 			"door" : self.get_path(),
 			"door-action" : DoorAction.Enter,
 			"target" : entity.get_path(),
@@ -44,7 +44,7 @@ func _pre_enter_door(level, _movement, entity):
 		})
 	)
 	level.post_load_actions.append(
-		PlayPortalAnimationCommand.new("UpstairsExitNWAnimation").set_data({
+		PlayDoorAnimationCommand.new("UpstairsExitNWAnimation").set_data({
 			# "door" datum is set by SpawnCommand "spawner-return-key" above
 			"door-action" : DoorAction.Exit,
 			# "target" datum is set by SpawnCommmand return_key above

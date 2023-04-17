@@ -55,9 +55,9 @@ _global_script_classes=[ {
 "path": "res://global/classes/command/multi-command.gd"
 }, {
 "base": "Command",
-"class": "PlayPortalAnimationCommand",
+"class": "PlayDoorAnimationCommand",
 "language": "GDScript",
-"path": "res://global/classes/command/play-portal-animation-command.gd"
+"path": "res://global/classes/command/play-door-animation-command.gd"
 }, {
 "base": "ColorRect",
 "class": "ScreenWipe",
@@ -84,7 +84,7 @@ _global_script_class_icons={
 "Interaction": "",
 "Level": "",
 "MultiCommand": "",
-"PlayPortalAnimationCommand": "",
+"PlayDoorAnimationCommand": "",
 "ScreenWipe": "",
 "ScreenWipeCommand": "",
 "SpawnCommand": ""

@@ -1,8 +1,8 @@
 extends Command
-class_name PlayPortalAnimationCommand
+class_name PlayDoorAnimationCommand
 
 
-func _init(id = "PlayPortalAnimation").(id):
+func _init(id = "PlayDoorAnimation").(id):
 	pass
 
 
@@ -10,19 +10,19 @@ func execute(locals = {}):
 	var door_path = get_context("door", locals)
 	var door : Door = game.get_node_or_null(door_path)
 	if door == null:
-		print("[ERROR] PlayPortalAnimationCommand (%s).execute: Received invalid door entity (%s)" % [id, door])
+		print("[ERROR] PlayDoorAnimationCommand (%s).execute: Received invalid door entity (%s)" % [id, door])
 		return {}
 
 	var target_path = get_context("target", locals)
 	var target = game.get_node(target_path)
 	if not target:
-		print("[ERROR] PlayPortalAnimationCommand (%s).execute: missing character entity to animate (%s)" % \
+		print("[ERROR] PlayDoorAnimationCommand (%s).execute: missing character entity to animate (%s)" % \
 			[id, target])
 		return {}
 	
 	var door_action = get_context("door-action", locals)
 	if door_action == null:
-		print("[ERROR] PlayPortalAnimationCommand (%s).exeucte: need door-action. Received (%s)" % [id, door_action])
+		print("[ERROR] PlayDoorAnimationCommand (%s).exeucte: need door-action. Received (%s)" % [id, door_action])
 		return {}
 	
 	var animations = target.find_node("animations")

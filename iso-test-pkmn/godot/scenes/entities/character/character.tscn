@@ -11,7 +11,7 @@
 resource_name = "downstairs-enter-se"
 length = 0.9
 tracks/0/type = "animation"
-tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/path = NodePath("animations/door-animations")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -25,7 +25,7 @@ tracks/0/keys = {
 resource_name = "downstairs-exit-se"
 length = 0.75
 tracks/0/type = "animation"
-tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/path = NodePath("animations/door-animations")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -95,7 +95,7 @@ tracks/0/keys = {
 resource_name = "upstairs-enter-nw"
 length = 0.9
 tracks/0/type = "animation"
-tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/path = NodePath("animations/door-animations")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -109,7 +109,7 @@ tracks/0/keys = {
 resource_name = "upstairs-exit-nw"
 length = 0.9
 tracks/0/type = "animation"
-tracks/0/path = NodePath("animations/portal-animations")
+tracks/0/path = NodePath("animations/door-animations")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -720,7 +720,7 @@ anims/walk-nw = SubResource( 7 )
 anims/walk-se = SubResource( 8 )
 anims/walk-sw = SubResource( 9 )
 
-[node name="portal-animations" type="AnimationPlayer" parent="animations"]
+[node name="door-animations" type="AnimationPlayer" parent="animations"]
 root_node = NodePath("../..")
 anims/downstairs-enter-se = SubResource( 24 )
 anims/downstairs-exit-se = SubResource( 30 )
