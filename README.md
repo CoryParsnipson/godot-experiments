@@ -18,3 +18,7 @@ This uses the same assets as iso-test.
 ### iso-test-pkmn
 
 Recreate pokemon fire red/leaf green in isomorphic projection. It's coming out good so far? ¯\_(ツ)_/¯
+
+### walk
+
+Trying to make a demo in Godot for mobile devices where you can count steps.
