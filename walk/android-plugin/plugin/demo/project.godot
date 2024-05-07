@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 settings/stdout/verbose_stdout=true
 
+[display]
+
+window/size/resizable=false
+window/handheld/orientation=6
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/GodotStepsCounterPlugin/plugin.cfg")
