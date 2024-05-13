@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
 
         manifestPlaceholders["godotPluginName"] = pluginName
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName
@@ -36,7 +36,9 @@ android {
 
 dependencies {
     implementation("org.godotengine:godot:4.2.0.stable")
-    // TODO: Additional dependencies should be added to export_plugin.gd as well.
+
+    // steps counter dependencies
+    implementation("androidx.core:core:1.13.1")
 }
 
 // BUILD TASKS DEFINITION
