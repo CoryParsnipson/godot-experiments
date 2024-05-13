@@ -13,5 +13,5 @@ func _ready():
 func _on_Button_pressed():
 	if _android_plugin:
 		# TODO: Update to match your plugin's API
-		_android_plugin.helloWorld()
+		_android_plugin.healthCheck(true)
 		print("button pressed!")

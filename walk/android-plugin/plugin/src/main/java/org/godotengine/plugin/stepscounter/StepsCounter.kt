@@ -1,5 +1,7 @@
 package org.godotengine.plugin.stepscounter
 
+import android.content.Context
+import android.hardware.SensorManager
 import android.util.Log
 import android.widget.Toast
 import org.godotengine.godot.Godot
@@ -11,15 +13,16 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
     /**
-     * Example showing how to declare a method that's used by Godot.
-     *
-     * Shows a 'Hello World' toast.
+     * Provide this stub function for users to call to check if everything is laoded and working.
      */
     @UsedByGodot
-    private fun helloWorld() {
+    private fun healthCheck(showToast: Boolean) {
         runOnUiThread {
-            Toast.makeText(activity, "Hello World", Toast.LENGTH_LONG).show()
-            Log.v(pluginName, "Hello World")
+            val msg:String = getPluginName() + " successfully loaded!"
+            if (showToast) {
+                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+            }
+            Log.v(pluginName, msg)
         }
     }
 }
