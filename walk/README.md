@@ -16,7 +16,17 @@ On my decade old windows 10 laptop, it may throw up an "unable to initialize vul
 
 ## Android plugin
 
-TBD
+Inside the `android-plugin` folder is an android studio project that is copied (it is not a git submodule) from `https://github.com/m4gr3d/Godot-Android-Plugin-Template`. This project will export an .aar archive that uses a godot library plugin. Put android system code in here and functions annotated with `@UsedByGodot` will be callable inside the godot engine through the JNI interface.
+
+### Building Android Plugin
+
+According to the instructions in the Godot-Android-Plugin-Template, you can build the plugin by going to the root of the project and use gradle to run the assemble task:
+
+`./gradlew.bat assemble`
+
+If you are in windows, or `./gradlew assemble` for mac and linux. This will build the aar and then copy the debug and release versions to the addons subfolder in the demo godot project contained in the repo. If you want to use it somewhere else, you need to either modify the gradle command to copy to that location or manually copy to your addons folder (use the same folder structure and files as in the demo project).
+
+You can also modify the android studio project so you can build this via the GUI. In the top bar, next to the run button, there will be a button called "Add Configuration". Click that and choose a Gradle task, and then in the bar next to "Run", type in "assemble". Then select the new `android-plugin [assemble]` configuration and whenever you hit run, it will execute that gradle task. (Hitting build will use the project's gradle AGP instead of the system's gradle version, so it may work differently. Need to figure out how to fix that...)
 
 ## Debugging on real android phone
 

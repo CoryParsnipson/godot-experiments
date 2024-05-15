@@ -21,21 +21,23 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
     @UsedByGodot
-    private fun isPermissionGranted() : Boolean {
+    private fun hasPermission(permission: String): Boolean {
         if (this.activity == null || this.activity?.applicationContext == null) {
             Log.w(pluginName, "[WARNING] Plugin activity is null!")
             return false
         }
 
+        var isAllowed = false
         this.activity?.applicationContext?.let {
-            for (perm in neededPermissions) {
-                if (ContextCompat.checkSelfPermission(it, perm) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
+            isAllowed = ContextCompat.checkSelfPermission(it, permission) == PackageManager.PERMISSION_GRANTED
+            Log.v(pluginName, "Permission check for '$permission' -> " + if (isAllowed) "GRANTED" else "NOT_GRANTED")
         }
+        return isAllowed
+    }
 
-        return true
+    @UsedByGodot
+    private fun requestPermission(permission: String) {
+        // TODO: implement me
     }
 
     /**
@@ -49,7 +51,8 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
             }
             Log.v(pluginName, msg)
-            Log.v(pluginName, "Does plugin have necessary permissions? " + isPermissionGranted())
+            hasPermission(neededPermissions[0])
+            hasPermission(neededPermissions[1])
         }
     }
 }
