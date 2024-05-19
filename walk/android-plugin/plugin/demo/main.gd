@@ -1,6 +1,9 @@
 extends Control
 
 var _plugin_name = "GodotStepsCounterPlugin"
+var _permissions = [
+	"android.permission.ACTIVITY_RECOGNITION",
+]
 var _android_plugin
 
 func _ready():
@@ -24,7 +27,8 @@ func _on_Button_pressed():
 	if not require_android_plugin():
 		return
 
-	if not _android_plugin.hasPermission("android.permission.ACTIVITY_RECOGNITION"):
-		OS.request_permission("android.permission.ACTIVITY_RECOGNITION")
+	if not _android_plugin.hasPermission(_permissions[0]):
+		_android_plugin.shouldShowRequestPermissionRationale(_permissions[0])
+		OS.request_permission(_permissions[0])
 
 	print("button pressed!")

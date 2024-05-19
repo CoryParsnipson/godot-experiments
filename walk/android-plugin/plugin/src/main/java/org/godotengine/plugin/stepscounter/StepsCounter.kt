@@ -47,13 +47,26 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         return isAllowed
     }
 
+    // Don't use this, use OS.request_permission() in godot because this one does not expose a
+    // callback that will run on completion.
     @UsedByGodot
     private fun requestPermission(permission: String) {
+        Log.v(pluginName, "Requesting permission for \"$permission\"...")
+
         // cannot use the new, strongly recommended Activity Result API (registerForActivityResult())
         // since we only have a pointer to Activity from Godot. Go through ActivityCompat,
         // which isn't perfect because the Activity implements onRequestPermissionsResult().
         ActivityCompat.requestPermissions(this.activity!!, arrayOf(permission), permissionsRequestCode)
-        Log.v(pluginName, "Requesting permission for $permission...")
+    }
+
+    // the intended permissions request flow is to check hasPermission first, then query this
+    // command to determine if you should show an in context UI explaining to the user why you need
+    // a specific permission, and lastly requestPermission() to let the user grant/deny.
+    @UsedByGodot
+    private fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+        val res = ActivityCompat.shouldShowRequestPermissionRationale(this.activity!!, permission)
+        Log.v(pluginName, "Should we should permission request rationale for \"$permission...\" " + if (res) "YES" else "NO")
+        return res
     }
 
     /**
@@ -68,8 +81,9 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             }
             Log.v(pluginName, msg)
 
+            Log.v(pluginName, "Checking permissions:")
             for (perm in neededPermissions) {
-                Log.v(pluginName, "[PERMISSION] Is \"$perm\" granted? " + if (hasPermission(perm)) { "YES" } else { "NO" })
+                hasPermission(perm)
             }
         }
     }
