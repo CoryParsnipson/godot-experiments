@@ -47,6 +47,7 @@ These steps need to be done once.
 
 These steps need to be repeated every time you want to debug wirelessly. (This means after every reboot of the computer or after a certain amount of time, the Android device will automatically disable wireless debugging.)
 
+1. Make sure device discovery is allowed on your network (most likely yes for home network, but mostly likely disabled for corp or public library wireless).
 1. Browse to "System > Developer Options > Enable Wireless Debugging" on the Android device and toggle this on. Keep track of the ip address and port num displayed here.
 1. Run `adb connect <ip address of phone>:<port num of phone>`.
 1. `adb devices` should now list an entry for this device.

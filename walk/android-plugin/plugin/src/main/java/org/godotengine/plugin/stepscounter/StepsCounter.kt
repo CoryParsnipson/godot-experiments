@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
@@ -11,19 +12,30 @@ import org.godotengine.godot.plugin.UsedByGodot
 
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     companion object {
-        @JvmStatic val CODE_PERMISSIONS_GRANTED_= 1
+        @JvmStatic var showToast = false
+
+        @JvmStatic val permissionsRequestCode = 12
         @JvmStatic val neededPermissions = arrayOf(
             Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
         )
     }
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
     @UsedByGodot
+    private fun enableToast() {
+        showToast = true
+    }
+
+    @UsedByGodot
+    private fun disableToast() {
+        showToast = false
+    }
+
+    @UsedByGodot
     private fun hasPermission(permission: String): Boolean {
         if (this.activity == null || this.activity?.applicationContext == null) {
-            Log.w(pluginName, "[WARNING] Plugin activity is null!")
+            Log.e(pluginName, "Plugin activity is null!")
             return false
         }
 
@@ -37,22 +49,28 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     @UsedByGodot
     private fun requestPermission(permission: String) {
-        // TODO: implement me
+        // cannot use the new, strongly recommended Activity Result API (registerForActivityResult())
+        // since we only have a pointer to Activity from Godot. Go through ActivityCompat,
+        // which isn't perfect because the Activity implements onRequestPermissionsResult().
+        ActivityCompat.requestPermissions(this.activity!!, arrayOf(permission), permissionsRequestCode)
+        Log.v(pluginName, "Requesting permission for $permission...")
     }
 
     /**
      * Provide this stub function for users to call to check if everything is loaded and working.
      */
     @UsedByGodot
-    private fun healthCheck(showToast: Boolean) {
+    private fun healthCheck() {
         runOnUiThread {
-            val msg:String = getPluginName() + " successfully loaded!"
+            val msg:String = getPluginName() + " is running!"
             if (showToast) {
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
             }
             Log.v(pluginName, msg)
-            hasPermission(neededPermissions[0])
-            hasPermission(neededPermissions[1])
+
+            for (perm in neededPermissions) {
+                Log.v(pluginName, "[PERMISSION] Is \"$perm\" granted? " + if (hasPermission(perm)) { "YES" } else { "NO" })
+            }
         }
     }
 }

@@ -38,7 +38,8 @@ dependencies {
     implementation("org.godotengine:godot:4.2.0.stable")
 
     // steps counter dependencies
-    implementation("androidx.core:core:1.13.1")
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.13.1")
 }
 
 // BUILD TASKS DEFINITION
