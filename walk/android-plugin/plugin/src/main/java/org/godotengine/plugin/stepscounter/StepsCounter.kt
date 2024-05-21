@@ -22,6 +22,25 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
+    override fun onMainRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>?,
+        grantResults: IntArray?
+    ) {
+        super.onMainRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == permissionsRequestCode) {
+            Log.v(pluginName, "Received permissions result from plugin.requestPermission():")
+        } else {
+            Log.v(pluginName, "Received permission result for code (from godot OS.permission): $requestCode")
+        }
+
+        for (i in 0..permissions!!.size) {
+            val granted = if (grantResults!![i] == PackageManager.PERMISSION_GRANTED) "GRANTED" else "DENIED"
+            Log.v(pluginName, "[Permission] " + permissions[i] + ": $granted")
+        }
+    }
+
     @UsedByGodot
     private fun enableToast() {
         showToast = true
@@ -47,8 +66,9 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         return isAllowed
     }
 
-    // Don't use this, use OS.request_permission() in godot because this one does not expose a
-    // callback that will run on completion.
+    // It's recommended to use OS.request_permission() in godot since that's available from the engine.
+    // This is implemented here for completeness sake. The result callback for this will return in
+    // the onMainRequestPermissionsResult() function.
     @UsedByGodot
     private fun requestPermission(permission: String) {
         Log.v(pluginName, "Requesting permission for \"$permission\"...")
