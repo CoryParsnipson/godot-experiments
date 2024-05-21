@@ -28,11 +28,26 @@ If you are in windows, or `./gradlew assemble` for mac and linux. This will buil
 
 You can also modify the android studio project so you can build this via the GUI. In the top bar, next to the run button, there will be a button called "Add Configuration". Click that and choose a Gradle task, and then in the bar next to "Run", type in "assemble". Then select the new `android-plugin [assemble]` configuration and whenever you hit run, it will execute that gradle task. (Hitting build will use the project's gradle AGP instead of the system's gradle version, so it may work differently. Need to figure out how to fix that...)
 
-## Debugging on real android phone
+### Communicating from Android Plugin to Godot Engine
 
-### Wireless debugging on Android
+So it's obvious that whatever is annotated with `@UsedByGodot` is callable from a Godot script once you retrive the JNI singleton.
 
-#### Initial Setup
+You can also go in the opposite direction, to have a godot script react to a signal sent from the android plugin.
+
+See [this question](https://www.reddit.com/r/godot/comments/ugebbz/sending_signal_from_android_plugin_to_maingd/), about hooking up godot engine signals to signals defined and emitted by the android plugin. 
+
+1. Override the `getPluginSignals` method of the GodotPlugin child class. Create a concrete mutable set and add all the signals you want here.
+1. Call `emitSignal` somewhere with the name and parameters of the desired signal.
+1. Hook up the signal somewhere in your godot script.  
+   ```
+   _android_plugin.connect("<signal name>", <name of function to act as signal handler>)
+   ```
+1. ???
+1. Profit!
+
+## Wireless debugging on Android
+
+### Initial Setup
 
 These steps need to be done once.
 
@@ -43,11 +58,11 @@ These steps need to be done once.
 1. If not enabled already, go to developer settings and toggle "Enable wireless debugging on". Pair the device with the computer (skip this if already paired).
 1. Run `adb tcpip <random port number>`. It does not matter which port num you use, as long as nothing else is using it.
 
-#### Connecting to Device Wirelessly
+### Connecting to Device Wirelessly
 
 These steps need to be repeated every time you want to debug wirelessly. (This means after every reboot of the computer or after a certain amount of time, the Android device will automatically disable wireless debugging.)
 
-1. Make sure device discovery is allowed on your network (most likely yes for home network, but mostly likely disabled for corp or public library wireless).
+1. Make sure device discovery is allowed on your network (most likely yes for home network, but mostly likely disabled for corp or public library wireless)
 1. Browse to "System > Developer Options > Enable Wireless Debugging" on the Android device and toggle this on. Keep track of the ip address and port num displayed here.
 1. Run `adb connect <ip address of phone>:<port num of phone>`.
 1. `adb devices` should now list an entry for this device.
