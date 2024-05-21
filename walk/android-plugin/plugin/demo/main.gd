@@ -10,10 +10,18 @@ func _ready():
 	if Engine.has_singleton(_plugin_name):
 		_android_plugin = Engine.get_singleton(_plugin_name)
 
-	if require_android_plugin():
-		print("%s successfully loaded!" % _plugin_name)
-		_android_plugin.enableToast()
-		_android_plugin.healthCheck()
+	if not require_android_plugin():
+		return
+		
+	print("%s successfully loaded!" % _plugin_name)
+	_android_plugin.connect("test", handle_test_signal)
+	_android_plugin.enableToast()
+	_android_plugin.healthCheck()
+	
+
+
+func handle_test_signal():
+	print("Successfully received test signal from android plugin!")
 
 
 func require_android_plugin():

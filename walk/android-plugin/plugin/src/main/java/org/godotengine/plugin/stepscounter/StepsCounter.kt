@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
+import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
 
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
@@ -22,25 +23,6 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
-    override fun onMainRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>?,
-        grantResults: IntArray?
-    ) {
-        super.onMainRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == permissionsRequestCode) {
-            Log.v(pluginName, "Received permissions result from plugin.requestPermission():")
-        } else {
-            Log.v(pluginName, "Received permission result for code (from godot OS.permission): $requestCode")
-        }
-
-        for (i in 0..permissions!!.size) {
-            val granted = if (grantResults!![i] == PackageManager.PERMISSION_GRANTED) "GRANTED" else "DENIED"
-            Log.v(pluginName, "[Permission] " + permissions[i] + ": $granted")
-        }
-    }
-
     @UsedByGodot
     private fun enableToast() {
         showToast = true
@@ -49,6 +31,39 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     @UsedByGodot
     private fun disableToast() {
         showToast = false
+    }
+
+    override fun getPluginSignals(): MutableSet<SignalInfo> {
+        val signals = HashSet<SignalInfo>()
+
+        signals.add(SignalInfo("test"))
+
+        return signals
+    }
+
+    override fun onMainRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>?,
+        grantResults: IntArray?
+    ) {
+        super.onMainRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        var source = "OS.request_permission()"
+        if (requestCode == permissionsRequestCode) {
+            source = "plugin.requestPermission()"
+        }
+
+        if (permissions != null && grantResults != null) {
+            Log.v(pluginName, "Received permissions result from $source:")
+        } else {
+            Log.v(pluginName, "Failure receiving permissions result from $source!")
+            return
+        }
+
+        for (i in permissions.indices) {
+            val granted = if (grantResults[i] == PackageManager.PERMISSION_GRANTED) "GRANTED" else "DENIED"
+            Log.v(pluginName, "[Permission] " + permissions[i] + ": $granted")
+        }
     }
 
     @UsedByGodot
@@ -105,6 +120,9 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             for (perm in neededPermissions) {
                 hasPermission(perm)
             }
+
+            Log.v(pluginName, "emitting test signal")
+            emitSignal("test")
         }
     }
 }
