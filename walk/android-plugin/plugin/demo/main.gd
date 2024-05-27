@@ -74,16 +74,12 @@ func _on_Button_pressed():
 	if not require_android_plugin():
 		return
 
-	var granted = false
-	if not has_all_permissions():
-		granted = await request_permissions()
-
+	var granted = await request_permissions()
 	if not granted:
 		print("Could not get all permissions needed...")
 		return
 
-	# uncommenting this because checkSteps is broken right now...
-	# print("checking steps...")
-	# _android_plugin.checkSteps()
+	print("checking steps...")
+	_android_plugin.checkSteps()
 
 	print("button pressed!")

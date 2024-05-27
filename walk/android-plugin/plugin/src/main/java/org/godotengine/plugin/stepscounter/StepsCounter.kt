@@ -11,13 +11,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
+import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
@@ -162,16 +162,26 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             }
         }
 
+        // note: calling this function multiple times will register multiple listeners
+        // and thus will cause you to receive multiple callbacks for the same step count (need
+        // to keep track in member state so we only register this once)
         val supportedAndEnabled = sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
         Log.d(pluginName, "Sensor listener registered: $supportedAndEnabled")
     }
 
     @UsedByGodot
-    private fun checkSteps() = runBlocking {
-        launch {
-            val stepsSinceLastReboot = steps()
-            Log.v(pluginName, "checkSteps(): stepsSinceLastReboot = $stepsSinceLastReboot")
+    private fun checkSteps() {
+        // we started a new thread so the suspendable coroutine doesn't block the execution of the JNI caller's thread
+        // what the Google docs say is that you're supposed to start a foreground service with this code
+        // inside it. It's not entirely clear to me what a foreground service is and what is can do, but
+        // I assume that it won't matter if that thread gets blocked just counting steps.
+        thread(start = true) {
+            Log.v(pluginName, "checkSteps(): starting coroutine scope")
+            runBlocking {
+                val stepsSinceLastReboot = steps()
+                Log.v(pluginName, "checkSteps(): stepsSinceLastReboot = $stepsSinceLastReboot")
+            }
+            Log.v(pluginName, "checkSteps(): coroutine scope done")
         }
-        Log.v(pluginName, "checkSteps(): done")
     }
 }
