@@ -1,15 +1,24 @@
 package org.godotengine.plugin.stepscounter
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
+import kotlin.coroutines.resume
 
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     companion object {
@@ -19,6 +28,13 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         @JvmStatic val neededPermissions = arrayOf(
             Manifest.permission.ACTIVITY_RECOGNITION,
         )
+    }
+
+    private val sensorManager by lazy {
+        this.activity!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
+    private val sensor: Sensor? by lazy {
+        sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
     }
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
@@ -36,7 +52,8 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     override fun getPluginSignals(): MutableSet<SignalInfo> {
         val signals = HashSet<SignalInfo>()
 
-        signals.add(SignalInfo("test"))
+        signals.add(SignalInfo("test")) // TODO: delete
+        //signals.add(SignalInfo("on_request_permission_result", Array<String>::class.java, BooleanArray::class.java))
 
         return signals
     }
@@ -120,9 +137,41 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             for (perm in neededPermissions) {
                 hasPermission(perm)
             }
-
-            Log.v(pluginName, "emitting test signal")
-            emitSignal("test")
         }
+    }
+
+    private suspend fun steps() = suspendCancellableCoroutine { continuation ->
+        Log.d(pluginName, "Registering sensor listener...")
+
+        val listener: SensorEventListener by lazy {
+            object: SensorEventListener {
+                override fun onSensorChanged(event: SensorEvent?) {
+                    if (event == null) return
+
+                    val stepsSinceLastReboot = event.values[0].toLong()
+                    Log.d(pluginName, "Steps since last reboot: $stepsSinceLastReboot")
+
+                    if (continuation.isActive) {
+                        continuation.resume(stepsSinceLastReboot)
+                    }
+                }
+
+                override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+                    Log.d(pluginName, "Accuracy changed to: $accuracy")
+                }
+            }
+        }
+
+        val supportedAndEnabled = sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
+        Log.d(pluginName, "Sensor listener registered: $supportedAndEnabled")
+    }
+
+    @UsedByGodot
+    private fun checkSteps() = runBlocking {
+        launch {
+            val stepsSinceLastReboot = steps()
+            Log.v(pluginName, "checkSteps(): stepsSinceLastReboot = $stepsSinceLastReboot")
+        }
+        Log.v(pluginName, "checkSteps(): done")
     }
 }
