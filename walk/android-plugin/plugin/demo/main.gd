@@ -70,6 +70,11 @@ func has_all_permissions() -> bool:
 	return true
 
 
+func disable_register_listener_button():
+	$VBoxContainer/btn_margin/btn_register_listener.text = "Step Counter active..."
+	$VBoxContainer/btn_margin/btn_register_listener.disabled = true
+
+
 func _on_Button_pressed():
 	if not require_android_plugin():
 		return
@@ -83,3 +88,7 @@ func _on_Button_pressed():
 	_android_plugin.checkSteps()
 
 	print("button pressed!")
+
+	# no idea why we need to use call_deferred here; otherwise
+	# the get node call will return null
+	call_deferred("disable_register_listener_button")

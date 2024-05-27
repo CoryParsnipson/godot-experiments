@@ -13,18 +13,76 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_j0gfq")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 50
 
-[node name="Button" type="Button" parent="CenterContainer"]
-custom_minimum_size = Vector2(300, 200)
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 35
-text = "Press Me"
 
-[connection signal="pressed" from="CenterContainer/Button" to="." method="_on_Button_pressed"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 50
+
+[node name="step_counter_container" type="VBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="steps_sensor_title" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="sensor_name_label" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_sensor_title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 55
+text = "Sensor Type:"
+
+[node name="sensor_name_val" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_sensor_title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 55
+text = "STEP_COUNTER"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container"]
+layout_mode = 2
+
+[node name="steps_display" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="steps_label" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_display"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 55
+text = "Steps since last reboot:"
+
+[node name="steps_val" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_display"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 55
+text = "UNDEFINED"
+
+[node name="vertical_expander" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="btn_margin" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="btn_register_listener" type="Button" parent="VBoxContainer/btn_margin"]
+custom_minimum_size = Vector2(300, 500)
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "Start"
+
+[connection signal="pressed" from="VBoxContainer/btn_margin/btn_register_listener" to="." method="_on_Button_pressed"]
