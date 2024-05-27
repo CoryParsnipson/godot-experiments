@@ -10,22 +10,19 @@ var _android_plugin
 
 
 func _ready():
-	# hook up signals
-	get_tree().on_request_permissions_result.connect(on_request_permissions_result)
-
 	if Engine.has_singleton(_plugin_name):
 		_android_plugin = Engine.get_singleton(_plugin_name)
 
 	if not require_android_plugin():
 		return
-		
+
+	# hook up signals
+	get_tree().on_request_permissions_result.connect(on_request_permissions_result)
+	_android_plugin.on_step_counter_updated.connect(on_step_counter_update)
+
 	print("%s successfully loaded!" % _plugin_name)
 	_android_plugin.enableToast()
 	_android_plugin.healthCheck()
-
-
-func handle_test_signal():
-	print("Successfully received test signal from android plugin!")
 
 
 func require_android_plugin():
@@ -75,6 +72,18 @@ func disable_register_listener_button():
 	$VBoxContainer/btn_margin/btn_register_listener.disabled = true
 
 
+func set_step_counter_display(val):
+	$VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_display/steps_val.text = str(val)
+
+
+func reset_step_counter_display(val = "UNDEFINED"):
+	set_step_counter_display(val)
+
+
+func on_step_counter_update(steps_since_last_reboot):
+	set_step_counter_display(steps_since_last_reboot)
+
+
 func _on_Button_pressed():
 	if not require_android_plugin():
 		return
@@ -91,4 +100,5 @@ func _on_Button_pressed():
 
 	# no idea why we need to use call_deferred here; otherwise
 	# the get node call will return null
+	call_deferred("reset_step_counter_display", 0)
 	call_deferred("disable_register_listener_button")

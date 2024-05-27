@@ -52,8 +52,13 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     override fun getPluginSignals(): MutableSet<SignalInfo> {
         val signals = HashSet<SignalInfo>()
 
-        signals.add(SignalInfo("test")) // TODO: delete
-        //signals.add(SignalInfo("on_request_permission_result", Array<String>::class.java, BooleanArray::class.java))
+        // Need to use KClass<T>::class.java*ObjectType* not KClass<T>::class.java; seriously... wtf
+        // the latter is a java primitive (i.e. int or long) while the former is the boxed object
+        // In Kotlin, there is no way to deal with primitives directly, so what would happen is that
+        // you pass this function a Long, for example, and it complains that the arg type is
+        // wrong and it's expecting a `long`...
+        signals.add(SignalInfo("on_step_counter_updated", Long::class.javaObjectType))
+        signals.add(SignalInfo("on_step_counter_accuracy_changed", Int::class.javaObjectType))
 
         return signals
     }
@@ -150,6 +155,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
                     val stepsSinceLastReboot = event.values[0].toLong()
                     Log.d(pluginName, "Steps since last reboot: $stepsSinceLastReboot")
+                    emitSignal("on_step_counter_updated", stepsSinceLastReboot)
 
                     if (continuation.isActive) {
                         continuation.resume(stepsSinceLastReboot)
@@ -176,12 +182,11 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         // inside it. It's not entirely clear to me what a foreground service is and what is can do, but
         // I assume that it won't matter if that thread gets blocked just counting steps.
         thread(start = true) {
-            Log.v(pluginName, "checkSteps(): starting coroutine scope")
+            Log.v(pluginName, "checkSteps(): created new thread for steps() coroutine")
             runBlocking {
-                val stepsSinceLastReboot = steps()
-                Log.v(pluginName, "checkSteps(): stepsSinceLastReboot = $stepsSinceLastReboot")
+                steps()
             }
-            Log.v(pluginName, "checkSteps(): coroutine scope done")
+            Log.v(pluginName, "checkSteps(): killing thread")
         }
     }
 }
