@@ -1,16 +1,12 @@
 package org.godotengine.plugin.stepscounter
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.godotengine.godot.Godot
@@ -23,11 +19,6 @@ import kotlin.coroutines.resume
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     companion object {
         @JvmStatic var showToast = false
-
-        @JvmStatic val permissionsRequestCode = 12
-        @JvmStatic val neededPermissions = arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-        )
     }
 
     private val sensorManager by lazy {
@@ -69,23 +60,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         grantResults: IntArray?
     ) {
         super.onMainRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        var source = "OS.request_permission()"
-        if (requestCode == permissionsRequestCode) {
-            source = "plugin.requestPermission()"
-        }
-
-        if (permissions != null && grantResults != null) {
-            Log.v(pluginName, "Received permissions result from $source:")
-        } else {
-            Log.v(pluginName, "Failure receiving permissions result from $source!")
-            return
-        }
-
-        for (i in permissions.indices) {
-            val granted = if (grantResults[i] == PackageManager.PERMISSION_GRANTED) "GRANTED" else "DENIED"
-            Log.v(pluginName, "[Permission] " + permissions[i] + ": $granted")
-        }
+        PermissionManager.onPermissionsRequestResult(requestCode, permissions, grantResults)
     }
 
     @UsedByGodot
@@ -94,13 +69,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             Log.e(pluginName, "Plugin activity is null!")
             return false
         }
-
-        var isAllowed = false
-        this.activity?.applicationContext?.let {
-            isAllowed = ContextCompat.checkSelfPermission(it, permission) == PackageManager.PERMISSION_GRANTED
-            Log.v(pluginName, "Permission check for '$permission' -> " + if (isAllowed) "GRANTED" else "NOT_GRANTED")
-        }
-        return isAllowed
+        return PermissionManager.hasPermission(this.activity?.applicationContext!!, permission)
     }
 
     // It's recommended to use OS.request_permission() in godot since that's available from the engine.
@@ -108,12 +77,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     // the onMainRequestPermissionsResult() function.
     @UsedByGodot
     private fun requestPermission(permission: String) {
-        Log.v(pluginName, "Requesting permission for \"$permission\"...")
-
-        // cannot use the new, strongly recommended Activity Result API (registerForActivityResult())
-        // since we only have a pointer to Activity from Godot. Go through ActivityCompat,
-        // which isn't perfect because the Activity implements onRequestPermissionsResult().
-        ActivityCompat.requestPermissions(this.activity!!, arrayOf(permission), permissionsRequestCode)
+        return PermissionManager.requestPermission(this.activity!!, permission)
     }
 
     // the intended permissions request flow is to check hasPermission first, then query this
@@ -121,9 +85,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     // a specific permission, and lastly requestPermission() to let the user grant/deny.
     @UsedByGodot
     private fun shouldShowRequestPermissionRationale(permission: String): Boolean {
-        val res = ActivityCompat.shouldShowRequestPermissionRationale(this.activity!!, permission)
-        Log.v(pluginName, "Should we should permission request rationale for \"$permission...\" " + if (res) "YES" else "NO")
-        return res
+        return PermissionManager.shouldShowRequestPermissionRationale(this.activity!!, permission)
     }
 
     /**
@@ -139,7 +101,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             Log.v(pluginName, msg)
 
             Log.v(pluginName, "Checking permissions:")
-            for (perm in neededPermissions) {
+            for (perm in PermissionManager.neededPermissions) {
                 hasPermission(perm)
             }
         }
