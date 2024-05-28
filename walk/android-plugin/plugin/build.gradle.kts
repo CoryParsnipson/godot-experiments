@@ -10,7 +10,7 @@ val pluginPackageName = "org.godotengine.plugin.stepscounter"
 
 android {
     namespace = pluginPackageName
-    compileSdk = 33
+    compileSdk = 34
 
     buildFeatures {
         buildConfig = true

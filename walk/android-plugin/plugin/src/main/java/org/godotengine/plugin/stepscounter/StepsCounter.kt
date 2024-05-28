@@ -1,6 +1,7 @@
 package org.godotengine.plugin.stepscounter
 
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -150,5 +151,35 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             }
             Log.v(pluginName, "checkSteps(): killing thread")
         }
+    }
+
+    @UsedByGodot
+    private fun startStepsCounterForegroundService() {
+        val context = this.activity?.applicationContext!!;
+        val intent = Intent(context, StepsCounterService::class.java)
+        intent.putExtra("action", StepsCounterService.Action.START_FOREGROUND)
+
+        Log.v(pluginName, "Starting foreground service...")
+        context.startForegroundService(intent)
+    }
+
+    @UsedByGodot
+    private fun stopStepsCounterForegroundService() {
+        val context = this.activity?.applicationContext!!;
+        val intent = Intent(context, StepsCounterService::class.java)
+        intent.putExtra("action", StepsCounterService.Action.STOP_FOREGROUND)
+
+        Log.v(pluginName, "Stopping foreground service...")
+        context.stopService(intent);
+    }
+
+    @UsedByGodot
+    private fun stopStepsCounterService() {
+        val context = this.activity?.applicationContext!!;
+        val intent = Intent(context, StepsCounterService::class.java)
+        intent.putExtra("action", StepsCounterService.Action.STOP)
+
+        Log.v(pluginName, "Stopping foreground service...")
+        context.stopService(intent);
     }
 }

@@ -95,6 +95,8 @@ func _on_Button_pressed():
 
 	print("checking steps...")
 	_android_plugin.checkSteps()
+	# FIXME: foreground service still in progress
+	#_android_plugin.startForegroundService()
 
 	print("button pressed!")
 

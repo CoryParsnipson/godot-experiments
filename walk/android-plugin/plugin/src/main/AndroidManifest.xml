@@ -3,6 +3,8 @@
 
     <!-- declare necessary permissions -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/> <!-- steps counter -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
 
     <application>
         <!--
@@ -19,6 +21,12 @@
         <meta-data
             android:name="org.godotengine.plugin.v2.${godotPluginName}"
             android:value="${godotPluginPackageName}.GodotAndroidPlugin"/>
+
+        <service
+            android:name=".StepsCounterService"
+            android:foregroundServiceType="health"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
