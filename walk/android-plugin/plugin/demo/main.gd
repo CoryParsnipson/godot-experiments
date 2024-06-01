@@ -8,6 +8,7 @@ var _permissions = {
 }
 var _android_plugin
 
+@onready var initial_button_text = $VBoxContainer/btn_margin/btn_register_listener.text
 
 func _ready():
 	if Engine.has_singleton(_plugin_name):
@@ -67,9 +68,12 @@ func has_all_permissions() -> bool:
 	return true
 
 
-func disable_register_listener_button():
+func reset_start_button_text():
+	$VBoxContainer/btn_margin/btn_register_listener.text = initial_button_text
+
+
+func set_start_button_text():
 	$VBoxContainer/btn_margin/btn_register_listener.text = "Step Counter active..."
-	$VBoxContainer/btn_margin/btn_register_listener.disabled = true
 
 
 func set_step_counter_display(val):
@@ -84,7 +88,7 @@ func on_step_counter_update(steps_since_last_reboot):
 	set_step_counter_display(steps_since_last_reboot)
 
 
-func _on_Button_pressed():
+func _on_start_button_toggled(toggled_on: bool):
 	if not require_android_plugin():
 		return
 
@@ -93,14 +97,17 @@ func _on_Button_pressed():
 		print("Could not get all permissions needed...")
 		return
 
-	print("checking steps...")
-	_android_plugin.checkSteps()
-	# FIXME: foreground service still in progress
-	#_android_plugin.startForegroundService()
-
 	print("button pressed!")
+	print("button pressed: " + "PRESSED" if toggled_on else "NOT PRESSED")
 
-	# no idea why we need to use call_deferred here; otherwise
-	# the get node call will return null
-	call_deferred("reset_step_counter_display", 0)
-	call_deferred("disable_register_listener_button")
+	if toggled_on:
+		# _android_plugin.checkSteps() # FIXME: move to foreground serivce
+		_android_plugin.startStepsCounterForegroundService()
+
+		# no idea why we need to use call_deferred here; otherwise
+		# the get node call will return null
+		call_deferred("reset_step_counter_display", 0)
+		call_deferred("set_start_button_text")
+	else:
+		_android_plugin.stopStepsCounterService()
+		call_deferred("reset_start_button_text")

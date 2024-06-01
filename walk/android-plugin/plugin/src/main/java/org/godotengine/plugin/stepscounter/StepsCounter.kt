@@ -158,8 +158,6 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.Action.START_FOREGROUND)
-
-        Log.v(pluginName, "Starting foreground service...")
         context.startForegroundService(intent)
     }
 
@@ -168,18 +166,13 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.Action.STOP_FOREGROUND)
-
-        Log.v(pluginName, "Stopping foreground service...")
-        context.stopService(intent);
+        context.startService(intent);
     }
 
     @UsedByGodot
     private fun stopStepsCounterService() {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
-        intent.putExtra("action", StepsCounterService.Action.STOP)
-
-        Log.v(pluginName, "Stopping foreground service...")
         context.stopService(intent);
     }
 }

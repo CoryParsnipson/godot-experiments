@@ -83,6 +83,7 @@ theme_override_constants/margin_bottom = 50
 custom_minimum_size = Vector2(300, 500)
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
+toggle_mode = true
 text = "Start"
 
-[connection signal="pressed" from="VBoxContainer/btn_margin/btn_register_listener" to="." method="_on_Button_pressed"]
+[connection signal="toggled" from="VBoxContainer/btn_margin/btn_register_listener" to="." method="_on_start_button_toggled"]
