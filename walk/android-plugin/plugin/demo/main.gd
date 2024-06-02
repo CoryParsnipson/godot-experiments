@@ -99,7 +99,7 @@ func _on_start_button_toggled(toggled_on: bool):
 		print("Could not get all permissions needed...")
 		return
 
-	print("button pressed: " + "PRESSED" if toggled_on else "NOT PRESSED")
+	print("button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
 
 	if toggled_on:
 		# _android_plugin.checkSteps() # FIXME: move to foreground serivce

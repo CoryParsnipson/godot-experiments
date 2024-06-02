@@ -1,11 +1,20 @@
 package org.godotengine.plugin.stepscounter
 
+import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.Message
+import android.os.Messenger
+import android.os.RemoteException
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.runBlocking
@@ -27,6 +36,33 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     }
     private val sensor: Sensor? by lazy {
         sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+    }
+
+    private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            Log.v(pluginName, "Received message!")
+        }
+    })
+    private var stepsCounterServiceMessenger: Messenger? = null
+    private val stepsCounterServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            Log.v(pluginName, "stepsCounterServiceConnection connected")
+            stepsCounterServiceMessenger = Messenger(service)
+
+            try {
+                val msg = Message.obtain(null, StepsCounterService.MessageAction.CLIENT_CONNECTED.ordinal)
+                msg.replyTo = messengerRx
+                stepsCounterServiceMessenger?.send(msg)
+            } catch (e: RemoteException) {
+                // service has crashed before we can do anything with it
+                Log.w(pluginName, "[stepsCounterServiceConnection.onServiceConnected] remote service has crashed.")
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            Log.v(pluginName, "stepsCounterServiceConnection disconnected")
+            stepsCounterServiceMessenger = null
+        }
     }
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
@@ -53,6 +89,58 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         signals.add(SignalInfo("on_step_counter_accuracy_changed", Int::class.javaObjectType))
 
         return signals
+    }
+
+    @Suppress("DEPRECATION")
+    private fun isStepsCounterServiceRunning(): Boolean {
+        return (this.activity?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            .getRunningServices(Integer.MAX_VALUE)
+            .any {
+                Log.v(pluginName, "running service: ${it.service.className}")
+                return it.service.className == StepsCounterService::class.qualifiedName
+            }
+    }
+
+    private fun bindStepsCounterService(bindOption: Int = 0) {
+        val context = this.activity!!.applicationContext
+        val intent = Intent(context, StepsCounterService::class.java)
+        this.activity!!.bindService(intent, stepsCounterServiceConnection, bindOption)
+    }
+
+    private fun unbindStepsCounterService() {
+        if (stepsCounterServiceMessenger == null) {
+            return
+        }
+
+        try {
+            val msg = Message.obtain(null, StepsCounterService.MessageAction.CLIENT_DISCONNECTED.ordinal)
+            msg.replyTo = messengerRx
+            stepsCounterServiceMessenger?.send(msg)
+        } catch (e: RemoteException) {
+            Log.w(pluginName, "[unbindStepsCounterService] remote service has crashed.")
+        }
+
+        this.activity!!.unbindService(stepsCounterServiceConnection)
+        Log.v(pluginName, "[unbindStepsCounterService] unbinding complete")
+    }
+
+    override fun onGodotSetupCompleted() {
+        super.onGodotSetupCompleted()
+
+        Log.v(pluginName, "is StepsCounterService running? ${isStepsCounterServiceRunning()}")
+
+        // rebind to service if it is already running from before
+        if (isStepsCounterServiceRunning()) {
+            Log.v(pluginName, "[onGodotSetupCompleted] found running StepsCounterService. Rebinding...")
+            bindStepsCounterService()
+        } else {
+            Log.v(pluginName, "[onGodotSetupCompleted] StepsCounterService not running...")
+        }
+    }
+
+    override fun onMainDestroy() {
+        super.onMainDestroy()
+        unbindStepsCounterService()
     }
 
     override fun onMainRequestPermissionsResult(
@@ -159,6 +247,8 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.Action.START_FOREGROUND)
         context.startForegroundService(intent)
+
+        bindStepsCounterService()
     }
 
     @UsedByGodot
@@ -174,5 +264,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         context.stopService(intent);
+
+        unbindStepsCounterService()
     }
 }

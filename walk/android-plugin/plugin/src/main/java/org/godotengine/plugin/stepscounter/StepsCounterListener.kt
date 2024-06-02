@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.godotengine.godot.plugin.GodotPlugin
 import kotlin.coroutines.resume
 
 context(Context)

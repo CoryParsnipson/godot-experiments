@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -21,21 +20,52 @@ class StepsCounterService : Service() {
         STOP_FOREGROUND,
     }
 
+    enum class MessageAction {
+        CLIENT_CONNECTED,
+        CLIENT_DISCONNECTED
+        ;
+
+        companion object {
+            fun fromInt(value: Int) = MessageAction.values().first { it.ordinal == value }
+        }
+    }
+
     companion object {
         @JvmStatic val TAG = StepsCounterService::class.simpleName
         @JvmStatic val channelId = "${BuildConfig.GODOT_PLUGIN_NAME}Channel"
         @JvmStatic val channelDesc = "${BuildConfig.GODOT_PLUGIN_NAME} Step Counter Service"
         @JvmStatic val notificationId = 903
+        @JvmStatic var isRunning = false
     }
 
     private val startServiceResult = START_STICKY
     private val stopForegroundServiceStrategy = STOP_FOREGROUND_DETACH
 
-    private val messenger = Messenger(object: Handler(Looper.getMainLooper()) {
+    private val clients = ArrayList<Messenger>()
+
+    private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
-            Log.v(TAG, "inside handle message...")
+            try {
+                val msgAction = MessageAction.fromInt(msg.what)
+                when (msgAction) {
+                    MessageAction.CLIENT_CONNECTED -> {
+                        Log.v(TAG, "[Messenger.CLIENT_CONNECTED] Connecting client ${msg.replyTo}")
+                        clients.add(msg.replyTo)
+                    }
+                    MessageAction.CLIENT_DISCONNECTED -> {
+                        Log.v(TAG, "[Messenger.CLIENT_DISCONNECTED] Disconnecting client ${msg.replyTo}")
+                        clients.remove(msg.replyTo)
+                    }
+                }
+            } catch (e: NoSuchElementException) {
+                Log.w(TAG, "[Messenger.handleMessage] Received unknown msg.what: ${msg.what}")
+            }
         }
     })
+
+    override fun onBind(intent: Intent): IBinder {
+        return messengerRx.binder
+    }
 
     /**
      * Start this as a foreground service. Does the standard permission check and then calling
@@ -72,6 +102,7 @@ class StepsCounterService : Service() {
         }
 
         Log.v(TAG, "Foreground service running...")
+        Log.v(TAG, "Service is running? $isRunning")
     }
 
     private fun stopForeground() {
@@ -92,6 +123,8 @@ class StepsCounterService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        isRunning = true
 
         val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent?.getSerializableExtra("action", Action::class.java)
@@ -115,10 +148,7 @@ class StepsCounterService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isRunning = false
         Log.v(TAG, "Destroying service...")
-    }
-
-    override fun onBind(intent: Intent): IBinder {
-        return messenger.binder
     }
 }
