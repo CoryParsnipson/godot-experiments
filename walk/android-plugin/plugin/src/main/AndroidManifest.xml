@@ -25,7 +25,8 @@
         <service
             android:name=".StepsCounterService"
             android:foregroundServiceType="health"
-            android:exported="false">
+            android:exported="false"
+            android:process=":stepsCounterListener">
         </service>
     </application>
 
