@@ -68,15 +68,15 @@ class StepsCounterService : Service() {
     private val stepsCounterListener = StepsCounterListener()
     private var mainLoopJob: Job? = null
 
-    private fun sendMessage(msg: GodotAndroidPlugin.StepsCounterMessage, stepsCount: Long) {
-        val message = Message.obtain(null, msg.ordinal)
-        message.data.putLong(msg.getKey(), stepsCount)
+    private fun sendMessage(stepsCount: Long) {
+        val message = Message.obtain(null, GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNT_UPDATED.ordinal)
+        message.data.putLong(GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNT_UPDATED.getKey(), stepsCount)
         return sendMessage(message)
     }
 
-    private fun sendMessage(msg: GodotAndroidPlugin.StepsCounterMessage, accuracy: Int) {
-        val message = Message.obtain(null, msg.ordinal)
-        message.data.putInt(msg.getKey(), accuracy)
+    private fun sendMessage(accuracy: Int) {
+        val message = Message.obtain(null, GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNTER_ACCURACY_CHANGED.ordinal)
+        message.data.putInt(GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNTER_ACCURACY_CHANGED.getKey(), accuracy)
         return sendMessage(message)
     }
 
@@ -108,8 +108,8 @@ class StepsCounterService : Service() {
         // why we have this async call.
         mainLoopJob = GlobalScope.async {
             stepsCounterListener.registerListener(
-                { steps -> sendMessage(GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNT_UPDATED, steps) },
-                { accuracy -> sendMessage(GodotAndroidPlugin.StepsCounterMessage.STEPS_COUNTER_ACCURACY_CHANGED, accuracy) }
+                { steps -> sendMessage(steps) },
+                { accuracy -> sendMessage(accuracy) }
             )
         }
     }
