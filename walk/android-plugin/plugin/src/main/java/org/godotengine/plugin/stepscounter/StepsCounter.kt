@@ -27,6 +27,23 @@ import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
+    enum class StepsCounterMessage {
+        STEPS_COUNT_UPDATED,
+        STEPS_COUNTER_ACCURACY_CHANGED
+        ;
+
+        companion object {
+            fun fromInt(value: Int) = StepsCounterMessage.values().first { it.ordinal == value }
+        }
+
+        fun getKey(): String {
+            when (this) {
+                STEPS_COUNT_UPDATED -> return "steps"
+                STEPS_COUNTER_ACCURACY_CHANGED -> return "accuracy"
+            }
+        }
+    }
+
     companion object {
         @JvmStatic var showToast = false
     }
@@ -40,7 +57,21 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
-            Log.v(pluginName, "Received message!")
+            try {
+                val action = StepsCounterMessage.fromInt(msg.what)
+                when (action) {
+                    StepsCounterMessage.STEPS_COUNT_UPDATED -> {
+                        val stepsSinceLastReboot = msg.data.getLong(action.getKey())
+                        emitSignal("on_step_counter_updated", stepsSinceLastReboot)
+                    }
+                    StepsCounterMessage.STEPS_COUNTER_ACCURACY_CHANGED -> {
+                        val accuracy = msg.data.getInt(action.getKey())
+                        emitSignal("on_step_counter_accuracy_changed", accuracy)
+                    }
+                }
+            } catch (e: NoSuchElementException) {
+                Log.w(pluginName, "[Messenger.handleMessage] Received unknown msg.what: ${msg.what}")
+            }
         }
     })
     private var stepsCounterServiceMessenger: Messenger? = null
@@ -243,9 +274,14 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     @UsedByGodot
     private fun startStepsCounterForegroundService() {
+        if (isStepsCounterServiceRunning()) {
+            Log.v(pluginName, "StepsCounterService is already running, skipping start")
+            return
+        }
+
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
-        intent.putExtra("action", StepsCounterService.Action.START_FOREGROUND)
+        intent.putExtra("action", StepsCounterService.ServiceAction.START_FOREGROUND)
         context.startForegroundService(intent)
 
         bindStepsCounterService()
@@ -255,7 +291,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     private fun stopStepsCounterForegroundService() {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
-        intent.putExtra("action", StepsCounterService.Action.STOP_FOREGROUND)
+        intent.putExtra("action", StepsCounterService.ServiceAction.STOP_FOREGROUND)
         context.startService(intent);
     }
 
