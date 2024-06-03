@@ -102,7 +102,6 @@ func _on_start_button_toggled(toggled_on: bool):
 	print("button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
 
 	if toggled_on:
-		# _android_plugin.checkSteps() # FIXME: move to foreground serivce
 		_android_plugin.startStepsCounterForegroundService()
 
 		call_deferred("reset_step_counter_display", 0)

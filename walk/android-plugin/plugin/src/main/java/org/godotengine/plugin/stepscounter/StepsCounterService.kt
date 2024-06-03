@@ -144,7 +144,8 @@ class StepsCounterService : Service() {
             this.startForeground(notificationId, notification)
         } catch (e: Exception) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
-               // TODO: show some error message to the user?
+                // FIXME: show some error message to the user instead?
+                Log.e(TAG, "Could not start foreground service: ${e.message}")
             }
         }
 
