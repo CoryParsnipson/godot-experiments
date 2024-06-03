@@ -11,6 +11,7 @@ var _android_plugin
 @onready var start_button = $VBoxContainer/btn_margin/btn_register_listener
 @onready var initial_button_text = $VBoxContainer/btn_margin/btn_register_listener.text
 @onready var step_counter_val_label = $VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_display/steps_val
+@onready var step_counter_accuracy_label = $VBoxContainer/PanelContainer/MarginContainer/step_counter_container/accuracy_display/accuracy_val
 
 func _ready():
 	if Engine.has_singleton(_plugin_name):
@@ -22,10 +23,20 @@ func _ready():
 	# hook up signals
 	get_tree().on_request_permissions_result.connect(on_request_permissions_result)
 	_android_plugin.on_step_counter_updated.connect(on_step_counter_update)
+	_android_plugin.on_step_counter_accuracy_changed.connect(on_step_counter_accuracy_changed)
 
 	print("%s successfully loaded!" % _plugin_name)
 	_android_plugin.enableToast()
 	_android_plugin.healthCheck()
+
+	# get updated info immediately if we start and discover that the steps
+	# counter service is still up and running
+	if _android_plugin.isStepsCounterServiceRunning():
+		print("Steps Counter Service is already running. Requesting steps counter info...")
+		_android_plugin.updateStepsCounterInfo()
+
+		start_button.button_pressed = true
+		set_start_button_text()
 
 
 func require_android_plugin():
@@ -82,12 +93,20 @@ func set_step_counter_display(val):
 	step_counter_val_label.text = str(val)
 
 
+func set_step_counter_accuracy_display(accuracy):
+	step_counter_accuracy_label.text = str(accuracy)
+
+
 func reset_step_counter_display(val = "UNDEFINED"):
 	set_step_counter_display(val)
 
 
 func on_step_counter_update(steps_since_last_reboot):
 	set_step_counter_display(steps_since_last_reboot)
+
+
+func on_step_counter_accuracy_changed(accuracy):
+	set_step_counter_accuracy_display(accuracy)
 
 
 func _on_start_button_toggled(toggled_on: bool):

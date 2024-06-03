@@ -27,7 +27,9 @@ class StepsCounterService : Service() {
 
     enum class MessageAction {
         CLIENT_CONNECTED,
-        CLIENT_DISCONNECTED
+        CLIENT_DISCONNECTED,
+        QUERY_STEPS,
+        QUERY_ACCURACY
         ;
 
         companion object {
@@ -57,6 +59,12 @@ class StepsCounterService : Service() {
                     MessageAction.CLIENT_DISCONNECTED -> {
                         Log.v(TAG, "[Messenger.CLIENT_DISCONNECTED] Disconnecting client ${msg.replyTo}")
                         clients.remove(msg.replyTo)
+                    }
+                    MessageAction.QUERY_STEPS -> {
+                        sendMessage(stepsCounterListener.getSteps())
+                    }
+                    MessageAction.QUERY_ACCURACY -> {
+                        sendMessage(stepsCounterListener.getAccuracy())
                     }
                 }
             } catch (e: NoSuchElementException) {

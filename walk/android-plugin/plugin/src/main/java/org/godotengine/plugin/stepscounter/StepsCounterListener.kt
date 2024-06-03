@@ -23,6 +23,17 @@ class StepsCounterListener {
     }
     private var sensorListener: SensorEventListener? = null
 
+    private var stepsSinceLastReboot: Long = 0
+    private var stepsAccuracy: Int = -1
+
+    public fun getSteps(): Long {
+        return stepsSinceLastReboot
+    }
+
+    public fun getAccuracy(): Int {
+        return stepsAccuracy
+    }
+
     suspend fun registerListener(
         handleSensorChanged: (stepsSinceLastReboot: Long) -> Unit,
         handleAccuracyChanged: (accuracy: Int) -> Unit
@@ -33,7 +44,7 @@ class StepsCounterListener {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event == null) return
 
-                val stepsSinceLastReboot = event.values[0].toLong()
+                stepsSinceLastReboot = event.values[0].toLong()
                 Log.d(TAG, "Steps since last reboot: $stepsSinceLastReboot")
                 handleSensorChanged(stepsSinceLastReboot)
 
@@ -44,6 +55,7 @@ class StepsCounterListener {
 
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
                 Log.d(TAG, "Accuracy changed to: $accuracy")
+                stepsAccuracy = accuracy
                 handleAccuracyChanged(accuracy)
             }
         }
