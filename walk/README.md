@@ -2,6 +2,15 @@
 
 This is a demo for mobile to try to count user steps for a game that will use step counter as a game element.
 
+## TODO
+
+* Add ability to start the steps counter as "background" service or at least a normal one (non-foreground). The difference between a foreground service and a regular or background one is that the foreground service must display a notification.
+* Test to see if you can create a background service that will persist after the app is closed and can be rebound once the app is restarted.
+* Add ability for user to config whether or not the foreground/background service will persist after close or be a bound service.
+* Add ability to customize the notification and add UI buttons (like the spotify notification that lets you pause/play/next/prev)
+    * the notification class is Parcelable so you may even be able to create a separate plugin
+      for building custom notifications and then pass it between plugins
+
 ## Setup
 
 This project is made with Godot Engine 4.2.2 (64bit on Windows).
@@ -67,3 +76,7 @@ These steps need to be repeated every time you want to debug wirelessly. (This m
 1. Run `adb connect <ip address of phone>:<port num of phone>`.
 1. `adb devices` should now list an entry for this device.
 1. Wireless debugging should be set up now. You can run the debugger on the device wirelessly by click on the play button that looks like a TV in the upper right corner.
+
+### Using the Included Godot Demo Project to Debug
+
+Within the `android_plugin` folder, there is a provided Godot project in `plugin/demo`. This is a godot project that can be opened in Godot 4.2+ with a diagnostic UI for interacting with the android plugin.
