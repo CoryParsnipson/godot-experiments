@@ -44,8 +44,10 @@ class StepsCounterService : Service() {
         @JvmStatic val notificationId = 903
     }
 
-    private val startServiceResult = START_STICKY
+    private val startServiceResult = START_NOT_STICKY // steps counter service does not support restart w/ null intent
     private val stopForegroundServiceStrategy = STOP_FOREGROUND_DETACH
+    private var keepServiceAliveAfterAppIsClosed = true
+
     private val clients = ArrayList<Messenger>()
     private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -59,6 +61,12 @@ class StepsCounterService : Service() {
                     MessageAction.CLIENT_DISCONNECTED -> {
                         Log.v(TAG, "[Messenger.CLIENT_DISCONNECTED] Disconnecting client ${msg.replyTo}")
                         clients.remove(msg.replyTo)
+
+                        // once everyone is unbound, shutdown
+                        if (!keepServiceAliveAfterAppIsClosed && clients.size == 0) {
+                            Log.v(TAG, "Last client has disconnected and keepServiceAliveAfterAppIsClosed is false. Shutting down.")
+                            stopSelf()
+                        }
                     }
                     MessageAction.QUERY_STEPS -> {
                         sendMessage(stepsCounterListener.getSteps())
@@ -190,7 +198,11 @@ class StepsCounterService : Service() {
         Log.v(TAG, "[onStartCommand] received intent with action: ${action.toString()}")
 
         when (action) {
-            ServiceAction.START_FOREGROUND -> { startForeground() }
+            ServiceAction.START_FOREGROUND -> {
+                keepServiceAliveAfterAppIsClosed = intent?.getBooleanExtra("keepAlive", true) as Boolean
+                Log.v(TAG, "[onStartCommand] starting foreground with keepServiceAliveAfterAppIsClosed = ${keepServiceAliveAfterAppIsClosed}")
+                startForeground()
+            }
             ServiceAction.STOP_FOREGROUND -> { stopForeground() }
             else -> {
                 Log.w(TAG, "Received unknown action in onStartCommand(): ${action.toString()}")

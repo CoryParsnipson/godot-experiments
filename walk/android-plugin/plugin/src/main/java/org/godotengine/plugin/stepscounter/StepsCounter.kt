@@ -37,6 +37,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     }
 
     companion object {
+        // show toast notifications (usually for debug)
         @JvmStatic var showToast = false
     }
 
@@ -215,7 +216,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     }
 
     @UsedByGodot
-    private fun startStepsCounterForegroundService() {
+    private fun startStepsCounterForegroundService(keepServiceAliveAfterAppIsClosed: Boolean) {
         if (isStepsCounterServiceRunning()) {
             Log.v(pluginName, "StepsCounterService is already running, skipping start")
             updateStepsCounterInfo()
@@ -225,6 +226,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.START_FOREGROUND)
+        intent.putExtra("keepAlive", keepServiceAliveAfterAppIsClosed)
         context.startForegroundService(intent)
 
         bindStepsCounterService()
