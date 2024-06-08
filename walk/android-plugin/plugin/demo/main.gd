@@ -1,6 +1,7 @@
 extends Control
 
 enum Permission { UNKNOWN, GRANTED, NOT_GRANTED }
+enum ServiceType { NOT_RUNNING, FOREGROUND, BACKGROUND }
 
 var _plugin_name = "GodotStepsCounterPlugin"
 var _permissions = {
@@ -42,8 +43,7 @@ func _ready():
 		print("Steps Counter Service is already running. Requesting steps counter info...")
 		_android_plugin.updateStepsCounterInfo()
 
-		btn_start_fg.button_pressed = true
-		set_start_fg_button_text()
+		btn_start_fg.set_pressed_no_signal(true)
 
 
 func require_android_plugin():
@@ -88,20 +88,18 @@ func has_all_permissions() -> bool:
 	return true
 
 
-func reset_fg_button_text():
-	btn_start_fg.text = btn_start_fg_text
+func reset_btn_display(type: ServiceType):
+	if type == ServiceType.FOREGROUND:
+		btn_start_fg.text = btn_start_fg_text
+	elif type == ServiceType.BACKGROUND:
+		btn_start_bg.text = btn_start_bg_text
 
 
-func reset_bg_button_text():
-	btn_start_bg.text = btn_start_bg_text
-
-
-func set_start_fg_button_text():
-	btn_start_fg.text = "Step Counter (fg) active..."
-
-
-func set_start_bg_button_text():
-	btn_start_bg.text = "Step Counter (bg) active..."
+func set_btn_display(type: ServiceType):
+	if type == ServiceType.FOREGROUND:
+		btn_start_fg.text = "Foreground active..."
+	elif type == ServiceType.BACKGROUND:
+		btn_start_bg.text = "Background active..."
 
 
 func set_step_counter_display(val):
@@ -127,43 +125,49 @@ func on_step_counter_accuracy_changed(accuracy):
 func on_service_type_changed(service_type: String):
 	step_counter_service_type.text = service_type
 
+	var type = ServiceType[service_type]
+	if type == null:
+		print("[ERROR] (on_service_type_changed): received invalid StepsCounterService.Type = %s" % service_type)
+		return
+
+	if type == ServiceType.FOREGROUND:
+		set_btn_display(type)
+		reset_btn_display(ServiceType.BACKGROUND)
+	elif type == ServiceType.BACKGROUND:
+		set_btn_display(type)
+		reset_btn_display(ServiceType.FOREGROUND)
+	elif type == ServiceType.NOT_RUNNING:
+		reset_btn_display(ServiceType.FOREGROUND)
+		reset_btn_display(ServiceType.BACKGROUND)
+
 
 func _on_start_fg_button_toggled(toggled_on: bool):
 	if not require_android_plugin():
 		return
 
-	var granted = await request_permissions()
-	if not granted:
-		print("Could not get all permissions needed...")
-		return
-
 	print("foreground button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
 	if toggled_on:
-		_android_plugin.startStepsCounterForegroundService()
+		var granted = await request_permissions()
+		if not granted:
+			print("Could not get all permissions needed...")
+			return
 
-		call_deferred("reset_step_counter_display", 0)
-		call_deferred("set_start_fg_button_text")
+		_android_plugin.startStepsCounterForegroundService()
 	else:
 		_android_plugin.stopStepsCounterService()
-		call_deferred("reset_fg_button_text")
 
 
 func _on_start_bg_button_toggled(toggled_on: bool):
 	if not require_android_plugin():
 		return
 
-	var granted = await request_permissions()
-	if not granted:
-		print("Could not get all permissions needed...")
-		return
-
 	print("background button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
-
+	var granted = await request_permissions()
 	if toggled_on:
-		_android_plugin.startStepsCounterBackgroundService()
+		if not granted:
+			print("Could not get all permissions needed...")
+			return
 
-		call_deferred("reset_step_counter_display", 0)
-		call_deferred("set_start_bg_button_text")
+		_android_plugin.startStepsCounterBackgroundService()
 	else:
 		_android_plugin.stopStepsCounterService()
-		call_deferred("reset_bg_button_text")
