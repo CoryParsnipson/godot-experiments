@@ -30,10 +30,10 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         }
 
         fun getKey(): String {
-            when (this) {
-                STEPS_COUNT_UPDATED -> return "steps"
-                STEPS_COUNTER_ACCURACY_CHANGED -> return "accuracy"
-                SERVICE_TYPE -> return "serviceType"
+            return when (this) {
+                STEPS_COUNT_UPDATED -> "steps"
+                STEPS_COUNTER_ACCURACY_CHANGED -> "accuracy"
+                SERVICE_TYPE -> "serviceType"
             }
         }
     }
@@ -237,13 +237,13 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         if (isStepsCounterServiceRunning()) {
             if (serviceType == StepsCounterService.Type.FOREGROUND) {
                 Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, skipping init...")
-                return;
+                return
             }
             Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, restarting...")
             stopStepsCounterService()
         }
 
-        val context = this.activity?.applicationContext!!;
+        val context = this.activity?.applicationContext!!
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.START_FOREGROUND)
         context.startForegroundService(intent)
@@ -259,10 +259,10 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
      */
     @UsedByGodot
     private fun stopStepsCounterForegroundService() {
-        val context = this.activity?.applicationContext!!;
+        val context = this.activity?.applicationContext!!
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.STOP_FOREGROUND)
-        context.startService(intent);
+        context.startService(intent)
     }
 
     /**
@@ -282,13 +282,13 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         if (isStepsCounterServiceRunning()) {
             if (serviceType == StepsCounterService.Type.BACKGROUND) {
                 Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, skipping init...")
-                return;
+                return
             }
             Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, restarting...")
             stopStepsCounterService()
         }
 
-        val context = this.activity?.applicationContext!!;
+        val context = this.activity?.applicationContext!!
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.START_BACKGROUND)
         context.startService(intent)
@@ -298,9 +298,9 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     @UsedByGodot
     private fun stopStepsCounterService() {
-        val context = this.activity?.applicationContext!!;
+        val context = this.activity?.applicationContext!!
         val intent = Intent(context, StepsCounterService::class.java)
-        context.stopService(intent);
+        context.stopService(intent)
 
         unbindStepsCounterService()
     }
