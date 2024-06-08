@@ -8,10 +8,16 @@ var _permissions = {
 }
 var _android_plugin
 
-@onready var start_button = $VBoxContainer/btn_margin/btn_register_listener
-@onready var initial_button_text = $VBoxContainer/btn_margin/btn_register_listener.text
-@onready var step_counter_val_label = $VBoxContainer/PanelContainer/MarginContainer/step_counter_container/steps_display/steps_val
-@onready var step_counter_accuracy_label = $VBoxContainer/PanelContainer/MarginContainer/step_counter_container/accuracy_display/accuracy_val
+@onready var btn_start_fg = $content/margin_btn_fg/btn_start_fg
+@onready var btn_start_bg = $content/margin_btn_bg/btn_start_bg
+
+@onready var btn_start_fg_text = $content/margin_btn_fg/btn_start_fg.text
+@onready var btn_start_bg_text = $content/margin_btn_bg/btn_start_bg.text
+
+@onready var step_counter_val_label = $content/steps_counter/margin/content/steps_display/val
+@onready var step_counter_accuracy_label = $content/steps_counter/margin/content/accuracy_display/val
+
+@onready var step_counter_service_type = $content/service_type/margin/service_type_display/val
 
 func _ready():
 	if Engine.has_singleton(_plugin_name):
@@ -24,6 +30,7 @@ func _ready():
 	get_tree().on_request_permissions_result.connect(on_request_permissions_result)
 	_android_plugin.on_step_counter_updated.connect(on_step_counter_update)
 	_android_plugin.on_step_counter_accuracy_changed.connect(on_step_counter_accuracy_changed)
+	_android_plugin.on_service_type_changed.connect(on_service_type_changed)
 
 	print("%s successfully loaded!" % _plugin_name)
 	_android_plugin.enableToast()
@@ -35,8 +42,8 @@ func _ready():
 		print("Steps Counter Service is already running. Requesting steps counter info...")
 		_android_plugin.updateStepsCounterInfo()
 
-		start_button.button_pressed = true
-		set_start_button_text()
+		btn_start_fg.button_pressed = true
+		set_start_fg_button_text()
 
 
 func require_android_plugin():
@@ -81,12 +88,20 @@ func has_all_permissions() -> bool:
 	return true
 
 
-func reset_start_button_text():
-	start_button.text = initial_button_text
+func reset_fg_button_text():
+	btn_start_fg.text = btn_start_fg_text
 
 
-func set_start_button_text():
-	start_button.text = "Step Counter active..."
+func reset_bg_button_text():
+	btn_start_bg.text = btn_start_bg_text
+
+
+func set_start_fg_button_text():
+	btn_start_fg.text = "Step Counter (fg) active..."
+
+
+func set_start_bg_button_text():
+	btn_start_bg.text = "Step Counter (bg) active..."
 
 
 func set_step_counter_display(val):
@@ -109,7 +124,11 @@ func on_step_counter_accuracy_changed(accuracy):
 	set_step_counter_accuracy_display(accuracy)
 
 
-func _on_start_button_toggled(toggled_on: bool):
+func on_service_type_changed(service_type: String):
+	step_counter_service_type.text = service_type
+
+
+func _on_start_fg_button_toggled(toggled_on: bool):
 	if not require_android_plugin():
 		return
 
@@ -118,13 +137,33 @@ func _on_start_button_toggled(toggled_on: bool):
 		print("Could not get all permissions needed...")
 		return
 
-	print("button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
-
+	print("foreground button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
 	if toggled_on:
-		_android_plugin.startStepsCounterForegroundService(false)
+		_android_plugin.startStepsCounterForegroundService()
 
 		call_deferred("reset_step_counter_display", 0)
-		call_deferred("set_start_button_text")
+		call_deferred("set_start_fg_button_text")
 	else:
 		_android_plugin.stopStepsCounterService()
-		call_deferred("reset_start_button_text")
+		call_deferred("reset_fg_button_text")
+
+
+func _on_start_bg_button_toggled(toggled_on: bool):
+	if not require_android_plugin():
+		return
+
+	var granted = await request_permissions()
+	if not granted:
+		print("Could not get all permissions needed...")
+		return
+
+	print("background button pressed: " + ("PRESSED" if toggled_on else "NOT PRESSED"))
+
+	if toggled_on:
+		_android_plugin.startStepsCounterBackgroundService()
+
+		call_deferred("reset_step_counter_display", 0)
+		call_deferred("set_start_bg_button_text")
+	else:
+		_android_plugin.stopStepsCounterService()
+		call_deferred("reset_bg_button_text")

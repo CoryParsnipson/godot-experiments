@@ -21,7 +21,8 @@ import org.godotengine.godot.plugin.UsedByGodot
 class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     enum class StepsCounterMessage {
         STEPS_COUNT_UPDATED,
-        STEPS_COUNTER_ACCURACY_CHANGED
+        STEPS_COUNTER_ACCURACY_CHANGED,
+        SERVICE_TYPE
         ;
 
         companion object {
@@ -32,6 +33,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             when (this) {
                 STEPS_COUNT_UPDATED -> return "steps"
                 STEPS_COUNTER_ACCURACY_CHANGED -> return "accuracy"
+                SERVICE_TYPE -> return "serviceType"
             }
         }
     }
@@ -41,11 +43,12 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         @JvmStatic var showToast = false
     }
 
+    private var serviceType = StepsCounterService.Type.NOT_RUNNING
+
     private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             try {
-                val action = StepsCounterMessage.fromInt(msg.what)
-                when (action) {
+                when (val action = StepsCounterMessage.fromInt(msg.what)) {
                     StepsCounterMessage.STEPS_COUNT_UPDATED -> {
                         val stepsSinceLastReboot = msg.data.getLong(action.getKey())
                         emitSignal("on_step_counter_updated", stepsSinceLastReboot)
@@ -53,6 +56,16 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
                     StepsCounterMessage.STEPS_COUNTER_ACCURACY_CHANGED -> {
                         val accuracy = msg.data.getInt(action.getKey())
                         emitSignal("on_step_counter_accuracy_changed", accuracy)
+                    }
+                    StepsCounterMessage.SERVICE_TYPE -> {
+                        val data = msg.data.getString(action.getKey())
+                        try {
+                            serviceType = enumValueOf<StepsCounterService.Type>(data!!)
+                        } catch (e: IllegalArgumentException) {
+                            Log.e(pluginName, "Received invalid StepsCounterService.Type enum value! ($data)")
+                            serviceType = StepsCounterService.Type.NOT_RUNNING
+                        }
+                        emitSignal("on_service_type_changed", data)
                     }
                 }
             } catch (e: NoSuchElementException) {
@@ -66,6 +79,10 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
             Log.v(pluginName, "stepsCounterServiceConnection connected")
             stepsCounterServiceMessenger = Messenger(service)
             sendMessage(StepsCounterService.MessageAction.CLIENT_CONNECTED)
+
+            // issue another query for information, because the service type changes before
+            // the service is bound so that event gets dropped
+            updateStepsCounterInfo()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -96,6 +113,7 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
         // wrong and it's expecting a `long`...
         signals.add(SignalInfo("on_step_counter_updated", Long::class.javaObjectType))
         signals.add(SignalInfo("on_step_counter_accuracy_changed", Int::class.javaObjectType))
+        signals.add(SignalInfo("on_service_type_changed", String::class.javaObjectType))
 
         return signals
     }
@@ -129,8 +147,6 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
 
     override fun onGodotSetupCompleted() {
         super.onGodotSetupCompleted()
-
-        Log.v(pluginName, "is StepsCounterService running? ${isStepsCounterServiceRunning()}")
 
         // rebind to service if it is already running from before
         if (isStepsCounterServiceRunning()) {
@@ -213,31 +229,71 @@ class GodotAndroidPlugin(godot: Godot): GodotPlugin(godot) {
     private fun updateStepsCounterInfo() {
         sendMessage(StepsCounterService.MessageAction.QUERY_STEPS)
         sendMessage(StepsCounterService.MessageAction.QUERY_ACCURACY)
+        sendMessage(StepsCounterService.MessageAction.QUERY_SERVICE_TYPE)
     }
 
     @UsedByGodot
-    private fun startStepsCounterForegroundService(keepServiceAliveAfterAppIsClosed: Boolean) {
+    private fun startStepsCounterForegroundService() {
         if (isStepsCounterServiceRunning()) {
-            Log.v(pluginName, "StepsCounterService is already running, skipping start")
-            updateStepsCounterInfo()
-            return
+            if (serviceType == StepsCounterService.Type.FOREGROUND) {
+                Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, skipping init...")
+                return;
+            }
+            Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, restarting...")
+            stopStepsCounterService()
         }
 
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.START_FOREGROUND)
-        intent.putExtra("keepAlive", keepServiceAliveAfterAppIsClosed)
         context.startForegroundService(intent)
 
         bindStepsCounterService()
     }
 
+    /**
+     * You may downgrade a foreground service to a normal ("background") service with this function.
+     * This will stop the service as a foreground service, but it will continue running as a
+     * background service. This means it will not have higher priority to the OS and it will stop
+     * when the app is closed.
+     */
     @UsedByGodot
     private fun stopStepsCounterForegroundService() {
         val context = this.activity?.applicationContext!!;
         val intent = Intent(context, StepsCounterService::class.java)
         intent.putExtra("action", StepsCounterService.ServiceAction.STOP_FOREGROUND)
         context.startService(intent);
+    }
+
+    /**
+     * Start the service as a "background" service (quotes because this is non-official terminology)
+     * The difference between this and the foreground service is that the foreground service will
+     * persist even after the app is closed. Then the app may reconnect once restarted and if the
+     * foreground service is still running.
+     *
+     * The other differences are that the foreground service is required to have an un-dismissible
+     * notification for the user and it is higher priority to the OS so less likely to be killed
+     * under tight memory constraints.
+     *
+     * This service will be stopped when the app is closed!
+     */
+    @UsedByGodot
+    private fun startStepsCounterBackgroundService() {
+        if (isStepsCounterServiceRunning()) {
+            if (serviceType == StepsCounterService.Type.BACKGROUND) {
+                Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, skipping init...")
+                return;
+            }
+            Log.v(pluginName, "StepsCounterService (Type = ${serviceType}) is already running, restarting...")
+            stopStepsCounterService()
+        }
+
+        val context = this.activity?.applicationContext!!;
+        val intent = Intent(context, StepsCounterService::class.java)
+        intent.putExtra("action", StepsCounterService.ServiceAction.START_BACKGROUND)
+        context.startService(intent)
+
+        bindStepsCounterService()
     }
 
     @UsedByGodot

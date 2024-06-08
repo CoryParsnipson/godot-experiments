@@ -22,6 +22,7 @@ import kotlinx.coroutines.async
 class StepsCounterService : Service() {
     enum class ServiceAction {
         START_FOREGROUND,
+        START_BACKGROUND,
         STOP_FOREGROUND,
     }
 
@@ -29,12 +30,19 @@ class StepsCounterService : Service() {
         CLIENT_CONNECTED,
         CLIENT_DISCONNECTED,
         QUERY_STEPS,
-        QUERY_ACCURACY
+        QUERY_ACCURACY,
+        QUERY_SERVICE_TYPE
         ;
 
         companion object {
             fun fromInt(value: Int) = MessageAction.values().first { it.ordinal == value }
         }
+    }
+
+    enum class Type {
+        FOREGROUND,
+        BACKGROUND,
+        NOT_RUNNING
     }
 
     companion object {
@@ -44,9 +52,9 @@ class StepsCounterService : Service() {
         @JvmStatic val notificationId = 903
     }
 
-    private val startServiceResult = START_NOT_STICKY // steps counter service does not support restart w/ null intent
+    private val startServiceResult = START_STICKY
     private val stopForegroundServiceStrategy = STOP_FOREGROUND_DETACH
-    private var keepServiceAliveAfterAppIsClosed = true
+    private var serviceType = Type.NOT_RUNNING
 
     private val clients = ArrayList<Messenger>()
     private val messengerRx = Messenger(object: Handler(Looper.getMainLooper()) {
@@ -61,18 +69,15 @@ class StepsCounterService : Service() {
                     MessageAction.CLIENT_DISCONNECTED -> {
                         Log.v(TAG, "[Messenger.CLIENT_DISCONNECTED] Disconnecting client ${msg.replyTo}")
                         clients.remove(msg.replyTo)
-
-                        // once everyone is unbound, shutdown
-                        if (!keepServiceAliveAfterAppIsClosed && clients.size == 0) {
-                            Log.v(TAG, "Last client has disconnected and keepServiceAliveAfterAppIsClosed is false. Shutting down.")
-                            stopSelf()
-                        }
                     }
                     MessageAction.QUERY_STEPS -> {
                         sendMessage(stepsCounterListener.getSteps())
                     }
                     MessageAction.QUERY_ACCURACY -> {
                         sendMessage(stepsCounterListener.getAccuracy())
+                    }
+                    MessageAction.QUERY_SERVICE_TYPE -> {
+                        sendMessage(serviceType)
                     }
                 }
             } catch (e: NoSuchElementException) {
@@ -96,6 +101,12 @@ class StepsCounterService : Service() {
         return sendMessage(message)
     }
 
+    private fun sendMessage(serviceType: Type) {
+        val message = Message.obtain(null, GodotAndroidPlugin.StepsCounterMessage.SERVICE_TYPE.ordinal)
+        message.data.putString(GodotAndroidPlugin.StepsCounterMessage.SERVICE_TYPE.getKey(), serviceType.name)
+        return sendMessage(message)
+    }
+
     private fun sendMessage(msg: Message) {
         // go through list backwards so we can remove from it during iteration
         for (id in clients.size - 1 downTo 0) {
@@ -109,6 +120,11 @@ class StepsCounterService : Service() {
 
     override fun onBind(intent: Intent): IBinder {
         return messengerRx.binder
+    }
+
+    private fun setServiceType(nextServiceType: Type) {
+        serviceType = nextServiceType
+        sendMessage(serviceType)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -166,11 +182,21 @@ class StepsCounterService : Service() {
         }
 
         Log.v(TAG, "Foreground service running...")
+        setServiceType(Type.FOREGROUND)
+        runServiceMainLoop()
+    }
+
+    /**
+     * Start this as a regular service
+     */
+    private fun startBackground() {
+        setServiceType(Type.BACKGROUND)
         runServiceMainLoop()
     }
 
     private fun stopForeground() {
         Log.v(TAG, "Stopping foreground service...")
+        setServiceType(Type.BACKGROUND)
         stopForeground(stopForegroundServiceStrategy)
     }
 
@@ -198,11 +224,8 @@ class StepsCounterService : Service() {
         Log.v(TAG, "[onStartCommand] received intent with action: ${action.toString()}")
 
         when (action) {
-            ServiceAction.START_FOREGROUND -> {
-                keepServiceAliveAfterAppIsClosed = intent?.getBooleanExtra("keepAlive", true) as Boolean
-                Log.v(TAG, "[onStartCommand] starting foreground with keepServiceAliveAfterAppIsClosed = ${keepServiceAliveAfterAppIsClosed}")
-                startForeground()
-            }
+            ServiceAction.START_FOREGROUND -> { startForeground() }
+            ServiceAction.START_BACKGROUND -> { startBackground() }
             ServiceAction.STOP_FOREGROUND -> { stopForeground() }
             else -> {
                 Log.w(TAG, "Received unknown action in onStartCommand(): ${action.toString()}")
@@ -215,6 +238,7 @@ class StepsCounterService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         mainLoopJob?.cancel()
+        setServiceType(Type.NOT_RUNNING)
         stepsCounterListener.unregisterListener()
 
         Log.v(TAG, "Destroying service...")
