@@ -4,9 +4,6 @@ This is a demo for mobile to try to count user steps for a game that will use st
 
 ## TODO
 
-* Add ability to start the steps counter as "background" service or at least a normal one (non-foreground). The difference between a foreground service and a regular or background one is that the foreground service must display a notification.
-* Test to see if you can create a background service that will persist after the app is closed and can be rebound once the app is restarted.
-* Add ability for user to config whether or not the foreground/background service will persist after close or be a bound service.
 * Add ability to customize the notification and add UI buttons (like the spotify notification that lets you pause/play/next/prev)
     * the notification class is Parcelable so you may even be able to create a separate plugin
       for building custom notifications and then pass it between plugins
@@ -54,6 +51,8 @@ See [this question](https://www.reddit.com/r/godot/comments/ugebbz/sending_signa
 1. ???
 1. Profit!
 
+Note that the data type of the signal must be <class>::class.javaObjectType if we're writing this in Kotlin. The basic Kotlin data types like `Int` and `Long` are equivalent to Java boxed primitives (hence the capitalization) and there are no true primitive data types in Kotlin. That's a gotcha to watch out for.
+
 ## Wireless debugging on Android
 
 ### Initial Setup
@@ -80,3 +79,65 @@ These steps need to be repeated every time you want to debug wirelessly. (This m
 ### Using the Included Godot Demo Project to Debug
 
 Within the `android_plugin` folder, there is a provided Godot project in `plugin/demo`. This is a godot project that can be opened in Godot 4.2+ with a diagnostic UI for interacting with the android plugin.
+
+The UI should show the accuracy and number of steps since the last device reboot when initialized. On startup, this value should show as UNDEFINED. Underneath that, is the status of the steps counter service in light green. (This value is emitted by a plugin signal and is self reported by the android plugin code.)
+
+To start the step counter service, there are two buttons on the bottom of the app, "Start foreground" and "start background".
+
+The latter will start the steps counter service as an Android Foreground service, meaning that the OS will prioritize keeping this service alive when looking for things to cull out of memory. The foreground service also remains alive when the parent app is closed, allowing you to collect data without the app running. If one opens the godot demo app while the foreground service is running, it will detect this and reconnect automatically.
+
+The "start background" button will start the steps counter service as a service (called a "background" service in this repo), which means it will die when the app is closed. A regular Android service does not have a higher priority to stay in memory, nor does it require the developer to display a persistent notification while it's alive.
+
+There can only be one instance of this service started at a time, per plugin, so if you have the service already running and you hit the button again, it will either restart the service or ignore it (if the service is the same foreground/background type). Both buttons are in toggle mode, so pressing the active button will stop the service.
+
+## Godot App Integration Guide
+
+Ok, so you've successfully built the android plugin and got the godot demo app working and you can start/stop the service and see the step counter update. Now what?
+
+It's time to integrate the android plugin into your own Godot application.
+
+### Integration steps
+
+1. Copy the `android-plugin/plugin/demo/addons/GodotStepsCounterPlugin` folder from the repo to the `addons` directory of your own godot application. If this folder is missing, create it.
+1. Within the Godot editor, make sure the plugin is detected and enabled. Go to `Project > Project Settings > Plugins` and see if the checkbox next to the steps counter plugin is checked.
+1. Instantiate the plugin singleton with code like this:
+
+   ```
+   if Engine.has_singleton(_plugin_name):
+       _android_plugin = Engine.get_singleton(_plugin_name)
+   ```
+
+   Now the `_android_plugin` variable should contain access to all methods in the source code that are annotated with `@UsedByGodot`.
+1. To hook up signals so you can receive push events from the plugin, hook up signals in code like this:
+
+   ```
+   	# hook up signals
+	get_tree().on_request_permissions_result.connect(on_request_permissions_result)
+	_android_plugin.on_step_counter_updated.connect(on_step_counter_update)
+	_android_plugin.on_step_counter_accuracy_changed.connect(on_step_counter_accuracy_changed)
+	_android_plugin.on_service_type_changed.connect(on_service_type_changed)
+   ```
+1. The signals are defined in the android plugin code, under the `getPluginSignals()` method inside `StepCounter.kt`:
+
+   ```
+    override fun getPluginSignals(): MutableSet<SignalInfo> {
+        val signals = HashSet<SignalInfo>()
+
+        // Need to use KClass<T>::class.java*ObjectType* not KClass<T>::class.java; seriously... wtf
+        // the latter is a java primitive (i.e. int or long) while the former is the boxed object
+        // In Kotlin, there is no way to deal with primitives directly, so what would happen is that
+        // you pass this function a Long, for example, and it complains that the arg type is
+        // wrong and it's expecting a `long`...
+        signals.add(SignalInfo("on_step_counter_updated", Long::class.javaObjectType))
+        signals.add(SignalInfo("on_step_counter_accuracy_changed", Int::class.javaObjectType))
+        signals.add(SignalInfo("on_service_type_changed", String::class.javaObjectType))
+
+        return signals
+    }
+   ```
+
+   Currently, there are three signals:
+
+   1. `on_step_counter_updated` - this fires every time the steps since last reboot value changes
+   1. `on_step_counter_accuracy_changed` - this fires every time the sensor accuracy is changed
+   1. `on_service_type_changed` - this fires every time the state of the StepsCounterService changes (e.g. started, stopped, downgraded from foreground to background, etc)
